@@ -20,8 +20,9 @@ func _ready():
 	position = target_pixel_pos
 
 func _process(delta):
-	# Input
 	move_timer += delta
+	
+	# Input
 	if Input.is_action_just_pressed("ui_right") and direction != Vector2.LEFT:
 		_queue_direction(Vector2.RIGHT)
 	elif Input.is_action_just_pressed("ui_left") and direction != Vector2.RIGHT:
@@ -35,8 +36,18 @@ func _process(delta):
 	if move_timer >= move_delay:
 		move_timer = 0.0
 		_move_snake()
-		
-	# Smoothly interpolate position
+	
+	# Rotate head to face direction
+	if direction == Vector2.RIGHT:
+		rotation = 0
+	elif direction == Vector2.LEFT:
+		rotation = PI
+	elif direction == Vector2.UP:
+		rotation = -PI / 2
+	elif direction == Vector2.DOWN:
+		rotation = PI / 2
+
+	# Smoothly interpolate position according to how much time (t) has passed since last move
 	var t = move_timer / move_delay
 	position = prev_pixel_pos.lerp(target_pixel_pos, t)
 	
