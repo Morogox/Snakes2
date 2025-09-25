@@ -1,9 +1,42 @@
-[gd_scene load_steps=3 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=7 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bo1nx"]
+distance = -512.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_8gbba"]
+distance = -512.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jjvhh"]
+distance = -512.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_kry3j"]
+distance = -512.0
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_bo1nx")
 
 [node name="SnakeHead" parent="." instance=ExtResource("1_jjgbg")]
+
+[node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
+
+[node name="Top" type="CollisionShape2D" parent="WorldBoundaries"]
+rotation = -3.14159
+shape = SubResource("WorldBoundaryShape2D_bo1nx")
+
+[node name="Down" type="CollisionShape2D" parent="WorldBoundaries"]
+shape = SubResource("WorldBoundaryShape2D_8gbba")
+
+[node name="Left" type="CollisionShape2D" parent="WorldBoundaries"]
+rotation = 1.5708
+shape = SubResource("WorldBoundaryShape2D_jjvhh")
+
+[node name="Right" type="CollisionShape2D" parent="WorldBoundaries"]
+rotation = -1.5708
+shape = SubResource("WorldBoundaryShape2D_kry3j")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[connection signal="body_entered" from="SnakeHead" to="SnakeHead" method="_on_body_entered"]
