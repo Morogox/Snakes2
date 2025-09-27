@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://jq7bfy01fo34"]
+
+[ext_resource type="Script" uid="uid://cmhtmp4hiygvy" path="res://Scripts/Apple.gd" id="1_u4byd"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_ir1en"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8gwai"]
+size = Vector2(32, 32)
+
+[node name="Apple" type="Area2D" groups=["Apple"]]
+script = ExtResource("1_u4byd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.376217, 0.602479, 0.332472, 1)
+position = Vector2(-3, 1)
+scale = Vector2(32, 32)
+texture = SubResource("CanvasTexture_ir1en")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-3, 1)
+shape = SubResource("RectangleShape2D_8gwai")

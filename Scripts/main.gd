@@ -39,6 +39,9 @@ func _ready():
 
 	start_pos = Vector2(left, top)  # inside edge of the walls
 	queue_redraw()
+	
+	randomize()  # seed RNG
+	spawn_apple()
 
 func _draw():
 	var start_pos = Vector2(left, top)
@@ -51,3 +54,10 @@ func _draw():
 		var start = start_pos + Vector2(0, y * GRID_SIZE)
 		var end = start_pos + Vector2(grid_width * GRID_SIZE, y * GRID_SIZE)
 		draw_line(start, end, GRID_COLOR, 1)
+		
+@onready var AppleScene = preload("res://Scenes/Apple.tscn")
+
+func spawn_apple():
+	var apple = AppleScene.instantiate()
+	add_child(apple)
+	apple.randomize_position()

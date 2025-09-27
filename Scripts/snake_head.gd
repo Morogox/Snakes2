@@ -15,6 +15,13 @@ var cell_offset = Vector2(GRID_SIZE, GRID_SIZE) * 0.5
 const MAX_QUEUE_SIZE = 2
 var input_queue = []
 
+#Snake segment stuff
+@export var segment_scene: PackedScene
+var segments = []
+var pending_growth = 0
+var move_history = []
+
+
 
 func _init_position():
 	var main_node = get_parent()
@@ -25,6 +32,22 @@ func _init_position():
 	target_pixel_pos = start_pos + snake_pos * GRID_SIZE + cell_offset
 	prev_pixel_pos = target_pixel_pos
 	position = target_pixel_pos
+	
+	for s in segments:
+		s.queue_free()
+	segments.clear()
+	move_history.clear()
+		
+	move_history.push_front(target_pixel_pos)
+
+	for i in range(3):
+		var seg = segment_scene.instantiate()
+		get_parent().add_child(seg)
+		var seg_pos = target_pixel_pos - direction * GRID_SIZE * (i + 1)
+		seg.position = seg_pos
+		segments.append(seg)
+		move_history.append(seg_pos)
+
 	
 
 func _ready():
@@ -59,10 +82,18 @@ func _process(delta):
 			rotation = -PI / 2
 		Vector2.DOWN:
 			rotation = PI / 2
-
-	# Smoothly interpolate position according to how much time (t) has passed since last move
 	var t = move_timer / move_delay
 	position = prev_pixel_pos.lerp(target_pixel_pos, t)
+	
+	for i in range(segments.size()):
+		var segment = segments[i]
+		# The segment's previous spot on the trail
+		var p1 = move_history[i+1]
+		# The segment's target spot on the trail
+		var p2 = move_history[i]
+		# Lerp the segment's position between those two points
+		segment.position = p1.lerp(p2, t)
+
 	
 func _queue_direction(new_dir):
 	 # Only queue if it doesn’t reverse current direction or last queued
@@ -71,15 +102,44 @@ func _queue_direction(new_dir):
 	if new_dir != -last_dir and new_dir != last_dir and input_queue.size() < MAX_QUEUE_SIZE:
 		input_queue.append(new_dir)
 
+
+func _add_segment():
+	if segment_scene == null:
+		print("No segment scene assigned!")
+		return
+	var seg = segment_scene.instantiate()
+	get_parent().add_child(seg)
+	seg.position = prev_pixel_pos if segments.empty() else segments[-1].position
+	segments.append(seg)
+	var tail_pos = move_history.back()
+	seg.position = tail_pos
+	move_history.append(tail_pos)
+
+
+func grow(amount=1):
+	pending_growth += amount
+
 func _move_snake():
+	move_history.push_front(target_pixel_pos)
+	move_history.resize(segments.size() + 1)
+
 	prev_pixel_pos = target_pixel_pos
-	# Pop next direction from queue if available
 	if input_queue.size() > 0:
 		direction = input_queue.pop_front()
 	snake_pos += direction
-	target_pixel_pos =  start_pos + snake_pos * GRID_SIZE + cell_offset
-
-
+	target_pixel_pos = start_pos + snake_pos * GRID_SIZE + cell_offset
+	
+	if pending_growth > 0:
+		_add_segment()
+		pending_growth -= 1
+		
+		
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Boundaries"):
 		print("Boundary Collision detected")
+	elif body.name == "Apple":
+		print("Snake ate apple!")
+		body.queue_free() # remove apple
+		get_parent().spawn_apple() # respawn a new one
+		grow(1) # grow snake by 1
+		

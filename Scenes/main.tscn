@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=8 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
+[ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="4_kry3j"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bo1nx"]
 distance = -512.0
@@ -19,6 +20,7 @@ distance = -512.0
 script = ExtResource("1_bo1nx")
 
 [node name="SnakeHead" parent="." instance=ExtResource("1_jjgbg")]
+segment_scene = ExtResource("4_kry3j")
 
 [node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
 
