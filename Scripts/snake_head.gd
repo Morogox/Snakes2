@@ -1,7 +1,7 @@
 extends Area2D
 var input_vector = Vector2.ZERO
 const GRID_SIZE = 32
-@export var move_delay = 0.2  # seconds per move, this is also speed; higher = slower
+@export var move_delay = 0.1  # seconds per move, this is also speed; higher = slower
 
 var snake_pos = Vector2(0, 0)   # grid coordinates
 var start_pos = Vector2.ZERO
@@ -10,9 +10,9 @@ var direction = Vector2.RIGHT
 var prev_pixel_pos = Vector2.ZERO
 var target_pixel_pos = Vector2.ZERO
 
-var move_timer = 0.0
+var move_timer = move_delay
 var cell_offset = Vector2(GRID_SIZE, GRID_SIZE) * 0.5
-const MAX_QUEUE_SIZE = 2
+const MAX_QUEUE_SIZE = 3
 var input_queue = []
 
 #Snake segment stuff
@@ -21,7 +21,7 @@ var segments = []
 var pending_growth = 0
 var move_history = []
 
-
+@export var starting_segments = 5
 
 func _init_position():
 	var main_node = get_parent()
@@ -40,7 +40,7 @@ func _init_position():
 		
 	move_history.push_front(target_pixel_pos)
 
-	for i in range(3):
+	for i in range(starting_segments):
 		var seg = segment_scene.instantiate()
 		get_parent().add_child(seg)
 		var seg_pos = target_pixel_pos - direction * GRID_SIZE * (i + 1)
@@ -48,11 +48,8 @@ func _init_position():
 		segments.append(seg)
 		move_history.append(seg_pos)
 
-	
-
 func _ready():
 	call_deferred("_init_position")
-	
 
 func _process(delta):
 	move_timer += delta
@@ -72,7 +69,6 @@ func _process(delta):
 		move_timer = 0.0
 		_move_snake()
 	
-	# Rotate head to face direction
 	match direction:
 		Vector2.RIGHT:
 			rotation = 0
@@ -84,7 +80,7 @@ func _process(delta):
 			rotation = PI / 2
 	var t = move_timer / move_delay
 	position = prev_pixel_pos.lerp(target_pixel_pos, t)
-	
+
 	for i in range(segments.size()):
 		var segment = segments[i]
 		# The segment's previous spot on the trail
@@ -93,8 +89,31 @@ func _process(delta):
 		var p2 = move_history[i]
 		# Lerp the segment's position between those two points
 		segment.position = p1.lerp(p2, t)
-
+		# Rotate to face movement direction
+		var dir = p2 - p1
+		segment.rotation = atan2(dir.y, dir.x)
+		
+		# The “segment ahead” is move_history[i-1] (head for first segment)
+		var dir_current = (p2 - p1).normalized()
+		var dir_ahead : Vector2
+		if i == 0:
+			dir_ahead = (target_pixel_pos - move_history[0]).normalized()
+		else:
+			dir_ahead = (move_history[i - 1] - p2).normalized()
+		var turning = dir_current != dir_ahead
+		
+		
 	
+		# debugging
+		var sprite: Sprite2D = segment.get_node("Sprite2D") # replace with actual child name
+		if turning:
+			sprite.texture = preload("res://sprites/snakeSegmentTest.png")
+		else:
+			sprite.texture = preload("res://sprites/snakeSegment.png")
+		#print((move_history[0] - move_history[1]).normalized())
+		#print("Segment ", i, " turning: ", turning, dir_current, dir_ahead)
+		#print("----------------------------------------------------------------------------------")
+
 func _queue_direction(new_dir):
 	 # Only queue if it doesn’t reverse current direction or last queued
 	var last_dir = input_queue[-1] if input_queue.size() > 0 else direction
@@ -109,7 +128,7 @@ func _add_segment():
 		return
 	var seg = segment_scene.instantiate()
 	get_parent().add_child(seg)
-	seg.position = prev_pixel_pos if segments.empty() else segments[-1].position
+	seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
 	segments.append(seg)
 	var tail_pos = move_history.back()
 	seg.position = tail_pos
@@ -122,7 +141,7 @@ func grow(amount=1):
 func _move_snake():
 	move_history.push_front(target_pixel_pos)
 	move_history.resize(segments.size() + 1)
-
+	
 	prev_pixel_pos = target_pixel_pos
 	if input_queue.size() > 0:
 		direction = input_queue.pop_front()
@@ -132,14 +151,18 @@ func _move_snake():
 	if pending_growth > 0:
 		_add_segment()
 		pending_growth -= 1
-		
-		
+
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Boundaries"):
 		print("Boundary Collision detected")
-	elif body.name == "Apple":
+	
+	
+		
+
+
+func _on_area_entered(area: Area2D) -> void:
+	if area.is_in_group("Apple"):
 		print("Snake ate apple!")
-		body.queue_free() # remove apple
+		area.queue_free() # remove apple
 		get_parent().spawn_apple() # respawn a new one
 		grow(1) # grow snake by 1
-		

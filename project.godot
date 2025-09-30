@@ -26,6 +26,7 @@ project/assembly_name="Snake2"
 [global_group]
 
 Boundaries=""
+Apple=""
 
 [input]
 

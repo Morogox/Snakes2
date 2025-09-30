@@ -60,4 +60,15 @@ func _draw():
 func spawn_apple():
 	var apple = AppleScene.instantiate()
 	add_child(apple)
-	apple.randomize_position()
+	# Pick random grid cell
+	var cell_x = randi_range(0, grid_width - 1)
+	var cell_y = randi_range(0, grid_height - 1)
+
+	# Convert to world pos (snap to center of grid cell)
+	var grid_origin = Vector2(left, top)
+	var pos = grid_origin + Vector2(cell_x * GRID_SIZE, cell_y * GRID_SIZE)
+	pos += Vector2(GRID_SIZE / 2, GRID_SIZE / 2)  # center inside the cell
+	
+	apple.add_to_group("Apple")
+	
+	apple.position = pos

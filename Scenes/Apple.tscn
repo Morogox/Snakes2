@@ -8,14 +8,13 @@
 size = Vector2(32, 32)
 
 [node name="Apple" type="Area2D" groups=["Apple"]]
+scale = Vector2(0.5, 0.5)
 script = ExtResource("1_u4byd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.376217, 0.602479, 0.332472, 1)
-position = Vector2(-3, 1)
 scale = Vector2(32, 32)
 texture = SubResource("CanvasTexture_ir1en")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-3, 1)
 shape = SubResource("RectangleShape2D_8gwai")

@@ -10,9 +10,9 @@ size = Vector2(32, 32)
 script = ExtResource("1_bbogs")
 
 [node name="sSnakeHead" type="Sprite2D" parent="."]
-position = Vector2(11, 2)
 texture = ExtResource("1_0ta55")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(11, 2)
 shape = SubResource("RectangleShape2D_bbogs")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
