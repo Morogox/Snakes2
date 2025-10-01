@@ -1,7 +1,7 @@
 extends Area2D
 var input_vector = Vector2.ZERO
 const GRID_SIZE = 32
-@export var move_delay = 0.1  # seconds per move, this is also speed; higher = slower
+@export var move_delay = 0.15  # seconds per move, this is also speed; higher = slower
 
 var snake_pos = Vector2(0, 0)   # grid coordinates
 var start_pos = Vector2.ZERO
@@ -21,14 +21,14 @@ var segments = []
 var pending_growth = 0
 var move_history = []
 
-@export var starting_segments = 5
+@export var starting_segments = 1
+@onready var main = get_parent()
 
 func _init_position():
-	var main_node = get_parent()
 	# Set snake to the center of the grid
-	snake_pos = Vector2(floor(main_node.grid_width / 2), floor(main_node.grid_height / 2))
+	snake_pos = Vector2(floor(main.grid_width / 2), floor(main.grid_height / 2))
 	
-	start_pos = main_node.start_pos
+	start_pos = main.start_pos
 	target_pixel_pos = start_pos + snake_pos * GRID_SIZE + cell_offset
 	prev_pixel_pos = target_pixel_pos
 	position = target_pixel_pos
@@ -42,7 +42,7 @@ func _init_position():
 
 	for i in range(starting_segments):
 		var seg = segment_scene.instantiate()
-		get_parent().add_child(seg)
+		main.add_child(seg)
 		var seg_pos = target_pixel_pos - direction * GRID_SIZE * (i + 1)
 		seg.position = seg_pos
 		segments.append(seg)
@@ -63,12 +63,12 @@ func _process(delta):
 		_queue_direction(Vector2.UP)
 	elif Input.is_action_just_pressed("ui_down") and direction != Vector2.UP:
 		_queue_direction(Vector2.DOWN)
-	#print(input_queue)
+
 	# Move snake logic every move_delay
 	if move_timer >= move_delay:
 		move_timer = 0.0
 		_move_snake()
-	
+
 	match direction:
 		Vector2.RIGHT:
 			rotation = 0
@@ -100,10 +100,7 @@ func _process(delta):
 			dir_ahead = (target_pixel_pos - move_history[0]).normalized()
 		else:
 			dir_ahead = (move_history[i - 1] - p2).normalized()
-		var turning = dir_current != dir_ahead
-		
-		
-	
+		var turning = dir_current != dir_ahead and dir_current != Vector2.ZERO and dir_ahead != Vector2.ZERO
 		# debugging
 		var sprite: Sprite2D = segment.get_node("Sprite2D") # replace with actual child name
 		if turning:
@@ -121,19 +118,17 @@ func _queue_direction(new_dir):
 	if new_dir != -last_dir and new_dir != last_dir and input_queue.size() < MAX_QUEUE_SIZE:
 		input_queue.append(new_dir)
 
-
 func _add_segment():
 	if segment_scene == null:
 		print("No segment scene assigned!")
 		return
 	var seg = segment_scene.instantiate()
-	get_parent().add_child(seg)
+	main.add_child(seg)
 	seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
 	segments.append(seg)
 	var tail_pos = move_history.back()
 	seg.position = tail_pos
 	move_history.append(tail_pos)
-
 
 func grow(amount=1):
 	pending_growth += amount
@@ -147,22 +142,36 @@ func _move_snake():
 		direction = input_queue.pop_front()
 	snake_pos += direction
 	target_pixel_pos = start_pos + snake_pos * GRID_SIZE + cell_offset
+
+	# --- GRID MAP LOGIC START ---
+	# mark head cell
+	main.set_grid_cell_if_valid(snake_pos, 1)
+	
+	# clear tail cell if not growing
+	if pending_growth == 0 and segments.size() > 0:
+		var tail_pos = move_history[-1] - start_pos
+		var tail_cell = Vector2(int(tail_pos.x / GRID_SIZE), int(tail_pos.y / GRID_SIZE))
+
+		main.set_grid_cell_if_valid(tail_cell, 0)
+	main.print_grid_map()
+	# --- GRID MAP LOGIC END ---
+	
 	
 	if pending_growth > 0:
 		_add_segment()
 		pending_growth -= 1
 
+
+
+# DEPRECATED: COLLISION CHECK IS MORE STREAMLINED WITH THE USE OF grid_map FROM main
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Boundaries"):
-		print("Boundary Collision detected")
-	
-	
-		
-
+		#insert colliiding with wall logic
+		pass
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Apple"):
 		print("Snake ate apple!")
 		area.queue_free() # remove apple
-		get_parent().spawn_apple() # respawn a new one
+		main.spawn_apple() # respawn a new one
 		grow(1) # grow snake by 1

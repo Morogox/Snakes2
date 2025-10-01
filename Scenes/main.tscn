@@ -5,22 +5,24 @@
 [ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="4_kry3j"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bo1nx"]
-distance = -512.0
+distance = -128.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_8gbba"]
-distance = -512.0
+distance = -128.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jjvhh"]
-distance = -512.0
+distance = -128.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_kry3j"]
-distance = -512.0
+distance = -128.0
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_bo1nx")
 
 [node name="SnakeHead" parent="." instance=ExtResource("1_jjgbg")]
+move_delay = 0.15
 segment_scene = ExtResource("4_kry3j")
+starting_segments = 3
 
 [node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
 
