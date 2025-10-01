@@ -1,13 +1,14 @@
 extends Node2D
 # Grid settings
 const GRID_SIZE = 32
+const CELL_OFFSET = Vector2(GRID_SIZE, GRID_SIZE) * 0.5
 const GRID_COLOR = Color(0.7, 0.7, 0.7, 0.5)  # light gray, semi-transparent
 
 @export var grid_dimensions = 15 
 
 # Optional: grid size in cells
-var grid_width = 50
-var grid_height = 50
+var grid_width
+var grid_height
 
 @onready var top_wall = $WorldBoundaries/Top
 @onready var bottom_wall = $WorldBoundaries/Down
@@ -15,22 +16,23 @@ var grid_height = 50
 @onready var right_wall = $WorldBoundaries/Right
 @onready var camera = $Camera2D
 
+@onready var AppleScene = preload("res://Scenes/Apple.tscn")
+
 var left 
 var right 
 var top
 var bottom 
 
-var start_pos = Vector2.ZERO
+var grid_origin = Vector2.ZERO
 
 # 2d array use to keep track of map state
 # 0 = empty, 1 = snake, 2 = apple
 var grid_map = []
 
 func _ready():
-	top_wall.shape.distance = grid_dimensions * -GRID_SIZE 
-	bottom_wall.shape.distance = grid_dimensions * -GRID_SIZE 
-	left_wall.shape.distance = grid_dimensions * -GRID_SIZE 
-	right_wall.shape.distance = grid_dimensions * -GRID_SIZE 
+	for wall in [top_wall, bottom_wall, left_wall, right_wall]:
+		wall.shape.distance = grid_dimensions * -GRID_SIZE
+	
 	# Compute the playable area inside the walls
 	left = left_wall.position.x + left_wall.shape.distance
 	right = right_wall.position.x - right_wall.shape.distance
@@ -52,7 +54,7 @@ func _ready():
 	# Center the camera
 	camera.position = Vector2((left + right)/2, (top + bottom)/2)
 
-	start_pos = Vector2(left, top)  # inside edge of the walls
+	grid_origin = Vector2(left, top)  # inside edge of the walls
 	queue_redraw()
 	
 	randomize()  # seed RNG
@@ -69,14 +71,16 @@ func _draw():
 		var start = start_pos + Vector2(0, y * GRID_SIZE)
 		var end = start_pos + Vector2(grid_width * GRID_SIZE, y * GRID_SIZE)
 		draw_line(start, end, GRID_COLOR, 1)
-		
-@onready var AppleScene = preload("res://Scenes/Apple.tscn")
 
 func spawn_apple():
+	if !find_grid_value(0):
+		print("NO FREE SPACE FOUND, EXITING")
+		return
+
 	var apple = AppleScene.instantiate()
 	add_child(apple)
 	var cell_pos: Vector2
-	
+
 	while true:
 		var cell_x = randi_range(0, grid_width - 1)
 		var cell_y = randi_range(0, grid_height - 1)
@@ -84,15 +88,24 @@ func spawn_apple():
 		print("CHECKING FOR FREE SPOT AT ", cell_pos)
 		if grid_map[cell_x][cell_y] == 0:
 			break  # Found a free cell
-	var pos = start_pos + cell_pos * GRID_SIZE + Vector2(GRID_SIZE/2, GRID_SIZE/2)
+
+	set_grid_cell_if_valid(cell_pos, 2)
+	var pos = grid_origin + cell_pos * GRID_SIZE + CELL_OFFSET
 	apple.position = pos
-	
+
 func set_grid_cell_if_valid(pos: Vector2, value: int):
 	var x = int(pos.x)
 	var y = int(pos.y)
 	if x >= 0 and x < grid_width and y >= 0 and y < grid_height:
 		#print("SETTING POSITION AT", pos, value)
 		grid_map[x][y] = value
+
+func find_grid_value(value: int) -> bool:
+	for row in grid_map:
+		for v in row:
+			if v == 0:
+				return true
+	return false
 
 func print_grid_map():
 	for y in range(grid_height):

@@ -20,7 +20,6 @@ distance = -128.0
 script = ExtResource("1_bo1nx")
 
 [node name="SnakeHead" parent="." instance=ExtResource("1_jjgbg")]
-move_delay = 0.15
 segment_scene = ExtResource("4_kry3j")
 starting_segments = 3
 

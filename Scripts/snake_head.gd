@@ -1,17 +1,35 @@
 extends Area2D
+@onready var main = get_parent()
+@onready var GRID_SIZE = main.GRID_SIZE
+@onready var CELL_OFFSET = main.CELL_OFFSET
+var grid_origin = Vector2.ZERO
+
+const SEGMENT_TEXTURE = preload("res://sprites/snakeSegment.png")
+const SEGMENT_TURN_TEXTURE = preload("res://sprites/snakeSegmentTest.png")
+
+@export var move_delay = 0.15  # Squares per frame
+
+var snake_pos = Vector2.ZERO   # grid coordinates
 var input_vector = Vector2.ZERO
-const GRID_SIZE = 32
-@export var move_delay = 0.15  # seconds per move, this is also speed; higher = slower
-
-var snake_pos = Vector2(0, 0)   # grid coordinates
-var start_pos = Vector2.ZERO
-
 var direction = Vector2.RIGHT   
 var prev_pixel_pos = Vector2.ZERO
 var target_pixel_pos = Vector2.ZERO
 
+var inputs = {
+	"ui_right": Vector2.RIGHT,
+	"ui_left": Vector2.LEFT,
+	"ui_up": Vector2.UP,
+	"ui_down": Vector2.DOWN
+}
+
+const DIR_ROTATIONS = {
+	Vector2.RIGHT: 0,
+	Vector2.LEFT: PI,
+	Vector2.UP: -PI/2,
+	Vector2.DOWN: PI/2
+}
+
 var move_timer = move_delay
-var cell_offset = Vector2(GRID_SIZE, GRID_SIZE) * 0.5
 const MAX_QUEUE_SIZE = 3
 var input_queue = []
 
@@ -22,14 +40,13 @@ var pending_growth = 0
 var move_history = []
 
 @export var starting_segments = 1
-@onready var main = get_parent()
 
 func _init_position():
 	# Set snake to the center of the grid
 	snake_pos = Vector2(floor(main.grid_width / 2), floor(main.grid_height / 2))
 	
-	start_pos = main.start_pos
-	target_pixel_pos = start_pos + snake_pos * GRID_SIZE + cell_offset
+	grid_origin = main.grid_origin
+	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
 	prev_pixel_pos = target_pixel_pos
 	position = target_pixel_pos
 	
@@ -53,64 +70,65 @@ func _ready():
 
 func _process(delta):
 	move_timer += delta
-	
-	# Input
-	if Input.is_action_just_pressed("ui_right") and direction != Vector2.LEFT:
-		_queue_direction(Vector2.RIGHT)
-	elif Input.is_action_just_pressed("ui_left") and direction != Vector2.RIGHT:
-		_queue_direction(Vector2.LEFT)
-	elif Input.is_action_just_pressed("ui_up") and direction != Vector2.DOWN:
-		_queue_direction(Vector2.UP)
-	elif Input.is_action_just_pressed("ui_down") and direction != Vector2.UP:
-		_queue_direction(Vector2.DOWN)
-
+	_handle_input()
+	_update_head_rotation()
 	# Move snake logic every move_delay
 	if move_timer >= move_delay:
 		move_timer = 0.0
 		_move_snake()
+	position = _lerp_position(prev_pixel_pos, target_pixel_pos)
+	_update_segments(delta)
 
-	match direction:
-		Vector2.RIGHT:
-			rotation = 0
-		Vector2.LEFT:
-			rotation = PI
-		Vector2.UP:
-			rotation = -PI / 2
-		Vector2.DOWN:
-			rotation = PI / 2
-	var t = move_timer / move_delay
-	position = prev_pixel_pos.lerp(target_pixel_pos, t)
+func _handle_input():
+	for action in inputs.keys():
+		if Input.is_action_just_pressed(action) and direction != -inputs[action]:
+			_queue_direction(inputs[action])
+			break
 
+func _update_head_rotation():
+	rotation = DIR_ROTATIONS.get(direction, 0)
+
+func _update_segments(delta):
 	for i in range(segments.size()):
 		var segment = segments[i]
-		# The segment's previous spot on the trail
-		var p1 = move_history[i+1]
-		# The segment's target spot on the trail
-		var p2 = move_history[i]
-		# Lerp the segment's position between those two points
-		segment.position = p1.lerp(p2, t)
-		# Rotate to face movement direction
-		var dir = p2 - p1
-		segment.rotation = atan2(dir.y, dir.x)
+		var p1 = move_history[i+1]  # previous spot
+		var p2 = move_history[i]    # target spot
 		
-		# The “segment ahead” is move_history[i-1] (head for first segment)
-		var dir_current = (p2 - p1).normalized()
-		var dir_ahead : Vector2
-		if i == 0:
-			dir_ahead = (target_pixel_pos - move_history[0]).normalized()
-		else:
-			dir_ahead = (move_history[i - 1] - p2).normalized()
-		var turning = dir_current != dir_ahead and dir_current != Vector2.ZERO and dir_ahead != Vector2.ZERO
-		# debugging
-		var sprite: Sprite2D = segment.get_node("Sprite2D") # replace with actual child name
-		if turning:
-			sprite.texture = preload("res://sprites/snakeSegmentTest.png")
-		else:
-			sprite.texture = preload("res://sprites/snakeSegment.png")
-		#print((move_history[0] - move_history[1]).normalized())
+		# Move segment
+		segment.position = _lerp_position(p1, p2)
+		segment.rotation = _get_rotation(p1, p2)
+		
+		# Update sprite for turning
+		var sprite: Sprite2D = segment.get_node("Sprite2D")
+		sprite.texture = _get_segment_texture(i, p2, p1)
+
+# Determines which texture a snake segment should use based on whether it is turning.
+# - Computes the current movement direction of the segment (dir_current).
+# - Computes the direction of the segment ahead (dir_ahead), or the head for the first segment.
+# - Checks if the segment is turning by comparing dir_current and dir_ahead.
+# - Returns SEGMENT_TURN_TEXTURE if turning, otherwise SEGMENT_TEXTURE.
+# index: The segment's index in the segments array (0 = first segment).
+# p2: The segment's target position on the move_history trail.
+# p1: The segment's previous position on the move_history trail.
+func _get_segment_texture(index: int, p2: Vector2, p1: Vector2) -> Texture2D:
+	var dir_current = (p2 - p1).normalized()
+	var dir_ahead: Vector2
+	if index == 0:
+		dir_ahead = (target_pixel_pos - move_history[0]).normalized()
+	else:
+		dir_ahead = (move_history[index - 1] - p2).normalized()
+	var turning = dir_current != dir_ahead and dir_current != Vector2.ZERO and dir_ahead != Vector2.ZERO
+	return SEGMENT_TURN_TEXTURE if turning else SEGMENT_TEXTURE
+	
+	#print((move_history[0] - move_history[1]).normalized())
 		#print("Segment ", i, " turning: ", turning, dir_current, dir_ahead)
 		#print("----------------------------------------------------------------------------------")
 
+# Queues a new movement direction for the snake.
+# - Only adds the new direction if it does not reverse the current direction or the last queued direction.
+# - Ensures the new direction is different from the last direction to prevent redundant input.
+# - Limits the input queue to a maximum size (MAX_QUEUE_SIZE) to prevent excessive buffering.
+# new_dir: Vector2 representing the desired movement direction (e.g., Vector2.RIGHT, Vector2.UP).
 func _queue_direction(new_dir):
 	 # Only queue if it doesn’t reverse current direction or last queued
 	var last_dir = input_queue[-1] if input_queue.size() > 0 else direction
@@ -118,6 +136,13 @@ func _queue_direction(new_dir):
 	if new_dir != -last_dir and new_dir != last_dir and input_queue.size() < MAX_QUEUE_SIZE:
 		input_queue.append(new_dir)
 
+# Adds a new segment to the snake's body.
+# - Instantiates a new segment from the segment_scene PackedScene.
+# - Adds it as a child of the main node.
+# - Sets the segment's initial position to follow the last segment or the head if the snake has no segments.
+# - Appends the new segment to the segments array.
+# - Updates move_history to include the new segment's position for smooth movement interpolation.
+# Note: Ensures the segment_scene is assigned before instantiation.
 func _add_segment():
 	if segment_scene == null:
 		print("No segment scene assigned!")
@@ -130,9 +155,16 @@ func _add_segment():
 	seg.position = tail_pos
 	move_history.append(tail_pos)
 
-func grow(amount=1):
+func _grow(amount=1):
 	pending_growth += amount
 
+# Moves the snake one step on the grid.
+# - Updates the move_history to track the head and segments positions.
+# - Updates the head's grid position (snake_pos) based on the next queued direction.
+# - Computes the new pixel position for smooth interpolation (target_pixel_pos).
+# - Updates the grid map: marks the head cell as occupied, clears the tail cell if not growing.
+# - Adds a new segment if the snake is currently growing.
+# Note: Uses move_history, grid_origin, and pending_growth. Prints the grid map for debugging.
 func _move_snake():
 	move_history.push_front(target_pixel_pos)
 	move_history.resize(segments.size() + 1)
@@ -140,28 +172,44 @@ func _move_snake():
 	prev_pixel_pos = target_pixel_pos
 	if input_queue.size() > 0:
 		direction = input_queue.pop_front()
+
 	snake_pos += direction
-	target_pixel_pos = start_pos + snake_pos * GRID_SIZE + cell_offset
+	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
 
-	# --- GRID MAP LOGIC START ---
-	# mark head cell
-	main.set_grid_cell_if_valid(snake_pos, 1)
-	
-	# clear tail cell if not growing
-	if pending_growth == 0 and segments.size() > 0:
-		var tail_pos = move_history[-1] - start_pos
-		var tail_cell = Vector2(int(tail_pos.x / GRID_SIZE), int(tail_pos.y / GRID_SIZE))
-
-		main.set_grid_cell_if_valid(tail_cell, 0)
+	_update_grid_map()
 	main.print_grid_map()
-	# --- GRID MAP LOGIC END ---
-	
 	
 	if pending_growth > 0:
 		_add_segment()
 		pending_growth -= 1
 
+# Updates the grid_map for the snake
+# Marks the head cell as occupied, clears the tail cell if not growing
+func _update_grid_map():
+	main.set_grid_cell_if_valid(snake_pos, 1)  # mark head
+	if pending_growth == 0 and segments.size() > 0:
+		var tail_cell = _pixel_to_cell(move_history[-1])
+		main.set_grid_cell_if_valid(tail_cell, 0)
 
+# Converts a world pixel position to grid cell coordinates
+# pos = pixel position
+# Returns a Vector2 containing the grid cell indices
+func _pixel_to_cell(pos: Vector2) -> Vector2:
+	return Vector2(int((pos.x - grid_origin.x)/GRID_SIZE), int((pos.y - grid_origin.y)/GRID_SIZE))
+
+# Linear interpolation between two points based on current move progress
+# p1 = starting position, p2 = target position
+# Returns the interpolated position for smooth movement
+func _lerp_position(p1: Vector2, p2: Vector2) -> Vector2:
+	var t = move_timer / move_delay
+	return p1.lerp(p2, t)
+
+# Determine which texture a segment should use
+# Uses the segment index, current position, and previous position
+# Returns SEGMENT_TURN_TEXTURE if turning, otherwise SEGMENT_TEXTURE
+func _get_rotation(p1: Vector2, p2: Vector2) -> float:
+	var dir = p2 - p1
+	return atan2(dir.y, dir.x)
 
 # DEPRECATED: COLLISION CHECK IS MORE STREAMLINED WITH THE USE OF grid_map FROM main
 func _on_body_entered(body: Node2D) -> void:
@@ -174,4 +222,4 @@ func _on_area_entered(area: Area2D) -> void:
 		print("Snake ate apple!")
 		area.queue_free() # remove apple
 		main.spawn_apple() # respawn a new one
-		grow(1) # grow snake by 1
+		_grow(1) # grow snake by 1
