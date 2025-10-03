@@ -4,10 +4,11 @@
 [ext_resource type="Script" uid="uid://b7inuxlclywv4" path="res://Scripts/snake_head.gd" id="1_bbogs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbogs"]
-size = Vector2(32, 32)
+size = Vector2(31, 31)
 
 [node name="SnakeHead" type="Area2D"]
 script = ExtResource("1_bbogs")
+starting_segments = 20
 
 [node name="sSnakeHead" type="Sprite2D" parent="."]
 texture = ExtResource("1_0ta55")

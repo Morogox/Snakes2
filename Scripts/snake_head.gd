@@ -100,17 +100,26 @@ func _update_segments(delta):
 		
 		# Update sprite for turning
 		var sprite: Sprite2D = segment.get_node("Sprite2D")
-		sprite.texture = _get_segment_texture(i, p2, p1)
+		var sprite2: Sprite2D = segment.get_node("Sprite2D2")
 
-# Determines which texture a snake segment should use based on whether it is turning.
-# - Computes the current movement direction of the segment (dir_current).
-# - Computes the direction of the segment ahead (dir_ahead), or the head for the first segment.
-# - Checks if the segment is turning by comparing dir_current and dir_ahead.
-# - Returns SEGMENT_TURN_TEXTURE if turning, otherwise SEGMENT_TEXTURE.
+		if _is_turning(i, p2, p1):
+			sprite2.visible = true
+			sprite2.position = Vector2(sprite.texture.get_size().x, 0).lerp(Vector2.ZERO, move_timer/move_delay)
+		else:
+			sprite2.visible = false
+			sprite2.position.x = sprite.position.x + sprite.texture.get_size().x
+		
+		#sprite.texture = _get_segment_texture(i, p2, p1)
+
+# Checks if a snake segment is currently turning.
+# - Compares the segment's current direction (dir_current) to the direction of the segment ahead (dir_ahead).
+# - For the first segment (index == 0), dir_ahead is calculated from the head's target position.
+# - For other segments, dir_ahead is based on the position of the segment directly before it in move_history.
+# - Returns true if the segment is turning (i.e., directions are different and non-zero), false otherwise.
 # index: The segment's index in the segments array (0 = first segment).
 # p2: The segment's target position on the move_history trail.
 # p1: The segment's previous position on the move_history trail.
-func _get_segment_texture(index: int, p2: Vector2, p1: Vector2) -> Texture2D:
+func _is_turning(index: int, p2: Vector2, p1: Vector2) -> bool:
 	var dir_current = (p2 - p1).normalized()
 	var dir_ahead: Vector2
 	if index == 0:
@@ -118,11 +127,7 @@ func _get_segment_texture(index: int, p2: Vector2, p1: Vector2) -> Texture2D:
 	else:
 		dir_ahead = (move_history[index - 1] - p2).normalized()
 	var turning = dir_current != dir_ahead and dir_current != Vector2.ZERO and dir_ahead != Vector2.ZERO
-	return SEGMENT_TURN_TEXTURE if turning else SEGMENT_TEXTURE
-	
-	#print((move_history[0] - move_history[1]).normalized())
-		#print("Segment ", i, " turning: ", turning, dir_current, dir_ahead)
-		#print("----------------------------------------------------------------------------------")
+	return true if turning else false
 
 # Queues a new movement direction for the snake.
 # - Only adds the new direction if it does not reverse the current direction or the last queued direction.
@@ -149,6 +154,7 @@ func _add_segment():
 		return
 	var seg = segment_scene.instantiate()
 	main.add_child(seg)
+	seg.add_to_group("Segment")
 	seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
 	segments.append(seg)
 	var tail_pos = move_history.back()
@@ -177,7 +183,7 @@ func _move_snake():
 	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
 
 	_update_grid_map()
-	main.print_grid_map()
+	#main.print_grid_map()
 	
 	if pending_growth > 0:
 		_add_segment()
@@ -211,11 +217,9 @@ func _get_rotation(p1: Vector2, p2: Vector2) -> float:
 	var dir = p2 - p1
 	return atan2(dir.y, dir.x)
 
-# DEPRECATED: COLLISION CHECK IS MORE STREAMLINED WITH THE USE OF grid_map FROM main
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Boundaries"):
-		#insert colliiding with wall logic
-		pass
+		get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Apple"):
@@ -223,3 +227,39 @@ func _on_area_entered(area: Area2D) -> void:
 		area.queue_free() # remove apple
 		main.spawn_apple() # respawn a new one
 		_grow(1) # grow snake by 1
+	elif area.is_in_group("Segment"):
+		get_tree().change_scene_to_file("res://scenes/main.tscn")
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+# Determines which texture a snake segment should use based on whether it is turning.
+## - Computes the current movement direction of the segment (dir_current).
+## - Computes the direction of the segment ahead (dir_ahead), or the head for the first segment.
+## - Checks if the segment is turning by comparing dir_current and dir_ahead.
+## - Returns SEGMENT_TURN_TEXTURE if turning, otherwise SEGMENT_TEXTURE.
+## index: The segment's index in the segments array (0 = first segment).
+## p2: The segment's target position on the move_history trail.
+## p1: The segment's previous position on the move_history trail.
+#func _get_segment_texture(index: int, p2: Vector2, p1: Vector2) -> Texture2D:
+	#var dir_current = (p2 - p1).normalized()
+	#var dir_ahead: Vector2
+	#if index == 0:
+		#dir_ahead = (target_pixel_pos - move_history[0]).normalized()
+	#else:
+		#dir_ahead = (move_history[index - 1] - p2).normalized()
+	#var turning = dir_current != dir_ahead and dir_current != Vector2.ZERO and dir_ahead != Vector2.ZERO
+	#return SEGMENT_TURN_TEXTURE if turning else SEGMENT_TEXTURE
+	#
+	##print((move_history[0] - move_history[1]).normalized())
+		##print("Segment ", i, " turning: ", turning, dir_current, dir_ahead)
+		##print("----------------------------------------------------------------------------------")

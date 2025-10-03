@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bscpf346guwwr" path="res://Sprites/snakeSegment.png" id="1_cjwfd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
-size = Vector2(32, 32)
+size = Vector2(31, 31)
 
 [node name="SnakeSegment" type="Area2D" groups=["body"]]
 
@@ -12,3 +12,7 @@ texture = ExtResource("1_cjwfd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_cjwfd")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(32, 0)
+texture = ExtResource("1_cjwfd")

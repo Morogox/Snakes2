@@ -27,6 +27,7 @@ project/assembly_name="Snake2"
 
 Boundaries=""
 Apple=""
+Segments=""
 
 [input]
 
