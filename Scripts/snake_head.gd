@@ -227,7 +227,7 @@ func _on_area_entered(area: Area2D) -> void:
 		area.queue_free() # remove apple
 		main.spawn_apple() # respawn a new one
 		_grow(1) # grow snake by 1
-	elif area.is_in_group("Segment"):
+	elif area.is_in_group("Segment") or area.is_in_group("Birds"):
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 		
 		

@@ -1,8 +1,24 @@
-[gd_scene load_steps=8 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=10 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
-[ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="4_kry3j"]
+[ext_resource type="Texture2D" uid="uid://bscpf346guwwr" path="res://Sprites/snakeSegment.png" id="3_8gbba"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
+size = Vector2(31, 31)
+
+[sub_resource type="PackedScene" id="PackedScene_jjvhh"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("SnakeSegment", "Area2D", "body", "Sprite2D", "Sprite2D", "texture", "CollisionShape2D", "CollisionShape2D", "shape", "Sprite2D2", "Sprite2D", "position", "texture"),
+"node_count": 4,
+"node_paths": [NodePath("."), NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 0, 1, 2, 1073741824, 0, 4, 3, -1, 1, 5, 0, 0, 1073741825, 0, 7, 6, -1, 1, 8, 1, 0, 1073741826, 0, 10, 9, -1, 2, 11, 2, 12, 3, 0),
+"variants": [ExtResource("3_8gbba"), SubResource("RectangleShape2D_cjwfd"), Vector2(32, 0), ExtResource("3_8gbba")],
+"version": 3
+}
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bo1nx"]
 distance = -128.0
@@ -20,7 +36,7 @@ distance = -128.0
 script = ExtResource("1_bo1nx")
 
 [node name="SnakeHead" parent="." instance=ExtResource("1_jjgbg")]
-segment_scene = ExtResource("4_kry3j")
+segment_scene = SubResource("PackedScene_jjvhh")
 starting_segments = 3
 
 [node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
