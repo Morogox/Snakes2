@@ -66,8 +66,8 @@ func _ready():
 	
 	randomize()  # seed RNG
 	spawn_apple()
-	for x in range(0,30): # I just made it spawn 30 birds for now
-		spawn_bird() 
+	#for x in range(0,30): # I just made it spawn 30 birds for now
+		#spawn_bird() 
 	print_grid_map() # For debugging purposes
 
 func _draw():

@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cf6rq26mmu03p"]
+[gd_scene load_steps=6 format=3 uid="uid://cf6rq26mmu03p"]
 
 [ext_resource type="Texture2D" uid="uid://bqxgkfkr6qevn" path="res://Sprites/sSnakeHead.png" id="1_0ta55"]
 [ext_resource type="Script" uid="uid://b7inuxlclywv4" path="res://Scripts/snake_head.gd" id="1_bbogs"]
+[ext_resource type="PackedScene" uid="uid://bc55uipj21rk3" path="res://Scenes/bullet_player.tscn" id="2_2n2nm"]
+[ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="4_agune"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbogs"]
 size = Vector2(31, 31)
@@ -9,11 +11,21 @@ size = Vector2(31, 31)
 [node name="SnakeHead" type="Area2D"]
 script = ExtResource("1_bbogs")
 starting_segments = 20
+bullet_scene = ExtResource("2_2n2nm")
 
 [node name="sSnakeHead" type="Sprite2D" parent="."]
 texture = ExtResource("1_0ta55")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_bbogs")
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(16, 0)
+
+[node name="sMuzzleFlash" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(63, 3.55271e-15)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("4_agune")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

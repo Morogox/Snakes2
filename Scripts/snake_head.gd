@@ -41,6 +41,20 @@ var move_history = []
 
 @export var starting_segments = 1
 
+
+@export var bullet_scene: PackedScene 
+@onready var muzzle = $Muzzle   # Marker2D
+@export var damage = 100
+@export var bullet_speed = 8000
+var target_angle = null
+var cooldown := 1
+var timer := 0.0
+
+@onready var flash = $sMuzzleFlash
+
+
+var flash_time := 0.05   # how long to show the flash (seconds)
+
 func _init_position():
 	# Set snake to the center of the grid
 	snake_pos = Vector2(floor(main.grid_width / 2), floor(main.grid_height / 2))
@@ -78,6 +92,7 @@ func _process(delta):
 		_move_snake()
 	position = _lerp_position(prev_pixel_pos, target_pixel_pos)
 	_update_segments(delta)
+	timer = max(timer - delta, 0.0)
 
 func _handle_input():
 	for action in inputs.keys():
@@ -222,6 +237,8 @@ func _on_body_entered(body: Node2D) -> void:
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 func _on_area_entered(area: Area2D) -> void:
+	
+	
 	if area.is_in_group("Apple"):
 		print("Snake ate apple!")
 		area.queue_free() # remove apple
@@ -263,3 +280,27 @@ func _on_area_entered(area: Area2D) -> void:
 	##print((move_history[0] - move_history[1]).normalized())
 		##print("Segment ", i, " turning: ", turning, dir_current, dir_ahead)
 		##print("----------------------------------------------------------------------------------")
+
+func _input(event):
+	if Input.is_action_pressed("ui_fire"):
+		_shoot()
+		
+func _shoot():
+	if timer > 0.0:
+		return
+	timer = cooldown
+	# show muzzle flash
+	flash.show()
+	flash.rotation = randf_range(-0.1, 0.1)  # optional: small random tilt
+	# hide it again shortly
+	get_tree().create_timer(flash_time).timeout.connect(flash.hide)
+	
+	# Spawn bullet
+	var bullet = bullet_scene.instantiate()
+	bullet.global_position = muzzle.global_position
+	bullet.rotation = global_rotation
+	bullet.damage = damage  # pass damage to bullet
+	bullet.b_speed = bullet_speed  # pass damage to bullet
+	get_tree().current_scene.add_child(bullet)
+	
+	get_node("/root/main/Camera2D").shake(50.0, 10.0)
