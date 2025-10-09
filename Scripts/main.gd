@@ -18,6 +18,7 @@ var grid_height
 
 @onready var AppleScene = preload("res://Scenes/Apple.tscn")
 @onready var BirdScene = preload("res://Scenes/birds.tscn")
+@onready var Enemy1Scene = preload("res://Scenes/enemy1.tscn")
 
 var left 
 var right 
@@ -25,6 +26,8 @@ var top
 var bottom 
 
 var grid_origin = Vector2.ZERO
+
+@onready var snake_head = $SnakeHead
 
 # 2d array use to keep track of map state
 # 0 = empty, 1 = snake, 2 = apple, 3 = bird
@@ -68,7 +71,8 @@ func _ready():
 	spawn_apple()
 	#for x in range(0,30): # I just made it spawn 30 birds for now
 		#spawn_bird() 
-	print_grid_map() # For debugging purposes
+	#print_grid_map() # For debugging purposes
+	spawn_enemy()
 
 func _draw():
 	var start_pos = Vector2(left, top)
@@ -84,7 +88,7 @@ func _draw():
 
 func spawn_apple():
 	if !find_grid_value(0):
-		print("NO FREE SPACE FOUND, EXITING")
+		#print("NO FREE SPACE FOUND, EXITING")
 		return
 
 	var apple = AppleScene.instantiate()
@@ -95,7 +99,7 @@ func spawn_apple():
 		var cell_x = randi_range(0, grid_width - 1)
 		var cell_y = randi_range(0, grid_height - 1)
 		cell_pos = Vector2(cell_x, cell_y)
-		print("CHECKING FOR FREE SPOT FOR APPLE AT ", cell_pos)
+		#print("CHECKING FOR FREE SPOT FOR APPLE AT ", cell_pos)
 		if grid_map[cell_x][cell_y] == 0:
 			break  # Found a free cell
 
@@ -181,3 +185,21 @@ func print_grid_map():
 			row += " "
 		print(row)
 	print("\n")
+
+func spawn_enemy():
+	var enemy = Enemy1Scene.instantiate()
+	
+
+	var spawn_ok = false
+	var x = 0.0
+	var y = 0.0
+	while not spawn_ok:
+		x = randf_range(left, right)
+		y = randf_range(top, bottom)
+		var spawn_pos = Vector2(x, y)
+		# check if spawn_pos overlaps snake head
+		if snake_head.position.distance_to(spawn_pos) > GRID_SIZE * 2:
+			spawn_ok = true
+
+	enemy.position = Vector2(x, y)
+	add_child(enemy)

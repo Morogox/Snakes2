@@ -1,5 +1,5 @@
 extends Area2D
-@onready var main = get_parent()
+@onready var main := get_tree().root.get_node("main")
 @onready var GRID_SIZE = main.GRID_SIZE
 @onready var CELL_OFFSET = main.CELL_OFFSET
 var grid_origin = Vector2.ZERO
@@ -45,13 +45,14 @@ var move_history = []
 @export var bullet_scene: PackedScene 
 @onready var muzzle = $Muzzle   # Marker2D
 @export var damage = 100
-@export var bullet_speed = 8000
+@export var bullet_speed = 10000
 var target_angle = null
 var cooldown := 1
 var timer := 0.0
 
 @onready var flash = $sMuzzleFlash
 
+var dead := false
 
 var flash_time := 0.05   # how long to show the flash (seconds)
 
@@ -233,12 +234,11 @@ func _get_rotation(p1: Vector2, p2: Vector2) -> float:
 	return atan2(dir.y, dir.x)
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("Boundaries"):
+	if body.is_in_group("Boundaries") or body.is_in_group("Enemies"):
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
+	
 
 func _on_area_entered(area: Area2D) -> void:
-	
-	
 	if area.is_in_group("Apple"):
 		print("Snake ate apple!")
 		area.queue_free() # remove apple
@@ -247,7 +247,29 @@ func _on_area_entered(area: Area2D) -> void:
 	elif area.is_in_group("Segment") or area.is_in_group("Birds"):
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 		
+func _input(event):
+	if Input.is_action_pressed("ui_fire"):
+		_shoot()
 		
+func _shoot():
+	if timer > 0.0:
+		return
+	timer = cooldown
+	# show muzzle flash
+	flash.show()
+	flash.rotation = randf_range(-0.1, 0.1)  # optional: small random tilt
+	# hide it again shortly
+	get_tree().create_timer(flash_time).timeout.connect(flash.hide)
+	
+	# Spawn bullet
+	var bullet = bullet_scene.instantiate()
+	bullet.global_position = muzzle.global_position
+	bullet.rotation = global_rotation
+	bullet.damage = damage  # pass damage to bullet
+	bullet.b_speed = bullet_speed  # pass damage to bullet
+	get_tree().current_scene.add_child(bullet)
+	
+	get_node("/root/main/Camera2D").shake(50.0, 10.0)
 		
 		
 		
@@ -280,27 +302,3 @@ func _on_area_entered(area: Area2D) -> void:
 	##print((move_history[0] - move_history[1]).normalized())
 		##print("Segment ", i, " turning: ", turning, dir_current, dir_ahead)
 		##print("----------------------------------------------------------------------------------")
-
-func _input(event):
-	if Input.is_action_pressed("ui_fire"):
-		_shoot()
-		
-func _shoot():
-	if timer > 0.0:
-		return
-	timer = cooldown
-	# show muzzle flash
-	flash.show()
-	flash.rotation = randf_range(-0.1, 0.1)  # optional: small random tilt
-	# hide it again shortly
-	get_tree().create_timer(flash_time).timeout.connect(flash.hide)
-	
-	# Spawn bullet
-	var bullet = bullet_scene.instantiate()
-	bullet.global_position = muzzle.global_position
-	bullet.rotation = global_rotation
-	bullet.damage = damage  # pass damage to bullet
-	bullet.b_speed = bullet_speed  # pass damage to bullet
-	get_tree().current_scene.add_child(bullet)
-	
-	get_node("/root/main/Camera2D").shake(50.0, 10.0)

@@ -42,9 +42,9 @@ func hit_effect():
 	get_tree().current_scene.add_child(impact)
 
 func _on_Bullet_body_entered(body):
-	print("method called")
-	if body.is_in_group("enemies"):
+	if body.is_in_group("Enemies"):
 		#place holder
+		print("called")
 		hit_effect()
 	if body.is_in_group("Boundaries"):
 		hit_effect()
