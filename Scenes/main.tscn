@@ -35,10 +35,10 @@ distance = -128.0
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_bo1nx")
+grid_dimensions = 15
 
 [node name="SnakeHead" parent="." instance=ExtResource("1_jjgbg")]
 segment_scene = SubResource("PackedScene_jjvhh")
-starting_segments = 3
 
 [node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
 

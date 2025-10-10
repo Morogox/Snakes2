@@ -71,7 +71,7 @@ func _transition_to(new_state: State_enum):
 			var wait_time = 0.05
 			if not spam_mode:
 				wait_time = randf_range(min_wait_time, max_wait_time)
-			print(wait_time)
+			#print(wait_time)
 			timer.start(wait_time)
 			#print("Idle for:", wait_time)
 		State_enum.SHOOT:

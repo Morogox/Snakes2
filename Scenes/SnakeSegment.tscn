@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bscpf346guwwr" path="res://Sprites/snakeSegment.png" id="1_cjwfd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
-size = Vector2(31, 31)
+size = Vector2(32, 32)
 
 [node name="SnakeSegment" type="Area2D" groups=["body"]]
 

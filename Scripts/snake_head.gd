@@ -39,7 +39,7 @@ var segments = []
 var pending_growth = 0
 var move_history = []
 
-@export var starting_segments = 1
+@export var starting_segments = 3
 
 
 @export var bullet_scene: PackedScene 
@@ -72,13 +72,7 @@ func _init_position():
 		
 	move_history.push_front(target_pixel_pos)
 
-	for i in range(starting_segments):
-		var seg = segment_scene.instantiate()
-		main.add_child(seg)
-		var seg_pos = target_pixel_pos - direction * GRID_SIZE * (i + 1)
-		seg.position = seg_pos
-		segments.append(seg)
-		move_history.append(seg_pos)
+	_grow(starting_segments)
 
 func _ready():
 	call_deferred("_init_position")
@@ -94,7 +88,6 @@ func _process(delta):
 	position = _lerp_position(prev_pixel_pos, target_pixel_pos)
 	_update_segments(delta)
 	timer = max(timer - delta, 0.0)
-	print(pending_growth)
 
 func _handle_input():
 	for action in inputs.keys():
@@ -173,23 +166,21 @@ func _add_segment():
 	var seg = segment_scene.instantiate()
 	main.add_child(seg)
 	seg.add_to_group("Segment")
-	seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
+	#seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
 	segments.append(seg)
 	var tail_pos = move_history.back()
 	seg.position = tail_pos
 	move_history.append(tail_pos)
 
 func _remove_segment():
-	if segment_scene == null:
-		print("No segment scene assigned!")
-		return
-	# Locate the last segment in the segment array
-	# ((something like len(segments)
-	# And then, queue_free that one
-	print("trying to remove")
-
-	segments[-1].queue_free()
+	var tail_segment = segments[-1]
+	var tail_cell = _pixel_to_cell(tail_segment.position)
+	main.set_grid_cell_if_valid(tail_cell, 0)
+	
+	tail_segment.queue_free()
 	segments.remove_at(segments.size() - 1)
+	move_history.remove_at(move_history.size() - 1)
+	_update_grid_map()
 
 func _grow(amount=1):
 	pending_growth += amount
@@ -208,6 +199,13 @@ func _move_snake():
 	prev_pixel_pos = target_pixel_pos
 	if input_queue.size() > 0:
 		direction = input_queue.pop_front()
+	# compute new head cell
+	var next_pos = snake_pos + direction
+
+	# self-collision check using grid map
+	if main.get_grid_cell_if_valid(next_pos) == 1:
+		_game_over()
+		return
 
 	snake_pos += direction
 	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
@@ -223,7 +221,7 @@ func _move_snake():
 # Marks the head cell as occupied, clears the tail cell if not growing
 func _update_grid_map():
 	main.set_grid_cell_if_valid(snake_pos, 1)  # mark head
-	if pending_growth == 0 and segments.size() > 0:
+	if pending_growth == 0 :
 		var tail_cell = _pixel_to_cell(move_history[-1])
 		main.set_grid_cell_if_valid(tail_cell, 0)
 
@@ -249,26 +247,19 @@ func _get_rotation(p1: Vector2, p2: Vector2) -> float:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Boundaries") or body.is_in_group("Enemies") or body.is_in_group("EnemyBullet"):
-		get_tree().change_scene_to_file("res://scenes/main.tscn")
+		_game_over()
 	
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Apple"):
-		print("Snake ate apple!")
 		area.queue_free() # remove apple
 		main.spawn_apple() # respawn a new one
 		_grow(1) # grow snake by 1
-	
-	elif area.is_in_group("Segment") or area.is_in_group("Birds"):
-		if segments.size() < 2:
-			return
-		get_tree().change_scene_to_file("res://scenes/main.tscn")
-		# There is a bug where if you go down to 0 segments, then the moment you have 2 again your next movement instantly kills you
-	
-	
+
+
 func _input(event):
 	if Input.is_action_pressed("ui_fire"):
-		if segments.size() > 1:
+		if segments.size() > 0:
 			_shoot()
 			_remove_segment()
 		
@@ -291,17 +282,29 @@ func _shoot():
 	get_tree().current_scene.add_child(bullet)
 	
 	get_node("/root/main/Camera2D").shake(50.0, 10.0)
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+func _game_over():
+	get_tree().change_scene_to_file("res://scenes/main.tscn")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Determines which texture a snake segment should use based on whether it is turning.
 ## - Computes the current movement direction of the segment (dir_current).
 ## - Computes the direction of the segment ahead (dir_ahead), or the head for the first segment.
