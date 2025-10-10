@@ -47,7 +47,7 @@ var move_history = []
 @export var damage = 100
 @export var bullet_speed = 10000
 var target_angle = null
-var cooldown := 1
+var cooldown := 0.1
 var timer := 0.0
 
 @onready var flash = $sMuzzleFlash
@@ -94,6 +94,7 @@ func _process(delta):
 	position = _lerp_position(prev_pixel_pos, target_pixel_pos)
 	_update_segments(delta)
 	timer = max(timer - delta, 0.0)
+	print(pending_growth)
 
 func _handle_input():
 	for action in inputs.keys():
@@ -106,26 +107,27 @@ func _update_head_rotation():
 
 func _update_segments(delta):
 	for i in range(segments.size()):
-		var segment = segments[i]
-		var p1 = move_history[i+1]  # previous spot
-		var p2 = move_history[i]    # target spot
-		
-		# Move segment
-		segment.position = _lerp_position(p1, p2)
-		segment.rotation = _get_rotation(p1, p2)
-		
-		# Update sprite for turning
-		var sprite: Sprite2D = segment.get_node("Sprite2D")
-		var sprite2: Sprite2D = segment.get_node("Sprite2D2")
+		if is_instance_valid(segments[i]):
+			var segment = segments[i]
+			var p1 = move_history[i+1]  # previous spot
+			var p2 = move_history[i]    # target spot
+			
+			# Move segment
+			segment.position = _lerp_position(p1, p2)
+			segment.rotation = _get_rotation(p1, p2)
+			
+			# Update sprite for turning
+			var sprite: Sprite2D = segment.get_node("Sprite2D")
+			var sprite2: Sprite2D = segment.get_node("Sprite2D2")
 
-		if _is_turning(i, p2, p1):
-			sprite2.visible = true
-			sprite2.position = Vector2(sprite.texture.get_size().x, 0).lerp(Vector2.ZERO, move_timer/move_delay)
-		else:
-			sprite2.visible = false
-			sprite2.position.x = sprite.position.x + sprite.texture.get_size().x
-		
-		#sprite.texture = _get_segment_texture(i, p2, p1)
+			if _is_turning(i, p2, p1):
+				sprite2.visible = true
+				sprite2.position = Vector2(sprite.texture.get_size().x, 0).lerp(Vector2.ZERO, move_timer/move_delay)
+			else:
+				sprite2.visible = false
+				sprite2.position.x = sprite.position.x + sprite.texture.get_size().x
+			
+			#sprite.texture = _get_segment_texture(i, p2, p1)
 
 # Checks if a snake segment is currently turning.
 # - Compares the segment's current direction (dir_current) to the direction of the segment ahead (dir_ahead).
@@ -176,6 +178,18 @@ func _add_segment():
 	var tail_pos = move_history.back()
 	seg.position = tail_pos
 	move_history.append(tail_pos)
+
+func _remove_segment():
+	if segment_scene == null:
+		print("No segment scene assigned!")
+		return
+	# Locate the last segment in the segment array
+	# ((something like len(segments)
+	# And then, queue_free that one
+	print("trying to remove")
+
+	segments[-1].queue_free()
+	segments.remove_at(segments.size() - 1)
 
 func _grow(amount=1):
 	pending_growth += amount
@@ -234,7 +248,7 @@ func _get_rotation(p1: Vector2, p2: Vector2) -> float:
 	return atan2(dir.y, dir.x)
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("Boundaries") or body.is_in_group("Enemies"):
+	if body.is_in_group("Boundaries") or body.is_in_group("Enemies") or body.is_in_group("EnemyBullet"):
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 	
 
@@ -244,12 +258,19 @@ func _on_area_entered(area: Area2D) -> void:
 		area.queue_free() # remove apple
 		main.spawn_apple() # respawn a new one
 		_grow(1) # grow snake by 1
+	
 	elif area.is_in_group("Segment") or area.is_in_group("Birds"):
+		if segments.size() < 2:
+			return
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
-		
+		# There is a bug where if you go down to 0 segments, then the moment you have 2 again your next movement instantly kills you
+	
+	
 func _input(event):
 	if Input.is_action_pressed("ui_fire"):
-		_shoot()
+		if segments.size() > 1:
+			_shoot()
+			_remove_segment()
 		
 func _shoot():
 	if timer > 0.0:

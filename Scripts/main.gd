@@ -68,11 +68,11 @@ func _ready():
 	queue_redraw()
 	
 	randomize()  # seed RNG
-	spawn_apple()
-	#for x in range(0,30): # I just made it spawn 30 birds for now
-		#spawn_bird() 
+	for x in range(0,10): # I just made it spawn 10 apples for now
+		spawn_apple()
+	for x in range(0,3): # I just made it spawn 3 birds for now
+		spawn_enemy() 
 	#print_grid_map() # For debugging purposes
-	spawn_enemy()
 
 func _draw():
 	var start_pos = Vector2(left, top)

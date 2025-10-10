@@ -30,6 +30,8 @@ Apple=""
 Segments=""
 Birds=""
 Enemies=""
+SnakeBullet=""
+EnemyBullet=""
 
 [input]
 
