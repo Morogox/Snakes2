@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cgp707whppvn5" path="res://Sprites/sBullet1_impact.png" id="1_pfea1"]
 
 [node name="BulletPlayerImpact" type="Node2D"]
+z_index = 2
 script = ExtResource("1_odwhf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

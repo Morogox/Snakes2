@@ -51,8 +51,9 @@ animations = [{
 size = Vector2(20, 24)
 
 [node name="Enemy1" type="CharacterBody2D" groups=["Enemies"]]
+z_index = 1
 scale = Vector2(2, 2)
-collision_mask = 2
+collision_layer = 16
 script = ExtResource("1_mxdow")
 bullet_scene = ExtResource("2_apx2k")
 

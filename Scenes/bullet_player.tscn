@@ -7,6 +7,9 @@
 size = Vector2(63, 9)
 
 [node name="BulletPlayer" type="Area2D" groups=["SnakeBullet"]]
+z_index = 2
+collision_layer = 8
+collision_mask = 16
 script = ExtResource("1_4qi73")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

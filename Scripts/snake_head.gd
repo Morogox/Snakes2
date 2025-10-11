@@ -7,7 +7,10 @@ var grid_origin = Vector2.ZERO
 const SEGMENT_TEXTURE = preload("res://sprites/snakeSegment.png")
 const SEGMENT_TURN_TEXTURE = preload("res://sprites/snakeSegmentTest.png")
 
-@export var move_delay = 0.15  # Squares per frame
+@export var move_delay_default = 0.15  # Squares per frame
+var move_delay = move_delay_default
+var move_timer = move_delay
+var move_progress = move_timer / move_delay
 
 var snake_pos = Vector2.ZERO   # grid coordinates
 var input_vector = Vector2.ZERO
@@ -29,7 +32,7 @@ const DIR_ROTATIONS = {
 	Vector2.DOWN: PI/2
 }
 
-var move_timer = move_delay
+
 const MAX_QUEUE_SIZE = 3
 var input_queue = []
 
@@ -52,7 +55,7 @@ var timer := 0.0
 
 @onready var flash = $sMuzzleFlash
 
-var dead := false
+@export var boost_speed = 0.1
 
 var flash_time := 0.05   # how long to show the flash (seconds)
 
@@ -79,6 +82,7 @@ func _ready():
 
 func _process(delta):
 	move_timer += delta
+	move_progress = move_timer/move_delay
 	_handle_input()
 	_update_head_rotation()
 	# Move snake logic every move_delay
@@ -94,6 +98,13 @@ func _handle_input():
 		if Input.is_action_just_pressed(action) and direction != -inputs[action]:
 			_queue_direction(inputs[action])
 			break
+
+	if Input.is_action_pressed("ui_boost"):
+		move_delay = boost_speed
+		move_timer = move_delay * move_progress
+	else:
+		move_delay = move_delay_default
+		move_timer = move_delay * move_progress
 
 func _update_head_rotation():
 	rotation = DIR_ROTATIONS.get(direction, 0)
@@ -148,7 +159,7 @@ func _is_turning(index: int, p2: Vector2, p1: Vector2) -> bool:
 func _queue_direction(new_dir):
 	 # Only queue if it doesn’t reverse current direction or last queued
 	var last_dir = input_queue[-1] if input_queue.size() > 0 else direction
-	# Add inpiut to queue if its not reversing direction, the same diection, or exeedig input queue size
+	# Add input to queue if its not reversing direction, the same diection, or exeedig input queue size
 	if new_dir != -last_dir and new_dir != last_dir and input_queue.size() < MAX_QUEUE_SIZE:
 		input_queue.append(new_dir)
 
@@ -260,23 +271,12 @@ func _on_area_entered(area: Area2D) -> void:
 
 
 func _input(event):
-	if Input.is_action_pressed("ui_fire"):
-		if segments.size() > 0:
-			_shoot()
-			_remove_segment()
-	if not Input.is_action_pressed("ui_anti_zoomies"):
-		if Input.is_action_pressed("ui_zoomies"):
-			move_delay = 0.05
-		else:
-			move_delay = 0.15 # Currently it's hardcoded, could change but I think these speeds are good
-	if not Input.is_action_pressed("ui_zoomies"):
-		if Input.is_action_pressed("ui_anti_zoomies"): 
-			move_delay = 0.30 
-			# Surprisingly it's not going faster that kinda breaks it but it's going slower that does
-			# spam and see what I mean. Doesn't really matter anyway, what purpose is there to slow down?
-		else:
-			move_delay = 0.15
-		
+	if event is InputEventKey and not event.echo:
+		if Input.is_action_pressed("ui_fire"):
+			if segments.size() > 0:
+				_shoot()
+				_remove_segment()
+
 func _shoot():
 	if timer > 0.0:
 		return

@@ -9,6 +9,7 @@ size = Vector2(32, 32)
 
 [node name="Apple" type="Area2D" groups=["Apple"]]
 scale = Vector2(0.5, 0.5)
+collision_layer = 4
 script = ExtResource("1_u4byd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

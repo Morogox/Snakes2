@@ -1,6 +1,6 @@
 extends Area2D
 @onready var tip = $Marker2D
-@export var lifetime: float = 2.0   # seconds before auto-destroy
+@export var lifetime: float = 15.0   # seconds before auto-destroy
 
 var life_timer := 0.0
 var damage: int = 0          # placeholder, will be set by gun
