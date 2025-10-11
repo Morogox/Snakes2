@@ -43,10 +43,24 @@ func hit_effect():
 
 func _on_Bullet_body_entered(body):
 	if life_timer > 0.1:
-		if body.is_in_group("Segments"):
-			#place holder
-			print("called")
-			hit_effect()
+		#if body.is_in_group("Segments"):
+			##place holder
+			#print("called")
+			#hit_effect()
 		if body.is_in_group("Boundaries"):
 			hit_effect()
-		queue_free()
+			queue_free()
+		#if body.is_in_group("SnakeHead"):
+			#_game_over()
+
+#func _on_area_entered(area: Area2D) -> void:    This does not work
+	#if area.is_in_group("SnakeHead"):
+		#hit_effect()
+		#_game_over()
+	#if area.is_in_group("Segments"):
+		#print("called")
+		#hit_effect()
+	#queue_free()
+
+func _game_over():
+	get_tree().change_scene_to_file("res://scenes/main.tscn")

@@ -8,7 +8,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbogs"]
 size = Vector2(31, 31)
 
-[node name="SnakeHead" type="Area2D"]
+[node name="SnakeHead" type="Area2D" groups=["SnakeHead"]]
 script = ExtResource("1_bbogs")
 bullet_scene = ExtResource("2_2n2nm")
 

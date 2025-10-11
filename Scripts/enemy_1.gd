@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var HP := 1.0
 
 var target_position: Vector2
-enum State_enum { IDLE, MOVING, SHOOT }
+enum State_enum { IDLE, MOVING }
 var state: State_enum = State_enum.IDLE
 var direction := Vector2.ZERO
 
@@ -20,6 +20,9 @@ var flash_time := 0.05   # how long to show the flash (seconds)
 @onready var muzzle = $Muzzle   # Marker2D
 @export var damage = 1.0
 @export var bullet_speed = 250
+
+@export var shoot_delay = 2.0
+var shoot_timer = shoot_delay
 
 var spam_mode := false
 
@@ -36,7 +39,24 @@ func _process(delta: float):
 		sprite.flip_h = false
 	else:
 		sprite.flip_h = true
+	
+	shoot_timer += delta
+	if shoot_timer >= shoot_delay:
+		shoot_timer = 0.0
+		if randi_range(1, 20) == 20: # 5% chance to enter spam mode, move a tiny bit and fire again
+			spam_mode = true
+		else:
+			if spam_mode and randi_range(1,5) != 1: # 20ish% chance to leave once entered
+				spam_mode = true
+			else: # If normal, not the secret spam mode
+				_shoot() # Shoot when the timer runs out
+				spam_mode = false # If it's in the secret mode then end that mode
+				shoot_delay = randf_range(1,4)
+				_change_sprite(0)
 
+func _change_sprite(type):
+	sprite.play("Bird"+str(type))
+	sprite.speed_scale = type * 3 + 1 # If in spam mode, animation is super fast, if not, normal speed
 
 func _physics_process(delta):
 	match state:
@@ -44,8 +64,6 @@ func _physics_process(delta):
 			_process_moving(delta)
 		State_enum.IDLE:
 			velocity = Vector2.ZERO  # stay still
-		State_enum.SHOOT:
-			velocity = Vector2.ZERO # movement stuff
 
 func _process_moving(delta):
 	var to_target = target_position - position
@@ -53,10 +71,7 @@ func _process_moving(delta):
 
 	if distance < 20.0:
 		#position = target_position
-		if true: # randf_range(0,2) == 2
-			_transition_to(State_enum.SHOOT)
-		else:
-			_transition_to(State_enum.IDLE)
+		_transition_to(State_enum.IDLE)
 	else:
 		velocity = to_target.normalized() * speed
 		move_and_slide()
@@ -71,15 +86,13 @@ func _transition_to(new_state: State_enum):
 			var wait_time = 0.05
 			if not spam_mode:
 				wait_time = randf_range(min_wait_time, max_wait_time)
+			else:
+				_shoot() # If in spam mode, shoots when it stops moving, it looks better than firing if moving
+				_change_sprite(1)
+				shoot_delay = 0.05 
 			#print(wait_time)
 			timer.start(wait_time)
 			#print("Idle for:", wait_time)
-		State_enum.SHOOT:
-			_shoot()
-			var wait_time = 0.05
-			if not spam_mode:
-				wait_time = randf_range(min_wait_time, max_wait_time)
-			timer.start(wait_time) # Bullet Stuff
 
 func _on_timer_timeout() -> void:
 	_transition_to(State_enum.MOVING)
@@ -87,31 +100,18 @@ func _on_timer_timeout() -> void:
 func _pick_new_target():
 	if not spam_mode:
 		# Pick a random point within Main's play area
-		var x = randf_range(main.left, main.right)
+		var x = randf_range(main.left, main.right) # Pick a random x
 		if x < main.left:
 			x = main.left
 		if x > main.right:
 			x = main.right
-		var y = snake.target_pixel_pos.y
-		#var snake_direction = snake.direction # Trying to make the bird head more in the direction it's already going, but then again, what if the snake isn't going up or down
-		#if snake_direction == UP:
-			#y += 3
-		#else:
-			#y -= 3
+		var y = snake.target_pixel_pos.y # But match the player's y
 		target_position = Vector2(x, y)
 	else:
 		var x = position.x
 		var y = position.y
-		spam_mode = true
-		target_position = Vector2(x + 50 * randi_range(-1, 1), y + 50 * randi_range(-1, 1))
+		target_position = Vector2(x + 50 * randi_range(-1, 1), y + 50 * randi_range(-1, 1)) # Move slightly
 		# ...if someone could make 0 not possible I'd be happy
-	if randi_range(1, 10) == 10: # 10% chance to enter spam mode, move a tiny bit and fire again
-		spam_mode = true
-	else:
-		if spam_mode and randi_range(1,4) != 1: # 25ish% chance to leave once entered
-			spam_mode = true
-		else:
-			spam_mode = false
 	
 #func _on_area_entered(area: Area2D) -> void: # failed attempt to make the enemy die
 	#if area.is_in_group("SnakeBullet"):
@@ -121,11 +121,11 @@ func _pick_new_target():
 
 func _shoot():
 	#show muzzle flash
-	flash.show()
+	#flash.show()
 	var point_at_snake = global_position.direction_to(snake.global_position)
-	flash.rotation = point_at_snake.angle() #+ randf_range(-0.1, 0.1)  # optional: small random tilt
-	# hide it again shortly
-	get_tree().create_timer(flash_time).timeout.connect(flash.hide)
+	#flash.rotation = point_at_snake.angle() #+ randf_range(-0.1, 0.1)  # optional: small random tilt
+	## hide it again shortly
+	#get_tree().create_timer(flash_time).timeout.connect(flash.hide)
 	
 	# Spawn bullet
 	var bullet = bullet_scene.instantiate()

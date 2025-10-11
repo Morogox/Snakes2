@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
 size = Vector2(32, 32)
 
-[node name="SnakeSegment" type="Area2D" groups=["body"]]
+[node name="SnakeSegment" type="Area2D" groups=["Segments", "body"]]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_cjwfd")

@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dwwusid0nghc6"]
+[gd_scene load_steps=12 format=3 uid="uid://dwwusid0nghc6"]
 
 [ext_resource type="Script" uid="uid://bwanppp4s8r1f" path="res://Scripts/enemy_1.gd" id="1_mxdow"]
 [ext_resource type="Texture2D" uid="uid://dlc74sdlpwvs7" path="res://Sprites/Bird0_Placeholder.png" id="2_4qy08"]
 [ext_resource type="PackedScene" uid="uid://coeq66avfabyl" path="res://Scenes/bullet_enemy.tscn" id="2_apx2k"]
 [ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="3_4qy08"]
+[ext_resource type="Texture2D" uid="uid://c4o272tl6bysp" path="res://Sprites/Bird1_Placeholder.png" id="4_v54tr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_apx2k"]
 atlas = ExtResource("2_4qy08")
@@ -11,6 +12,14 @@ region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v54tr"]
 atlas = ExtResource("2_4qy08")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ite14"]
+atlas = ExtResource("4_v54tr")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tq1cn"]
+atlas = ExtResource("4_v54tr")
 region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ite14"]
@@ -23,7 +32,18 @@ animations = [{
 "texture": SubResource("AtlasTexture_v54tr")
 }],
 "loop": true,
-"name": &"default",
+"name": &"Bird0",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ite14")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tq1cn")
+}],
+"loop": true,
+"name": &"Bird1",
 "speed": 5.0
 }]
 
@@ -38,19 +58,18 @@ bullet_scene = ExtResource("2_apx2k")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ite14")
-frame_progress = 0.00734451
+animation = &"Bird1"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_tq1cn")
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 
 [node name="Muzzle" type="Marker2D" parent="."]
-position = Vector2(16, 0)
 
 [node name="sMuzzleFlash" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(79, 3.55271e-15)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("3_4qy08")

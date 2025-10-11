@@ -4,21 +4,20 @@
 [ext_resource type="Texture2D" uid="uid://bhr5bd1m2j8gp" path="res://Sprites/icon.svg" id="2_q8jhf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xgul1"]
-size = Vector2(63, 9)
+size = Vector2(24, 24)
 
 [node name="BulletEnemy" type="Area2D" groups=["EnemyBullet"]]
-collision_mask = 2
 script = ExtResource("1_cg55a")
 lifetime = 4.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, -0.5)
 shape = SubResource("RectangleShape2D_xgul1")
-disabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_q8jhf")
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(-31, 0)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

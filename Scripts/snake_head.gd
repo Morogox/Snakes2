@@ -246,7 +246,7 @@ func _get_rotation(p1: Vector2, p2: Vector2) -> float:
 	return atan2(dir.y, dir.x)
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("Boundaries") or body.is_in_group("Enemies") or body.is_in_group("EnemyBullet"):
+	if body.is_in_group("Boundaries") or body.is_in_group("Enemies"):
 		_game_over()
 	
 
@@ -255,6 +255,8 @@ func _on_area_entered(area: Area2D) -> void:
 		area.queue_free() # remove apple
 		main.spawn_apple() # respawn a new one
 		_grow(1) # grow snake by 1
+	if area.is_in_group("EnemyBullet"):
+		_game_over()
 
 
 func _input(event):
