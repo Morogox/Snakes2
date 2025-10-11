@@ -53,14 +53,14 @@ func _on_Bullet_body_entered(body):
 		#if body.is_in_group("SnakeHead"):
 			#_game_over()
 
-#func _on_area_entered(area: Area2D) -> void:    This does not work
+#func _on_area_entered(area: Area2D) -> void:   This didn't work
 	#if area.is_in_group("SnakeHead"):
 		#hit_effect()
 		#_game_over()
 	#if area.is_in_group("Segments"):
 		#print("called")
 		#hit_effect()
-	#queue_free()
+		#queue_free()
 
 func _game_over():
 	get_tree().change_scene_to_file("res://scenes/main.tscn")

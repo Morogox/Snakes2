@@ -264,6 +264,18 @@ func _input(event):
 		if segments.size() > 0:
 			_shoot()
 			_remove_segment()
+	if not Input.is_action_pressed("ui_anti_zoomies"):
+		if Input.is_action_pressed("ui_zoomies"):
+			move_delay = 0.05
+		else:
+			move_delay = 0.15 # Currently it's hardcoded, could change but I think these speeds are good
+	if not Input.is_action_pressed("ui_zoomies"):
+		if Input.is_action_pressed("ui_anti_zoomies"): 
+			move_delay = 0.30 
+			# Surprisingly it's not going faster that kinda breaks it but it's going slower that does
+			# spam and see what I mean. Doesn't really matter anyway, what purpose is there to slow down?
+		else:
+			move_delay = 0.15
 		
 func _shoot():
 	if timer > 0.0:
