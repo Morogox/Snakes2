@@ -1,10 +1,17 @@
-[gd_scene load_steps=12 format=3 uid="uid://dwwusid0nghc6"]
+[gd_scene load_steps=15 format=3 uid="uid://dwwusid0nghc6"]
 
 [ext_resource type="Script" uid="uid://bwanppp4s8r1f" path="res://Scripts/enemy_1.gd" id="1_mxdow"]
 [ext_resource type="Texture2D" uid="uid://dlc74sdlpwvs7" path="res://Sprites/Bird0_Placeholder.png" id="2_4qy08"]
 [ext_resource type="PackedScene" uid="uid://coeq66avfabyl" path="res://Scenes/bullet_enemy.tscn" id="2_apx2k"]
 [ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="3_4qy08"]
+[ext_resource type="Shader" uid="uid://cpxji8y54m54v" path="res://Shaders/enemy1.gdshader" id="3_ite14"]
 [ext_resource type="Texture2D" uid="uid://c4o272tl6bysp" path="res://Sprites/Bird1_Placeholder.png" id="4_v54tr"]
+[ext_resource type="Texture2D" uid="uid://bpmd8srvf5pab" path="res://Sprites/sEnemy_1_dead.png" id="6_tq1cn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ite14"]
+resource_local_to_scene = true
+shader = ExtResource("3_ite14")
+shader_parameter/flash = false
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_apx2k"]
 atlas = ExtResource("2_4qy08")
@@ -45,10 +52,18 @@ animations = [{
 "loop": true,
 "name": &"Bird1",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_tq1cn")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tq1cn"]
-size = Vector2(20, 24)
+size = Vector2(20, 30.5)
 
 [node name="Enemy1" type="CharacterBody2D" groups=["Enemies"]]
 z_index = 1
@@ -58,10 +73,13 @@ script = ExtResource("1_mxdow")
 bullet_scene = ExtResource("2_apx2k")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_ite14")
+position = Vector2(0, -7)
 sprite_frames = SubResource("SpriteFrames_ite14")
-animation = &"Bird1"
+animation = &"Bird0"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -6.25)
 shape = SubResource("RectangleShape2D_tq1cn")
 
 [node name="Timer" type="Timer" parent="."]

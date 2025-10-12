@@ -53,6 +53,8 @@ var target_angle = null
 var cooldown := 0.1
 var timer := 0.0
 
+@export var invulnerable = false
+
 @onready var flash = $sMuzzleFlash
 
 @export var boost_speed = 0.1
@@ -176,7 +178,7 @@ func _add_segment():
 		return
 	var seg = segment_scene.instantiate()
 	main.add_child(seg)
-	seg.add_to_group("Segment")
+	seg.add_to_group("Segments")
 	#seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
 	segments.append(seg)
 	var tail_pos = move_history.back()
@@ -293,12 +295,13 @@ func _shoot():
 	bullet.rotation = global_rotation
 	bullet.damage = damage  # pass damage to bullet
 	bullet.b_speed = bullet_speed  # pass damage to bullet
-	get_tree().current_scene.add_child(bullet)
+	get_tree().get_root().get_node("main").add_child(bullet)
 	
 	get_node("/root/main/Camera2D").shake(50.0, 10.0)
 
 func _game_over():
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	if not invulnerable:
+		get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 
 

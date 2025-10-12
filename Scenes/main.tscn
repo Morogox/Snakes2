@@ -39,6 +39,7 @@ grid_dimensions = 15
 
 [node name="SnakeHead" parent="." instance=ExtResource("1_jjgbg")]
 segment_scene = SubResource("PackedScene_jjvhh")
+invulnerable = false
 
 [node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
 collision_layer = 2
