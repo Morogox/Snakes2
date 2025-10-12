@@ -21,6 +21,7 @@ func spawn_enemy(amount: int = 1):
 			# check if spawn_pos overlaps snake head
 			if snake_head_ref.position.distance_to(spawn_pos) > grid_manager_ref.GRID_SIZE * 2:
 				spawn_ok = true
-
+		
+		enemy.setup(grid_manager_ref)
 		enemy.position = Vector2(x, y)
 		add_child(enemy)

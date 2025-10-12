@@ -15,6 +15,12 @@ var state: state_enum = state_enum.SPAWNING
 var timer := 0.0
 var duration := 0.0
 
+var grid_manager_ref = Node
+
+func setup(manager):
+	grid_manager_ref = manager
+
+
 func _ready():
 	# Start transparent + offset
 	dummy.modulate.a = 0.0
@@ -47,6 +53,7 @@ func _spawn_enemy():
 	if enemy_scene:
 		var enemy = enemy_scene.instantiate()
 		enemy.global_position = global_position
+		enemy.setup(grid_manager_ref)
 		get_parent().add_child(enemy)
 	queue_free()
 

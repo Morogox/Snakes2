@@ -9,7 +9,7 @@ enum state_enum { IDLE, MOVING, DEAD}
 var state: state_enum = state_enum.IDLE
 var direction := Vector2.ZERO
 
-@onready var main := get_tree().root.get_node("main")
+var grid_manager_ref = Node
 @onready var snake := get_tree().get_root().get_node("main/SnakeHead")
 @onready var timer := $Timer
 @onready var sprite = $AnimatedSprite2D
@@ -33,10 +33,11 @@ var spam_mode_enabled := false
 
 var invulnerable = false
 
-var spawn_time = 5.0
-var spawn_timer = 0.0
-
 var friction := 2000 # pixels/sec^2
+
+func setup(manager):
+	grid_manager_ref = manager
+
 func _ready():
 	randomize()
 	_change_sprite(0)
@@ -112,6 +113,7 @@ func _transition_to(new_state: state_enum):
 		state_enum.DEAD:
 			timer.stop()  # immediately stops the timer
 			sprite.play("dead")
+			invulnerable = true
 			collision_mask |= 1 << 1  # add layer 2 (boundaries) to mask
 			collision_mask &= ~(1 << 0)  # remove layer 1 (snake)
 			collision_layer &= ~(1 << 4) # remove layer 5 (enemies)
@@ -129,7 +131,7 @@ func _pick_new_target():
 		var dy = 50 * (randi_range(0, 1) * 2 - 1)
 		target_position = position + Vector2(dx, dy)
 	else:
-		var x = clamp(randf_range(main.left, main.right), main.left, main.right)
+		var x = clamp(randf_range(grid_manager_ref.left, grid_manager_ref.right), grid_manager_ref.left, grid_manager_ref.right)
 		var y = snake.target_pixel_pos.y
 		target_position = Vector2(x, y)
 
@@ -171,9 +173,10 @@ func take_hit(dmg: int, kb_dir: Vector2 = Vector2.ZERO, force: float = 0.0 ):
 		hp -= dmg
 	if hp <= 0:
 		_transition_to(state_enum.DEAD)
-		var angle_variation := deg_to_rad(90.0)  # max +- 90 degrees variation
+		var angle_variation := deg_to_rad(15.0)  # max +- 15 degrees variation
 		var random_angle := randf_range(-angle_variation, angle_variation)
 		velocity = kb_dir.normalized() * force
+		velocity = velocity.rotated(random_angle)
 	await flash_whiteout(4, 0.05)
 
 func flash_disappear(count: int, interval: float) -> void:

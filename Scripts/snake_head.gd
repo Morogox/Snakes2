@@ -1,7 +1,8 @@
 extends Area2D
-@onready var main := get_tree().root.get_node("main")
-@onready var GRID_SIZE = main.GRID_SIZE
-@onready var CELL_OFFSET = main.CELL_OFFSET
+@onready var grid_manager_ref = get_node("../GridManager")
+@onready var item_handler_ref = get_node("../ItemHandler")
+@onready var GRID_SIZE = 0
+@onready var CELL_OFFSET = Vector2.ZERO
 var grid_origin = Vector2.ZERO
 
 const SEGMENT_TEXTURE = preload("res://sprites/snakeSegment.png")
@@ -61,11 +62,14 @@ var timer := 0.0
 
 var flash_time := 0.05   # how long to show the flash (seconds)
 
-func _init_position():
+func _setup():
 	# Set snake to the center of the grid
-	snake_pos = Vector2(floor(main.grid_width / 2), floor(main.grid_height / 2))
+	snake_pos = Vector2(floor(grid_manager_ref.grid_width / 2), floor(grid_manager_ref.grid_height / 2))
+	GRID_SIZE = grid_manager_ref.GRID_SIZE
+	CELL_OFFSET = grid_manager_ref.CELL_OFFSET
 	
-	grid_origin = main.grid_origin
+	
+	grid_origin = grid_manager_ref.grid_origin
 	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
 	prev_pixel_pos = target_pixel_pos
 	position = target_pixel_pos
@@ -80,7 +84,7 @@ func _init_position():
 	_grow(starting_segments)
 
 func _ready():
-	call_deferred("_init_position")
+	call_deferred("_setup")
 
 func _process(delta):
 	move_timer += delta
@@ -177,7 +181,7 @@ func _add_segment():
 		print("No segment scene assigned!")
 		return
 	var seg = segment_scene.instantiate()
-	main.add_child(seg)
+	get_tree().get_root().get_node("main").add_child(seg)
 	seg.add_to_group("Segments")
 	#seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
 	segments.append(seg)
@@ -188,7 +192,7 @@ func _add_segment():
 func _remove_segment():
 	var tail_segment = segments[-1]
 	var tail_cell = _pixel_to_cell(tail_segment.position)
-	main.set_grid_cell_if_valid(tail_cell, 0)
+	grid_manager_ref.set_cell(tail_cell, 0)
 	
 	tail_segment.queue_free()
 	segments.remove_at(segments.size() - 1)
@@ -216,7 +220,7 @@ func _move_snake():
 	var next_pos = snake_pos + direction
 
 	# self-collision check using grid map
-	if main.get_grid_cell_if_valid(next_pos) == 1:
+	if grid_manager_ref.get_cell(next_pos) == 1:
 		_game_over()
 		return
 
@@ -224,7 +228,6 @@ func _move_snake():
 	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
 
 	_update_grid_map()
-	#main.print_grid_map()
 	
 	if pending_growth > 0:
 		_add_segment()
@@ -233,10 +236,10 @@ func _move_snake():
 # Updates the grid_map for the snake
 # Marks the head cell as occupied, clears the tail cell if not growing
 func _update_grid_map():
-	main.set_grid_cell_if_valid(snake_pos, 1)  # mark head
+	grid_manager_ref.set_cell(snake_pos, 1)  # mark head
 	if pending_growth == 0 :
 		var tail_cell = _pixel_to_cell(move_history[-1])
-		main.set_grid_cell_if_valid(tail_cell, 0)
+		grid_manager_ref.set_cell(tail_cell, 0)
 
 # Converts a world pixel position to grid cell coordinates
 # pos = pixel position
@@ -266,7 +269,7 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Apple"):
 		area.queue_free() # remove apple
-		main.spawn_apple() # respawn a new one
+		item_handler_ref.spawn_apple() # respawn a new one
 		_grow(1) # grow snake by 1
 	if area.is_in_group("EnemyBullet"):
 		_game_over()
