@@ -5,8 +5,8 @@ extends CharacterBody2D
 @export var hp := 1
 
 var target_position: Vector2
-enum State_enum { IDLE, MOVING, DEAD }
-var state: State_enum = State_enum.IDLE
+enum state_enum { IDLE, MOVING, DEAD}
+var state: state_enum = state_enum.IDLE
 var direction := Vector2.ZERO
 
 @onready var main := get_tree().root.get_node("main")
@@ -31,19 +31,19 @@ var spam_mode_enabled := false
 
 @onready var shader_mat: ShaderMaterial = sprite.material
 
+var invulnerable = false
+
+var spawn_time = 5.0
+var spawn_timer = 0.0
+
 var friction := 2000 # pixels/sec^2
 func _ready():
 	randomize()
-
-	# Make the sprite's material unique for this instance
-	# sprite.material = sprite.material.duplicate()
-
 	_change_sprite(0)
-	sprite.play("default")
-	_transition_to(State_enum.IDLE)
+	_transition_to(state_enum.IDLE)
 
 func _process(delta: float):
-	if state != State_enum.DEAD:
+	if state != state_enum.DEAD:
 		var player_pos = snake.global_position
 		sprite.flip_h = player_pos.x >= position.x
 
@@ -52,11 +52,11 @@ func _change_sprite(type):
 	sprite.speed_scale = type * 3 + 1 # If in spam mode, animation is super fast, if not, normal speed
 
 func _physics_process(delta):
-	if state != State_enum.DEAD:
+	if state != state_enum.DEAD:
 		match state:
-			State_enum.MOVING:
+			state_enum.MOVING:
 				_process_moving(delta)
-			State_enum.IDLE:
+			state_enum.IDLE:
 				velocity = Vector2.ZERO  # stay still
 		
 		
@@ -90,24 +90,26 @@ func _process_moving(delta):
 
 	if distance < 20.0:
 		#position = target_position
-		_transition_to(State_enum.IDLE)
+		_transition_to(state_enum.IDLE)
 	else:
 		velocity = to_target.normalized() * speed
 		move_and_slide()
 
-func _transition_to(new_state: State_enum):
+func _transition_to(new_state: state_enum):
 	state = new_state
+	
+	#To state
 	match state:
-		State_enum.MOVING:
+		state_enum.MOVING:
 			_pick_new_target()
-		State_enum.IDLE:
+		state_enum.IDLE:
 			if spam_mode:
 				_shoot()
 				timer.start(0.05)
 			else:
 				var wait_time = randf_range(min_wait_time, max_wait_time)
 				timer.start(wait_time)
-		State_enum.DEAD:
+		state_enum.DEAD:
 			timer.stop()  # immediately stops the timer
 			sprite.play("dead")
 			collision_mask |= 1 << 1  # add layer 2 (boundaries) to mask
@@ -117,8 +119,9 @@ func _transition_to(new_state: State_enum):
 			await get_tree().create_timer(2).timeout
 			await flash_disappear(4, 0.1) 
 			queue_free()
+
 func _on_timer_timeout() -> void:
-	_transition_to(State_enum.MOVING)
+	_transition_to(state_enum.MOVING)
 
 func _pick_new_target():
 	if spam_mode:
@@ -164,9 +167,10 @@ func flash_whiteout(count: int, interval: float) -> void:
 		await get_tree().create_timer(interval).timeout
 
 func take_hit(dmg: int, kb_dir: Vector2 = Vector2.ZERO, force: float = 0.0 ):
-	hp -= dmg
+	if not invulnerable:
+		hp -= dmg
 	if hp <= 0:
-		_transition_to(State_enum.DEAD)
+		_transition_to(state_enum.DEAD)
 		var angle_variation := deg_to_rad(90.0)  # max +- 90 degrees variation
 		var random_angle := randf_range(-angle_variation, angle_variation)
 		velocity = kb_dir.normalized() * force
@@ -178,3 +182,4 @@ func flash_disappear(count: int, interval: float) -> void:
 		await get_tree().create_timer(interval).timeout
 		visible = true
 		await get_tree().create_timer(interval).timeout
+	

@@ -74,12 +74,10 @@ bullet_scene = ExtResource("2_apx2k")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_ite14")
-position = Vector2(0, -7)
 sprite_frames = SubResource("SpriteFrames_ite14")
 animation = &"Bird0"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -6.25)
 shape = SubResource("RectangleShape2D_tq1cn")
 
 [node name="Timer" type="Timer" parent="."]

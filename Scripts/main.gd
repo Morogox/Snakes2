@@ -19,7 +19,7 @@ var grid_height
 
 @onready var AppleScene = preload("res://Scenes/Apple.tscn")
 @onready var BirdScene = preload("res://Scenes/birds.tscn")
-@onready var Enemy1Scene = preload("res://Scenes/enemy1.tscn")
+@onready var Enemy1Scene = preload("res://Scenes/enemy_spawner.tscn")
 
 var left 
 var right 
@@ -35,6 +35,9 @@ var grid_origin = Vector2.ZERO
 var grid_map = []
 @export var check_depth: int = 2 # Determines how much leniency there is for spawncamp prevention, keep whole & >0, 2 is a good amount
 
+
+@onready var enemy_handler = $EnemyHandler
+@onready var grid_manager = $GridManager
 func _ready():
 	for wall in [top_wall, bottom_wall, left_wall, right_wall]:
 		wall.shape.distance = grid_dimensions * -GRID_SIZE
@@ -70,7 +73,8 @@ func _ready():
 	
 	randomize()  # seed RNG
 	spawn_apple(10)
-	spawn_enemy(3) 
+	spawn_enemy(3)
+	enemy_handler.setup(grid_manager, snake_head)
 	#print_grid_map() # For debugging purposes
 
 func _draw():
