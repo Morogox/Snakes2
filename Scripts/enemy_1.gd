@@ -9,8 +9,6 @@ enum state_enum { IDLE, MOVING, DEAD}
 var state: state_enum = state_enum.IDLE
 var direction := Vector2.ZERO
 
-var grid_manager_ref = Node
-@onready var snake := get_tree().get_root().get_node("main/SnakeHead")
 @onready var timer := $Timer
 @onready var sprite = $AnimatedSprite2D
 
@@ -35,17 +33,24 @@ var invulnerable = false
 
 var friction := 2000 # pixels/sec^2
 
-func setup(manager):
-	grid_manager_ref = manager
+signal death(points: int)
+signal drop_item_here(type: String, loc: Vector2)
+
+@export var base_score = 100
+
+var drop_item := true
+@export var drops := {
+	"apple_2": 0.5,   # 50% chance
+}
 
 func _ready():
 	randomize()
 	_change_sprite(0)
-	_transition_to(state_enum.IDLE)
+	_transition_to(state_enum.MOVING)
 
 func _process(delta: float):
 	if state != state_enum.DEAD:
-		var player_pos = snake.global_position
+		var player_pos = Handler.snake_head.global_position
 		sprite.flip_h = player_pos.x >= position.x
 
 func _change_sprite(type):
@@ -83,7 +88,7 @@ func _physics_process(delta):
 
 		var collision_info = move_and_collide(velocity * delta)
 		if collision_info:
-			velocity = velocity.bounce(collision_info.get_normal()) * 0.7
+			velocity = velocity.bounce(collision_info.get_normal()) * 0.4
 
 func _process_moving(delta):
 	var to_target = target_position - position
@@ -118,6 +123,8 @@ func _transition_to(new_state: state_enum):
 			collision_mask &= ~(1 << 0)  # remove layer 1 (snake)
 			collision_layer &= ~(1 << 4) # remove layer 5 (enemies)
 			z_index = 0
+			emit_signal("death", base_score)
+			_check_drops()
 			await get_tree().create_timer(2).timeout
 			await flash_disappear(4, 0.1) 
 			queue_free()
@@ -131,14 +138,16 @@ func _pick_new_target():
 		var dy = 50 * (randi_range(0, 1) * 2 - 1)
 		target_position = position + Vector2(dx, dy)
 	else:
-		var x = clamp(randf_range(grid_manager_ref.left, grid_manager_ref.right), grid_manager_ref.left, grid_manager_ref.right)
-		var y = snake.target_pixel_pos.y
-		target_position = Vector2(x, y)
+		var axes = ["x", "y"]
+		var align_axis = axes[randi() % 2]
+		target_position = Vector2(
+			Handler.snake_head.target_pixel_pos.x if align_axis == "x" else randf_range(Handler.grid_manager.left, Handler.grid_manager.right), 
+			Handler.snake_head.target_pixel_pos.y if align_axis == "y" else randf_range(Handler.grid_manager.top, Handler.grid_manager.bottom))
 
 func _shoot():
 	#show muzzle flash
 	#flash.show()
-	var point_at_snake = global_position.direction_to(snake.global_position)
+	var point_at_snake = global_position.direction_to(Handler.snake_head.global_position)
 	#flash.rotation = point_at_snake.angle() #+ randf_range(-0.1, 0.1)  # optional: small random tilt
 	## hide it again shortly
 	#get_tree().create_timer(flash_time).timeout.connect(flash.hide)
@@ -168,7 +177,7 @@ func flash_whiteout(count: int, interval: float) -> void:
 		shader_mat.set("shader_param/flash", false)
 		await get_tree().create_timer(interval).timeout
 
-func take_hit(dmg: int, kb_dir: Vector2 = Vector2.ZERO, force: float = 0.0 ):
+func take_hit(dmg: int, kb_dir: Vector2 = Vector2.ZERO, force: float = 0.0):
 	if not invulnerable:
 		hp -= dmg
 	if hp <= 0:
@@ -185,4 +194,14 @@ func flash_disappear(count: int, interval: float) -> void:
 		await get_tree().create_timer(interval).timeout
 		visible = true
 		await get_tree().create_timer(interval).timeout
-	
+
+func _check_drops():
+	if not drop_item:
+		return
+	var result: Array = []
+	for drop_name in drops.keys():
+		if randf() < drops[drop_name]: # each chance is separate
+			result.append(drop_name)
+	for item in result:
+		emit_signal("drop_item_here", item, position)
+		print("Signal emit")

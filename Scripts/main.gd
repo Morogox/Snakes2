@@ -8,8 +8,8 @@ extends Node2D
 
 
 # Optional: grid size in cells
-var grid_width
-var grid_height
+#var grid_width
+#var grid_height
 
 @onready var top_wall = $WorldBoundaries/Top
 @onready var bottom_wall = $WorldBoundaries/Down
@@ -28,21 +28,30 @@ var grid_height
 
 #var grid_origin = Vector2.ZERO
 
-@onready var snake_head = $SnakeHead
+
 
 # 2d array use to keep track of map state
 # 0 = empty, 1 = snake, 2 = apple, 3 = bird
-var grid_map = []
-@export var check_depth: int = 2 # Determines how much leniency there is for spawncamp prevention, keep whole & >0, 2 is a good amount
-
-
-@onready var enemy_handler = $EnemyHandler
-@onready var grid_manager = $GridManager
-@onready var item_handler = $ItemHandler
+#var grid_map = []
+#@export var check_depth: int = 2 # Determines how much leniency there is for spawncamp prevention, keep whole & >0, 2 is a good amount
+var handlers: Dictionary = {}
+@onready var handlers_root = $Handlers
+@onready var snake_head = handlers_root.get_node("SnakeHead")
+@onready var enemy_handler = handlers_root.get_node("EnemyHandler")
+@onready var grid_manager = handlers_root.get_node("GridManager")
+@onready var item_handler = handlers_root.get_node("ItemHandler")
+@onready var score_manager = handlers_root.get_node("ScoreManager")
+@onready var diffculty_manager = handlers_root.get_node("DiffcultyManager")
 func _ready():
+	for h in handlers_root.get_children():
+		handlers[h.name] = h
 	grid_manager.setup(top_wall, bottom_wall, left_wall, right_wall)
-	enemy_handler.setup(grid_manager, snake_head)
-	item_handler.setup(grid_manager, snake_head)
+	randomize()  # seed RNG
+	item_handler.spawn_item_random("apple_1")
+	
+	# Center the camera
+	camera.position = Vector2((grid_manager.left + grid_manager.right)/2, (grid_manager.top + grid_manager.bottom)/2)
+	
 	#for wall in [top_wall, bottom_wall, left_wall, right_wall]:
 		#wall.shape.distance = grid_dimensions * -GRID_SIZE
 	
@@ -65,20 +74,18 @@ func _ready():
 			#grid_map[x].append(0) 
 
 	# Protect the snake by making its spawn in the array at initialization, unsure if it clears after ((I think the tail takes care of it))
-	var snake_spawn
-	snake_spawn = Vector2(floor(grid_manager.grid_width / 2), floor(grid_manager.grid_height / 2))
-	grid_manager.set_cell(snake_spawn, 1)
+	#var snake_spawn
+	#snake_spawn = Vector2(floor(grid_manager.grid_width / 2), floor(grid_manager.grid_height / 2))
+	#grid_manager.set_cell(snake_spawn, 1)
 
-	# Center the camera
-	camera.position = Vector2((grid_manager.left + grid_manager.right)/2, (grid_manager.top + grid_manager.bottom)/2)
+	
 
 	#grid_origin = Vector2(left, top)  # inside edge of the walls
 	#queue_redraw()
 	
-	randomize()  # seed RNG
+	
 	#spawn_apple(10)
-	enemy_handler.spawn_enemy(3)
-	item_handler.spawn_apple(10)
+	
 	
 	
 	

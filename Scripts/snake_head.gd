@@ -1,6 +1,5 @@
 extends Area2D
-@onready var grid_manager_ref = get_node("../GridManager")
-@onready var item_handler_ref = get_node("../ItemHandler")
+
 @onready var GRID_SIZE = 0
 @onready var CELL_OFFSET = Vector2.ZERO
 var grid_origin = Vector2.ZERO
@@ -19,6 +18,7 @@ var direction = Vector2.RIGHT
 var prev_pixel_pos = Vector2.ZERO
 var target_pixel_pos = Vector2.ZERO
 
+
 var inputs = {
 	"ui_right": Vector2.RIGHT,
 	"ui_left": Vector2.LEFT,
@@ -34,7 +34,7 @@ const DIR_ROTATIONS = {
 }
 
 
-const MAX_QUEUE_SIZE = 3
+const MAX_QUEUE_SIZE = 2
 var input_queue = []
 
 #Snake segment stuff
@@ -62,14 +62,14 @@ var timer := 0.0
 
 var flash_time := 0.05   # how long to show the flash (seconds)
 
-func _setup():
+func _deferred_rdy():
 	# Set snake to the center of the grid
-	snake_pos = Vector2(floor(grid_manager_ref.grid_width / 2), floor(grid_manager_ref.grid_height / 2))
-	GRID_SIZE = grid_manager_ref.GRID_SIZE
-	CELL_OFFSET = grid_manager_ref.CELL_OFFSET
+	snake_pos = Vector2(floor(Handler.grid_manager.grid_width / 2), floor(Handler.grid_manager.grid_height / 2))
+	GRID_SIZE = Handler.grid_manager.GRID_SIZE
+	CELL_OFFSET = Handler.grid_manager.CELL_OFFSET
+	Handler.grid_manager.set_cell(snake_pos, 1)
 	
-	
-	grid_origin = grid_manager_ref.grid_origin
+	grid_origin = Handler.grid_manager.grid_origin
 	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
 	prev_pixel_pos = target_pixel_pos
 	position = target_pixel_pos
@@ -82,9 +82,11 @@ func _setup():
 	move_history.push_front(target_pixel_pos)
 
 	_grow(starting_segments)
+	
+	Handler.register(name.to_snake_case(), self)
 
 func _ready():
-	call_deferred("_setup")
+	call_deferred("_deferred_rdy")
 
 func _process(delta):
 	move_timer += delta
@@ -96,13 +98,14 @@ func _process(delta):
 		move_timer = 0.0
 		_move_snake()
 	position = _lerp_position(prev_pixel_pos, target_pixel_pos)
-	_update_segments(delta)
+	_update_segments()
 	timer = max(timer - delta, 0.0)
 
 func _handle_input():
 	for action in inputs.keys():
 		if Input.is_action_just_pressed(action) and direction != -inputs[action]:
 			_queue_direction(inputs[action])
+			move_timer = move_delay # instant update
 			break
 
 	if Input.is_action_pressed("ui_boost"):
@@ -115,7 +118,7 @@ func _handle_input():
 func _update_head_rotation():
 	rotation = DIR_ROTATIONS.get(direction, 0)
 
-func _update_segments(delta):
+func _update_segments():
 	for i in range(segments.size()):
 		if is_instance_valid(segments[i]):
 			var segment = segments[i]
@@ -191,8 +194,8 @@ func _add_segment():
 
 func _remove_segment():
 	var tail_segment = segments[-1]
-	var tail_cell = _pixel_to_cell(tail_segment.position)
-	grid_manager_ref.set_cell(tail_cell, 0)
+	var tail_cell = Handler.grid_manager.pixel_to_cell(tail_segment.position)
+	Handler.grid_manager.set_cell(tail_cell, 0)
 	
 	tail_segment.queue_free()
 	segments.remove_at(segments.size() - 1)
@@ -220,7 +223,7 @@ func _move_snake():
 	var next_pos = snake_pos + direction
 
 	# self-collision check using grid map
-	if grid_manager_ref.get_cell(next_pos) == 1:
+	if Handler.grid_manager.get_cell(next_pos) == 1:
 		_game_over()
 		return
 
@@ -236,16 +239,11 @@ func _move_snake():
 # Updates the grid_map for the snake
 # Marks the head cell as occupied, clears the tail cell if not growing
 func _update_grid_map():
-	grid_manager_ref.set_cell(snake_pos, 1)  # mark head
+	Handler.grid_manager.set_cell(snake_pos, 1)  # mark head
 	if pending_growth == 0 :
-		var tail_cell = _pixel_to_cell(move_history[-1])
-		grid_manager_ref.set_cell(tail_cell, 0)
+		var tail_cell = Handler.grid_manager.pixel_to_cell(move_history[-1])
+		Handler.grid_manager.set_cell(tail_cell, 0)
 
-# Converts a world pixel position to grid cell coordinates
-# pos = pixel position
-# Returns a Vector2 containing the grid cell indices
-func _pixel_to_cell(pos: Vector2) -> Vector2:
-	return Vector2(int((pos.x - grid_origin.x)/GRID_SIZE), int((pos.y - grid_origin.y)/GRID_SIZE))
 
 # Linear interpolation between two points based on current move progress
 # p1 = starting position, p2 = target position
@@ -264,16 +262,15 @@ func _get_rotation(p1: Vector2, p2: Vector2) -> float:
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Boundaries") or body.is_in_group("Enemies"):
 		_game_over()
-	
 
 func _on_area_entered(area: Area2D) -> void:
-	if area.is_in_group("Apple"):
-		area.queue_free() # remove apple
-		item_handler_ref.spawn_apple() # respawn a new one
-		_grow(1) # grow snake by 1
+	if area.is_in_group("Items"):
+		match area.item_type:
+			"apple":
+				_grow(area.value) # grow snake by apple value	
+				area.destroy() # tells apple that it has been eaten
 	if area.is_in_group("EnemyBullet"):
 		_game_over()
-
 
 func _input(event):
 	if event is InputEventKey and not event.echo:

@@ -6,7 +6,7 @@ extends Node2D
 @export var fall_height := 50.0     # how high the enemy starts from
 @export var fade_in_speed := 2.0
 
-enum state_enum { SPAWNING, DEPLOYING}
+enum state_enum {SPAWNING, DEPLOYING}
 var state: state_enum = state_enum.SPAWNING
 
 @onready var shadow = $spawning_indicator
@@ -14,11 +14,6 @@ var state: state_enum = state_enum.SPAWNING
 
 var timer := 0.0
 var duration := 0.0
-
-var grid_manager_ref = Node
-
-func setup(manager):
-	grid_manager_ref = manager
 
 
 func _ready():
@@ -29,6 +24,7 @@ func _ready():
 	shadow.modulate.a = 0.0
 	_transition_to(state_enum.SPAWNING)
 	z_index = 99
+
 func _process(delta):
 	timer += delta
 	var t = clamp(timer / duration, 0.0, 1.0)
@@ -53,8 +49,10 @@ func _spawn_enemy():
 	if enemy_scene:
 		var enemy = enemy_scene.instantiate()
 		enemy.global_position = global_position
-		enemy.setup(grid_manager_ref)
-		get_parent().add_child(enemy)
+		Handler.enemy_handler.add_child(enemy)
+		
+		enemy.death.connect(Handler.enemy_handler._enemy_killed)
+		enemy.drop_item_here.connect(Handler.item_handler.spawn_item_on_grid)
 	queue_free()
 
 func _transition_to(new_state: state_enum):

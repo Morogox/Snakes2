@@ -24,13 +24,13 @@ var bottom_wall: Node2D
 var grid_origin = Vector2.ZERO
 
 func _ready():
-	pass
+	Handler.register(name.to_snake_case(), self)
 
-func setup(top: Node2D, bottom: Node2D, left: Node2D, right: Node2D):
-	top_wall = top
-	bottom_wall = bottom
-	left_wall = left
-	right_wall = right
+func setup(top_w: Node2D, bottom_w: Node2D, left_w: Node2D, right_w: Node2D):
+	top_wall = top_w
+	bottom_wall = bottom_w
+	left_wall = left_w
+	right_wall = right_w
 	_init_bounds()
 	_init_grid()
 	queue_redraw()
@@ -76,7 +76,7 @@ func get_cell(pos: Vector2) -> int:
 func find_cell(value: int) -> Vector2:
 	for x in range(grid_width):
 		for y in range(grid_height):
-			if grid_map[x][y] == 0:
+			if grid_map[x][y] == value:
 				return Vector2(x, y)
 	return Vector2(-1, -1)  # no empty cells found
 
@@ -92,6 +92,12 @@ func _draw():
 		var start = start_pos + Vector2(0, y * GRID_SIZE)
 		var end = start_pos + Vector2(grid_width * GRID_SIZE, y * GRID_SIZE)
 		draw_line(start, end, GRID_COLOR, 1)
+
+# Converts a world pixel position to grid cell coordinates
+# pos = pixel position
+# Returns a Vector2 containing the grid cell indices
+func pixel_to_cell(pos: Vector2) -> Vector2:
+	return Vector2(int((pos.x - grid_origin.x)/GRID_SIZE), int((pos.y - grid_origin.y)/GRID_SIZE))
 
 func print_grid_map():
 	for y in range(grid_height):
