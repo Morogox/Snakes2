@@ -64,6 +64,7 @@ script = ExtResource("2_d1ilt")
 [node name="SnakeHead" parent="Handlers" instance=ExtResource("1_jjgbg")]
 segment_scene = SubResource("PackedScene_jjvhh")
 invulnerable = false
+boost_speed = 0.08
 
 [node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
 collision_layer = 2

@@ -40,7 +40,7 @@ signal drop_item_here(type: String, loc: Vector2)
 
 var drop_item := true
 @export var drops := {
-	"apple_2": 0.5,   # 50% chance
+	"apple_2": 0.7,   # 50% chance
 }
 
 func _ready():
@@ -204,4 +204,3 @@ func _check_drops():
 			result.append(drop_name)
 	for item in result:
 		emit_signal("drop_item_here", item, position)
-		print("Signal emit")

@@ -95,6 +95,7 @@ func _process(delta):
 	_update_head_rotation()
 	# Move snake logic every move_delay
 	if move_timer >= move_delay:
+		#print("movement tick passed ", delta)
 		move_timer = 0.0
 		_move_snake()
 	position = _lerp_position(prev_pixel_pos, target_pixel_pos)
@@ -102,11 +103,13 @@ func _process(delta):
 	timer = max(timer - delta, 0.0)
 
 func _handle_input():
-	for action in inputs.keys():
-		if Input.is_action_just_pressed(action) and direction != -inputs[action]:
-			_queue_direction(inputs[action])
-			move_timer = move_delay # instant update
-			break
+	#for action in inputs.keys():
+		#if Input.is_action_just_pressed(action) and direction != -inputs[action]:
+			#_queue_direction(inputs[action])
+			#print("input called, ", action)
+			#move_timer = move_delay # instant update
+			#print(move_timer)
+			#break
 
 	if Input.is_action_pressed("ui_boost"):
 		move_delay = boost_speed
@@ -166,10 +169,12 @@ func _is_turning(index: int, p2: Vector2, p1: Vector2) -> bool:
 # - Limits the input queue to a maximum size (MAX_QUEUE_SIZE) to prevent excessive buffering.
 # new_dir: Vector2 representing the desired movement direction (e.g., Vector2.RIGHT, Vector2.UP).
 func _queue_direction(new_dir):
+	#print("Queue direction function called,", new_dir)
 	 # Only queue if it doesn’t reverse current direction or last queued
 	var last_dir = input_queue[-1] if input_queue.size() > 0 else direction
 	# Add input to queue if its not reversing direction, the same diection, or exeedig input queue size
-	if new_dir != -last_dir and new_dir != last_dir and input_queue.size() < MAX_QUEUE_SIZE:
+	if new_dir != -last_dir and input_queue.size() < MAX_QUEUE_SIZE:
+		#print("Direction successfully appended!")
 		input_queue.append(new_dir)
 
 # Adds a new segment to the snake's body.
@@ -192,7 +197,7 @@ func _add_segment():
 	seg.position = tail_pos
 	move_history.append(tail_pos)
 
-func _remove_segment():
+func _remove_tail_segment():
 	var tail_segment = segments[-1]
 	var tail_cell = Handler.grid_manager.pixel_to_cell(tail_segment.position)
 	Handler.grid_manager.set_cell(tail_cell, 0)
@@ -202,7 +207,7 @@ func _remove_segment():
 	move_history.remove_at(move_history.size() - 1)
 	_update_grid_map()
 
-func _grow(amount=1):
+func _grow(amount:=1):
 	pending_growth += amount
 
 # Moves the snake one step on the grid.
@@ -273,11 +278,20 @@ func _on_area_entered(area: Area2D) -> void:
 		_game_over()
 
 func _input(event):
+	print("input heard, ", event)
 	if event is InputEventKey and not event.echo:
 		if Input.is_action_pressed("ui_fire"):
 			if segments.size() > 0:
 				_shoot()
-				_remove_segment()
+				_remove_tail_segment()
+
+	for action in inputs.keys():
+		if Input.is_action_just_pressed(action) and direction != -inputs[action]:
+			
+			_queue_direction(inputs[action])
+			print("input appended, ", action)
+			#move_timer = move_delay # instant update
+			break
 
 func _shoot():
 	if timer > 0.0:
