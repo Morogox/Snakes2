@@ -34,7 +34,7 @@ const DIR_ROTATIONS = {
 }
 
 
-const MAX_QUEUE_SIZE = 2
+const MAX_QUEUE_SIZE = 5
 var input_queue = []
 
 #Snake segment stuff
@@ -223,7 +223,14 @@ func _move_snake():
 	
 	prev_pixel_pos = target_pixel_pos
 	if input_queue.size() > 0:
-		direction = input_queue.pop_front()
+		var validPop = false
+		while validPop == false:
+			var temp =input_queue.pop_front()
+			if input_queue.size() <= 0:
+				validPop = true
+			if temp != direction and temp != -direction:
+				direction = temp
+				validPop = true 
 	# compute new head cell
 	var next_pos = snake_pos + direction
 
@@ -278,20 +285,20 @@ func _on_area_entered(area: Area2D) -> void:
 		_game_over()
 
 func _input(event):
-	print("input heard, ", event)
+	#if event is not InputEventMouse and event.is_pressed():
+		#print("input heard, ", event)
 	if event is InputEventKey and not event.echo:
 		if Input.is_action_pressed("ui_fire"):
 			if segments.size() > 0:
 				_shoot()
 				_remove_tail_segment()
 
-	for action in inputs.keys():
-		if Input.is_action_just_pressed(action) and direction != -inputs[action]:
-			
-			_queue_direction(inputs[action])
-			print("input appended, ", action)
-			#move_timer = move_delay # instant update
-			break
+		for action in inputs.keys():
+			if Input.is_action_just_pressed(action): #and direction != inputs[action]:
+				_queue_direction(inputs[action])
+				print("input appended, ", action)
+				#move_timer = move_delay # instant update
+				break
 
 func _shoot():
 	if timer > 0.0:
