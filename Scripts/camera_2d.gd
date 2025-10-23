@@ -16,6 +16,6 @@ func _process(delta):
 	else:
 		offset = original_offset
 
-func shake(intensity: float = 5.0, decay: float = 5.0):
+func shake(intensity: float =5.0, decay: float = 5.0):
 	shake_strength = intensity
 	shake_decay = decay

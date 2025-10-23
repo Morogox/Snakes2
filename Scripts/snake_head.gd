@@ -4,8 +4,8 @@ extends Area2D
 @onready var CELL_OFFSET = Vector2.ZERO
 var grid_origin = Vector2.ZERO
 
-const SEGMENT_TEXTURE = preload("res://sprites/snakeSegment.png")
-const SEGMENT_TURN_TEXTURE = preload("res://sprites/snakeSegmentTest.png")
+const SEGMENT_TEXTURE = preload("res://Sprites/snakeSegment.png")
+const SEGMENT_TURN_TEXTURE = preload("res://Sprites/snakeSegmentTest.png")
 
 @export var move_delay_default = 0.15  # Squares per frame
 var move_delay = move_delay_default
@@ -189,9 +189,23 @@ func _add_segment():
 		print("No segment scene assigned!")
 		return
 	var seg = segment_scene.instantiate()
+	
+	# Manually attach the script
+	var script = load("res://Scripts/snake_segment.gd")
+	seg.set_script(script)
+	
+	# Debug: Check what we actually instantiated
+	print("Segment type: ", seg.get_class())
+	print("Segment script: ", seg.get_script())
+	print("Has signal: ", seg.has_signal("segment_destroyed"))
+	
 	get_tree().get_root().get_node("main").add_child(seg)
 	seg.add_to_group("Segments")
-	#seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
+	
+	# Only connect if signal exists
+	if seg.has_signal("segment_destroyed"):
+		seg.segment_destroyed.connect(_on_segment_destroyed)
+	
 	segments.append(seg)
 	var tail_pos = move_history.back()
 	seg.position = tail_pos
@@ -324,8 +338,23 @@ func _game_over():
 	if not invulnerable:
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 
-
-
+# Called when a segment is destroyed by enemy fire
+func _on_segment_destroyed(segment: Area2D):
+	var seg_index = segments.find(segment)
+	if seg_index == -1:
+		return
+	
+	# Remove from segments array and move_history
+	segments.remove_at(seg_index)
+	move_history.remove_at(seg_index + 1)  # +1 because move_history[0] is head
+	
+	# Update grid map - clear the destroyed segment's cell
+	var seg_cell = Handler.grid_manager.pixel_to_cell(segment.position)
+	Handler.grid_manager.set_cell(seg_cell, 0)
+	
+	# If all segments are destroyed, game over
+	if segments.size() == 0:
+		_game_over()
 
 
 

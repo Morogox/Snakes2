@@ -10,6 +10,7 @@ var last_pos: Vector2
 var velocity: Vector2
 func _ready():
 	velocity = Vector2.RIGHT.rotated(rotation) * b_speed
+	add_to_group("EnemyBullet")
 
 func _process(delta):
 	var from = global_position
@@ -59,4 +60,6 @@ func _on_area_entered(area: Area2D) -> void:
 
 	if area.is_in_group("Segments"):
 		hit_effect()
+		if area.has_method("take_hit"):
+			area.take_hit(1)
 		queue_free()
