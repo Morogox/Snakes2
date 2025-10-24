@@ -47,17 +47,17 @@ var drop_item := true
 
 func _ready():
 	randomize()
-	_change_sprite(0)
+	_change_sprite("default")
 	_transition_to(state_enum.MOVING)
 
 func _process(delta: float):
 	if state != state_enum.DEAD:
 		var player_pos = Handler.snake_head.global_position
-		sprite.flip_h = player_pos.x >= position.x
+		sprite.flip_h = player_pos.x <= position.x
 
 func _change_sprite(type):
-	sprite.play("Bird"+str(type))
-	sprite.speed_scale = type * 3 + 1 # If in spam mode, animation is super fast, if not, normal speed
+	sprite.play(type)
+	#sprite.speed_scale = type * 3 + 1 # If in spam mode, animation is super fast, if not, normal speed
 
 func _physics_process(delta):
 	if state != state_enum.DEAD:
@@ -78,7 +78,8 @@ func _physics_process(delta):
 				else:
 					if randi_range(1, 20) == 20:  # 5% chance to enter
 						_enter_spam_mode()
-			_shoot()
+			_change_sprite("shooting")
+			#_shoot()
 			shoot_delay = randf_range(shoot_delay_base, shoot_delay_base + shoot_delay_variation)
 			shoot_timer = 0.0
 	# dead
@@ -149,8 +150,6 @@ func _pick_new_target():
 			Handler.snake_head.target_pixel_pos.y if align_axis == "y" else randf_range(Handler.grid_manager.top, Handler.grid_manager.bottom))
 
 func _shoot():
-	#show muzzle flash
-	#flash.show()
 	var point_at_snake = global_position.direction_to(Handler.snake_head.global_position)
 	#flash.rotation = point_at_snake.angle() #+ randf_range(-0.1, 0.1)  # optional: small random tilt
 	## hide it again shortly
@@ -208,3 +207,15 @@ func _check_drops():
 			result.append(drop_name)
 	for item in result:
 		emit_signal("drop_item_here", item, position)
+
+
+func _on_animated_sprite_2d_animation_finished() -> void:
+	if sprite.animation == "shooting":
+		_change_sprite("default")
+
+
+func _on_frame_changed() -> void:
+	print("FUNCTION CALLED")
+	if sprite.frame == 10 and sprite.animation == "shooting":
+		print("condition called")
+		_shoot()

@@ -9,7 +9,9 @@ var b_speed: float = 0.0    # placeholder, will be set by gun
 var last_pos: Vector2
 var velocity: Vector2
 var has_hit := false
+var original_rotation
 func _ready():
+	original_rotation = rotation
 	velocity = Vector2.RIGHT.rotated(rotation) * b_speed
 	add_to_group("EnemyBullet")
 
@@ -42,8 +44,10 @@ func _process(delta):
 	if life_timer >= lifetime:
 		queue_free()
 	
+	rotation += 0.1
 func hit_effect():
 	# spawn impact effect
+	rotation = original_rotation
 	var impact = preload("res://Scenes/bullet_player_impact.tscn").instantiate()
 	impact.global_position = get_node("Marker2D").global_position
 	impact.global_rotation = global_rotation

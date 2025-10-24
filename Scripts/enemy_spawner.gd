@@ -32,7 +32,7 @@ func _process(delta):
 		state_enum.SPAWNING:
 			# Shadow grows & darkens
 			shadow.scale = Vector2.ONE * lerp(0.5, 1.0, t)
-			shadow.modulate.a = lerp(0.0, 0.7, t)
+			shadow.modulate.a = lerp(0.0, 0.5, t)
 			
 			if timer >= duration:
 				_transition_to(state_enum.DEPLOYING)
