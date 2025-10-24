@@ -38,7 +38,9 @@ signal drop_item_here(type: String, loc: Vector2)
 
 @export var base_score = 100
 
+@export var movement = true
 var drop_item := true
+
 @export var drops := {
 	"apple_2": 0.7,   # 50% chance
 }
@@ -91,6 +93,8 @@ func _physics_process(delta):
 			velocity = velocity.bounce(collision_info.get_normal()) * 0.4
 
 func _process_moving(delta):
+	if not movement:
+		return
 	var to_target = target_position - position
 	var distance = to_target.length()
 

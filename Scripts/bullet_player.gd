@@ -10,6 +10,7 @@ var last_pos: Vector2
 var velocity: Vector2
 
 var force := 2000.0
+var has_hit := false
 func _ready():
 	velocity = Vector2.RIGHT.rotated(rotation) * b_speed
 
@@ -51,6 +52,9 @@ func hit_effect():
 	get_tree().current_scene.add_child(impact)
 
 func _on_Bullet_body_entered(body):
+	if has_hit:
+		return
+	has_hit = true
 	if body.is_in_group("Enemies"):
 		hit_effect()
 		body.take_hit(damage, velocity, force)

@@ -4,8 +4,8 @@ extends Area2D
 @onready var CELL_OFFSET = Vector2.ZERO
 var grid_origin = Vector2.ZERO
 
-const SEGMENT_TEXTURE = preload("res://sprites/snakeSegment.png")
-const SEGMENT_TURN_TEXTURE = preload("res://sprites/snakeSegmentTest.png")
+const SEGMENT_TEXTURE = preload("res://Sprites/snakeSegment.png")
+const SEGMENT_TURN_TEXTURE = preload("res://Sprites/snakeSegmentTest.png")
 
 @export var move_delay_default = 0.15  # Squares per frame
 var move_delay = move_delay_default
@@ -62,6 +62,7 @@ var timer := 0.0
 
 var flash_time := 0.05   # how long to show the flash (seconds)
 
+
 func _deferred_rdy():
 	# Set snake to the center of the grid
 	snake_pos = Vector2(floor(Handler.grid_manager.grid_width / 2), floor(Handler.grid_manager.grid_height / 2))
@@ -103,13 +104,6 @@ func _process(delta):
 	timer = max(timer - delta, 0.0)
 
 func _handle_input():
-	#for action in inputs.keys():
-		#if Input.is_action_just_pressed(action) and direction != -inputs[action]:
-			#_queue_direction(inputs[action])
-			#print("input called, ", action)
-			#move_timer = move_delay # instant update
-			#print(move_timer)
-			#break
 
 	if Input.is_action_pressed("ui_boost"):
 		move_delay = boost_speed
@@ -186,12 +180,26 @@ func _queue_direction(new_dir):
 # Note: Ensures the segment_scene is assigned before instantiation.
 func _add_segment():
 	if segment_scene == null:
-		print("No segment scene assigned!")
+		#print("No segment scene assigned!")
 		return
 	var seg = segment_scene.instantiate()
+	
+	# Manually attach the script
+	var script = load("res://Scripts/snake_segment.gd")
+	seg.set_script(script)
+	
+	# Debug: Check what we actually instantiated
+	#print("Segment type: ", seg.get_class())
+	#print("Segment script: ", seg.get_script())
+	#print("Has signal: ", seg.has_signal("segment_destroyed"))
+	
 	get_tree().get_root().get_node("main").add_child(seg)
 	seg.add_to_group("Segments")
-	#seg.position = prev_pixel_pos if segments.is_empty() else segments[-1].position
+	
+	# Only connect if signal exists
+	if seg.has_signal("segment_destroyed"):
+		seg.segment_destroyed.connect(_remove_segment)
+	
 	segments.append(seg)
 	var tail_pos = move_history.back()
 	seg.position = tail_pos
@@ -199,7 +207,9 @@ func _add_segment():
 
 func _remove_tail_segment():
 	var tail_segment = segments[-1]
+	
 	var tail_cell = Handler.grid_manager.pixel_to_cell(tail_segment.position)
+	print("Removing segment index: end", "at cell:", tail_cell)
 	Handler.grid_manager.set_cell(tail_cell, 0)
 	
 	tail_segment.queue_free()
@@ -207,8 +217,18 @@ func _remove_tail_segment():
 	move_history.remove_at(move_history.size() - 1)
 	_update_grid_map()
 
+func remove_segment_logical(segment):
+	var i = segments.find(segment)
+	var cell = Handler.grid_manager.pixel_to_cell(segment.position)
+	Handler.grid_manager.set_cell(cell, 0)
+	segments.remove_at(i)
+	move_history.remove_at(i+1)
+	_update_grid_map()
+
 func _grow(amount:=1):
 	pending_growth += amount
+	for seg in segments:
+		seg._heal(amount)
 
 # Moves the snake one step on the grid.
 # - Updates the move_history to track the head and segments positions.
@@ -237,8 +257,7 @@ func _move_snake():
 	# self-collision check using grid map
 	if Handler.grid_manager.get_cell(next_pos) == 1:
 		_game_over()
-		return
-
+	
 	snake_pos += direction
 	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
 
@@ -247,7 +266,7 @@ func _move_snake():
 	if pending_growth > 0:
 		_add_segment()
 		pending_growth -= 1
-
+	#Handler.grid_manager.print_grid_map()
 # Updates the grid_map for the snake
 # Marks the head cell as occupied, clears the tail cell if not growing
 func _update_grid_map():
@@ -291,13 +310,12 @@ func _input(event):
 		if Input.is_action_pressed("ui_fire"):
 			if segments.size() > 0:
 				_shoot()
-				_remove_tail_segment()
+				_remove_segment(segments[-1])
+				#_remove_segment(segments[0])
 
 		for action in inputs.keys():
-			if Input.is_action_just_pressed(action): #and direction != inputs[action]:
+			if Input.is_action_just_pressed(action): 
 				_queue_direction(inputs[action])
-				print("input appended, ", action)
-				#move_timer = move_delay # instant update
 				break
 
 func _shoot():
@@ -324,43 +342,17 @@ func _game_over():
 	if not invulnerable:
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 
+# Called when a segment is destroyed by enemy fire
+func _remove_segment(segment: Area2D):
+	var i = segments.find(segment)
+	var to_remove = segments.slice(i, segments.size())  # forward order for domino
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Determines which texture a snake segment should use based on whether it is turning.
-## - Computes the current movement direction of the segment (dir_current).
-## - Computes the direction of the segment ahead (dir_ahead), or the head for the first segment.
-## - Checks if the segment is turning by comparing dir_current and dir_ahead.
-## - Returns SEGMENT_TURN_TEXTURE if turning, otherwise SEGMENT_TEXTURE.
-## index: The segment's index in the segments array (0 = first segment).
-## p2: The segment's target position on the move_history trail.
-## p1: The segment's previous position on the move_history trail.
-#func _get_segment_texture(index: int, p2: Vector2, p1: Vector2) -> Texture2D:
-	#var dir_current = (p2 - p1).normalized()
-	#var dir_ahead: Vector2
-	#if index == 0:
-		#dir_ahead = (target_pixel_pos - move_history[0]).normalized()
-	#else:
-		#dir_ahead = (move_history[index - 1] - p2).normalized()
-	#var turning = dir_current != dir_ahead and dir_current != Vector2.ZERO and dir_ahead != Vector2.ZERO
-	#return SEGMENT_TURN_TEXTURE if turning else SEGMENT_TEXTURE
-	#
-	##print((move_history[0] - move_history[1]).normalized())
-		##print("Segment ", i, " turning: ", turning, dir_current, dir_ahead)
-		##print("----------------------------------------------------------------------------------")
+	for idx in range(to_remove.size()):
+		var seg = to_remove[idx]
+		remove_segment_logical(seg)  # remove immediately
+		seg.destroy_this_segment(0.05 * idx)  # stagger tween start
+	
+	
+	## If all segments are destroyed, game over
+	#if segments.size() == 0:
+		#_game_over()

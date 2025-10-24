@@ -42,6 +42,8 @@ var handlers: Dictionary = {}
 @onready var item_handler = handlers_root.get_node("ItemHandler")
 @onready var score_manager = handlers_root.get_node("ScoreManager")
 @onready var diffculty_manager = handlers_root.get_node("DiffcultyManager")
+func _process(delta):
+	pass
 func _ready():
 	for h in handlers_root.get_children():
 		handlers[h.name] = h
