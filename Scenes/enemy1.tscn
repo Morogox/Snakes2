@@ -184,11 +184,10 @@ collision_layer = 16
 script = ExtResource("1_mxdow")
 bullet_scene = ExtResource("2_apx2k")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="shadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.498039)
 z_index = -1
 position = Vector2(0, 5)
-scale = Vector2(1, 1)
 texture = ExtResource("3_tq1cn")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

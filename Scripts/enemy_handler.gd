@@ -29,6 +29,6 @@ func generate_wave(min_time, max_time):
 	var amt = randi_range(min_time, max_time)
 	_spawn_enemy(amt, 1)
 
-func _enemy_killed(score: int):
-	emit_signal("enemy_killed", score)
+func _enemy_killed(score: int, loc: Vector2):
+	emit_signal("enemy_killed", score, loc)
 	

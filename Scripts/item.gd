@@ -6,7 +6,7 @@ var sprite_texture: Texture2D
 var item_type: String
 var item_key: String
 
-signal destroyed(key: String)
+signal destroyed(key: String, loc : Vector2)
 
 func setup(i_key: String, item_data: Dictionary):
 	item_type = item_data.get("type", "apple")
@@ -21,6 +21,6 @@ func setup(i_key: String, item_data: Dictionary):
 		$Sprite2D.texture = sprite_texture
 	
 func destroy():
-	emit_signal("destroyed", item_key)
+	emit_signal("destroyed", item_key, position)
 	queue_free()
 	

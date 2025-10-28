@@ -6,6 +6,7 @@ var grid_origin = Vector2.ZERO
 
 const SEGMENT_TEXTURE = preload("res://Sprites/snakeSegment.png")
 const SEGMENT_TURN_TEXTURE = preload("res://Sprites/snakeSegmentTest.png")
+const DEATH_TEXTURE = preload("res://Sprites/sSnakeHead_dead.png")
 
 @export var move_delay_default = 0.15  # Squares per frame
 var move_delay = move_delay_default
@@ -62,7 +63,9 @@ var timer := 0.0
 
 var flash_time := 0.05   # how long to show the flash (seconds)
 
+var is_dead = false
 
+signal segments_update(count: int)
 func _deferred_rdy():
 	# Set snake to the center of the grid
 	snake_pos = Vector2(floor(Handler.grid_manager.grid_width / 2), floor(Handler.grid_manager.grid_height / 2))
@@ -84,12 +87,15 @@ func _deferred_rdy():
 
 	_grow(starting_segments)
 	
-	Handler.register(name.to_snake_case(), self)
+	
 
 func _ready():
 	call_deferred("_deferred_rdy")
+	Handler.register(name.to_snake_case(), self)
 
 func _process(delta):
+	if is_dead:
+		return
 	move_timer += delta
 	move_progress = move_timer/move_delay
 	_handle_input()
@@ -188,11 +194,6 @@ func _add_segment():
 	var script = load("res://Scripts/snake_segment.gd")
 	seg.set_script(script)
 	
-	# Debug: Check what we actually instantiated
-	#print("Segment type: ", seg.get_class())
-	#print("Segment script: ", seg.get_script())
-	#print("Has signal: ", seg.has_signal("segment_destroyed"))
-	
 	get_tree().get_root().get_node("main").add_child(seg)
 	seg.add_to_group("Segments")
 	
@@ -204,12 +205,15 @@ func _add_segment():
 	var tail_pos = move_history.back()
 	seg.position = tail_pos
 	move_history.append(tail_pos)
-
+	
+	segments[-1]._heal(1, 0.05 * (segments.size() - 1))
+	
+	emit_signal("segments_update", segments.size())
 func _remove_tail_segment():
 	var tail_segment = segments[-1]
 	
 	var tail_cell = Handler.grid_manager.pixel_to_cell(tail_segment.position)
-	print("Removing segment index: end", "at cell:", tail_cell)
+	#print("Removing segment index: end", "at cell:", tail_cell)
 	Handler.grid_manager.set_cell(tail_cell, 0)
 	
 	tail_segment.queue_free()
@@ -227,8 +231,9 @@ func remove_segment_logical(segment):
 
 func _grow(amount:=1):
 	pending_growth += amount
-	for seg in segments:
-		seg._heal(amount)
+	for idx in range(segments.size()):
+		segments[idx]._heal(1, 0.05 * idx)
+	
 
 # Moves the snake one step on the grid.
 # - Updates the move_history to track the head and segments positions.
@@ -335,13 +340,32 @@ func _shoot():
 	bullet.damage = damage  # pass damage to bullet
 	bullet.b_speed = bullet_speed  # pass damage to bullet
 	get_tree().get_root().get_node("main").add_child(bullet)
-	
 	get_node("/root/main/Camera2D").shake(50.0, 10.0)
+	
 
 func _game_over():
-	if not invulnerable:
+	if not invulnerable and not is_dead:
+		is_dead = true
+		collision_layer = 0
+		$sSnakeHead.texture = DEATH_TEXTURE
+		get_node("/root/main/Camera2D").shake(100.0, 5.0)
+		await get_tree().create_timer(1.0).timeout
+		if segments.size() > 0:
+			_remove_segment(segments[0])
+		await _death_animation()
+		await get_tree().create_timer(2.0).timeout
+		
+		#TODO INSERT MAKING DEATH SCREEN APPEAR HERE
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 
+func _death_animation():
+	# Play tween animation
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(self, "scale", Vector2(1.5, 1.5), 0.2)
+	tween.tween_property(self, "modulate:a", 0.0, 0.2)
+	await tween.finished  # await completion
+	
 # Called when a segment is destroyed by enemy fire
 func _remove_segment(segment: Area2D):
 	var i = segments.find(segment)
@@ -352,6 +376,7 @@ func _remove_segment(segment: Area2D):
 		remove_segment_logical(seg)  # remove immediately
 		seg.destroy_this_segment(0.05 * idx)  # stagger tween start
 	
+	emit_signal("segments_update", segments.size())
 	
 	## If all segments are destroyed, game over
 	#if segments.size() == 0:

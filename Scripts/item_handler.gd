@@ -1,20 +1,20 @@
 extends Node2D
 
-signal apple_eaten(points: int)
+signal apple_eaten(points: int, loc: Vector2)
 
 var item_map = {
 	"apple_1": {
 		"type": "apple",
 		"value": 1,
 		"sprite": preload("res://Sprites/apple.png"),
-		"points": 100,
+		"points": 10,
 		"respawnable": true
 	},
 	"apple_2": {
 		"type": "apple",
 		"value": 2,
 		"sprite": preload("res://Sprites/apple2.png"),
-		"points": 100,
+		"points": 20,
 		"respawnable": false
 	}
 }
@@ -108,11 +108,11 @@ func spawn_item_on_grid(item_key: String, location: Vector2):
 	Handler.grid_manager.set_cell(found_cell, 2)
 	item.position = Handler.grid_manager.grid_origin + found_cell * Handler.grid_manager.GRID_SIZE + Handler.grid_manager.CELL_OFFSET
 
-func _item_destroyed(key: String):
+func _item_destroyed(key: String, loc: Vector2):
 	var data = item_map.get(key, null)
 	match data.get("type"):
 		"apple":
-			emit_signal("apple_eaten", data.get("points"))
+			emit_signal("apple_eaten", data.get("points"), loc)
 
 	if data.get("respawnable"):
 		spawn_item_random(key)

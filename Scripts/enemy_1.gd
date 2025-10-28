@@ -33,10 +33,10 @@ var invulnerable = false
 
 var friction := 2000 # pixels/sec^2
 
-signal death(points: int)
+signal death(points: int, loc: Vector2)
 signal drop_item_here(type: String, loc: Vector2)
 
-@export var base_score = 100
+@export var base_score = 50
 
 @export var movement = true
 var drop_item := true
@@ -79,6 +79,7 @@ func _physics_process(delta):
 					if randi_range(1, 20) == 20:  # 5% chance to enter
 						_enter_spam_mode()
 			_change_sprite("shooting")
+			movement = false
 			#_shoot()
 			shoot_delay = randf_range(shoot_delay_base, shoot_delay_base + shoot_delay_variation)
 			shoot_timer = 0.0
@@ -128,7 +129,7 @@ func _transition_to(new_state: state_enum):
 			collision_mask &= ~(1 << 0)  # remove layer 1 (snake)
 			collision_layer &= ~(1 << 4) # remove layer 5 (enemies)
 			z_index = 0
-			emit_signal("death", base_score)
+			emit_signal("death", base_score, position)
 			_check_drops()
 			await get_tree().create_timer(2).timeout
 			await flash_disappear(4, 0.1) 
@@ -211,11 +212,10 @@ func _check_drops():
 
 func _on_animated_sprite_2d_animation_finished() -> void:
 	if sprite.animation == "shooting":
+		movement = true
 		_change_sprite("default")
 
 
 func _on_frame_changed() -> void:
-	print("FUNCTION CALLED")
 	if sprite.frame == 10 and sprite.animation == "shooting":
-		print("condition called")
 		_shoot()

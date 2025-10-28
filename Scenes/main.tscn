@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=19 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://csqdxlwc033d0" path="res://Scenes/enemy_spawner.tscn" id="6_344ge"]
 [ext_resource type="Script" uid="uid://nmp20eyxrq4q" path="res://Scripts/grid_manager.gd" id="7_6bp64"]
 [ext_resource type="Script" uid="uid://cl3dtkoptk5vl" path="res://Scripts/item_handler.gd" id="8_344ge"]
+[ext_resource type="Script" uid="uid://bbtf3g5ukn7d5" path="res://Scripts/hud.gd" id="11_d1ilt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
 size = Vector2(31, 31)
@@ -38,6 +39,9 @@ distance = -128.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_kry3j"]
 distance = -128.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_hptm8"]
+font_size = 29
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_bo1nx")
@@ -90,5 +94,31 @@ shape = SubResource("WorldBoundaryShape2D_kry3j")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("4_jjvhh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("11_d1ilt")
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 28.0
+offset_right = 247.0
+offset_bottom = 68.0
+text = "Score: 0"
+label_settings = SubResource("LabelSettings_hptm8")
+
+[node name="SegmentsLabel" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 64.0
+offset_right = 145.0
+offset_bottom = 87.0
+text = "Segments: 3"
 
 [connection signal="body_entered" from="Handlers/SnakeHead" to="Handlers/SnakeHead" method="_on_body_entered"]
