@@ -16,7 +16,9 @@ extends Node2D
 @onready var left_wall = $WorldBoundaries/Left
 @onready var right_wall = $WorldBoundaries/Right
 @onready var camera = $Camera2D
-
+@onready var start_screen_scene = preload("res://scenes/start_screen.tscn")
+@onready var game_started = false
+@onready var death_screen = $death_screen
 #@onready var AppleScene = preload("res://Scenes/Apple.tscn")
 #@onready var BirdScene = preload("res://Scenes/birds.tscn")
 #@onready var Enemy1Scene = preload("res://Scenes/enemy_spawner.tscn")
@@ -42,9 +44,23 @@ var handlers: Dictionary = {}
 @onready var item_handler = handlers_root.get_node("ItemHandler")
 @onready var score_manager = handlers_root.get_node("ScoreManager")
 @onready var diffculty_manager = handlers_root.get_node("DiffcultyManager")
+
 func _process(delta):
 	pass
+	
 func _ready():
+	add_to_group("GameManager")
+	get_tree().paused = true
+	var start_screen = start_screen_scene.instantiate()
+	add_child(start_screen)
+	
+func start_game():
+	game_started = true
+	get_tree().paused = false
+	print("Game started!")
+	reset_game()	
+	
+func reset_game():
 	for h in handlers_root.get_children():
 		handlers[h.name] = h
 	grid_manager.setup(top_wall, bottom_wall, left_wall, right_wall)
@@ -53,7 +69,28 @@ func _ready():
 	
 	# Center the camera
 	camera.position = Vector2((grid_manager.left + grid_manager.right)/2, (grid_manager.top + grid_manager.bottom)/2)
+
+	for item in item_handler.get_children():
+		item.queue_free()
+
+	# Reset the snake to its starting state
+	snake_head.call_deferred("_deferred_rdy")
+
+	# Spawn a new apple
+	item_handler.spawn_item_random("apple_1")
 	
+	# Reset the score
+	if score_manager:
+		score_manager.curr_score = 0
+	
+	# Unpause the game to start playing
+	get_tree().paused = false
+
+func _on_snake_died(segment_count):
+	# Now we call the function we made earlier!
+	death_screen.show_screen(segment_count)
+
+
 	#for wall in [top_wall, bottom_wall, left_wall, right_wall]:
 		#wall.shape.distance = grid_dimensions * -GRID_SIZE
 	

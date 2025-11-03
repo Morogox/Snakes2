@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=20 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://nmp20eyxrq4q" path="res://Scripts/grid_manager.gd" id="7_6bp64"]
 [ext_resource type="Script" uid="uid://cl3dtkoptk5vl" path="res://Scripts/item_handler.gd" id="8_344ge"]
 [ext_resource type="Script" uid="uid://bbtf3g5ukn7d5" path="res://Scripts/hud.gd" id="11_d1ilt"]
+[ext_resource type="PackedScene" uid="uid://blpgrt11df53r" path="res://Scenes/death_screen.tscn" id="12_fdnlq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
 size = Vector2(31, 31)
@@ -121,4 +122,7 @@ offset_right = 145.0
 offset_bottom = 87.0
 text = "Segments: 3"
 
+[node name="death_screen" parent="." instance=ExtResource("12_fdnlq")]
+
 [connection signal="body_entered" from="Handlers/SnakeHead" to="Handlers/SnakeHead" method="_on_body_entered"]
+[connection signal="snake_died" from="Handlers/SnakeHead" to="." method="_on_snake_died"]

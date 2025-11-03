@@ -115,4 +115,4 @@ func _item_destroyed(key: String, loc: Vector2):
 			emit_signal("apple_eaten", data.get("points"), loc)
 
 	if data.get("respawnable"):
-		spawn_item_random(key)
+		(spawn_item_random(key))

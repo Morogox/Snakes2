@@ -8,6 +8,7 @@ const SEGMENT_TEXTURE = preload("res://Sprites/snakeSegment.png")
 const SEGMENT_TURN_TEXTURE = preload("res://Sprites/snakeSegmentTest.png")
 const DEATH_TEXTURE = preload("res://Sprites/sSnakeHead_dead.png")
 
+
 @export var move_delay_default = 0.15  # Squares per frame
 var move_delay = move_delay_default
 var move_timer = move_delay
@@ -66,7 +67,17 @@ var flash_time := 0.05   # how long to show the flash (seconds)
 var is_dead = false
 
 signal segments_update(count: int)
+signal snake_died(segment_count: int)
+var alive_texture: Texture
+
 func _deferred_rdy():
+	is_dead = false
+	collision_layer = 1
+	$sSnakeHead.texture = alive_texture
+	direction = Vector2.RIGHT            
+	modulate.a = 1.0
+	scale = Vector2(1, 1)
+	move_timer = move_delay
 	# Set snake to the center of the grid
 	snake_pos = Vector2(floor(Handler.grid_manager.grid_width / 2), floor(Handler.grid_manager.grid_height / 2))
 	GRID_SIZE = Handler.grid_manager.GRID_SIZE
@@ -87,9 +98,8 @@ func _deferred_rdy():
 
 	_grow(starting_segments)
 	
-	
-
 func _ready():
+	alive_texture = $sSnakeHead.texture
 	call_deferred("_deferred_rdy")
 	Handler.register(name.to_snake_case(), self)
 
@@ -346,6 +356,7 @@ func _shoot():
 func _game_over():
 	if not invulnerable and not is_dead:
 		is_dead = true
+		var final_segment_count = segments.size()
 		collision_layer = 0
 		$sSnakeHead.texture = DEATH_TEXTURE
 		get_node("/root/main/Camera2D").shake(100.0, 5.0)
@@ -354,9 +365,10 @@ func _game_over():
 			_remove_segment(segments[0])
 		await _death_animation()
 		await get_tree().create_timer(2.0).timeout
-		
+		print("Snake is emitting signal with count: ", final_segment_count)
 		#TODO INSERT MAKING DEATH SCREEN APPEAR HERE
-		get_tree().change_scene_to_file("res://scenes/main.tscn")
+		emit_signal("snake_died", final_segment_count)
+
 
 func _death_animation():
 	# Play tween animation
