@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://cajdrfgqvh4fk"]
+
+[ext_resource type="Script" uid="uid://cu4df0oago7p2" path="res://Scripts/cmd.gd" id="1_j37us"]
+
+[node name="Cmd" type="CanvasLayer"]
+script = ExtResource("1_j37us")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.619
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.112
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.32549)
+
+[node name="LineEdit" type="LineEdit" parent="Control/ColorRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.867
+anchor_right = 1.001
+anchor_bottom = 0.99
+offset_top = 1.11699
+offset_right = -1.1521
+offset_bottom = 1.48999
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/ColorRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.998
+anchor_bottom = 0.863
+offset_left = 1.0
+offset_right = 0.303955
+offset_bottom = 0.112991
+scroll_following = true
+vertical_alignment = 2
+
+[connection signal="text_submitted" from="Control/ColorRect/LineEdit" to="." method="_on_line_edit_text_submitted"]

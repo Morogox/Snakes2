@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=21 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
@@ -10,8 +10,10 @@
 [ext_resource type="PackedScene" uid="uid://csqdxlwc033d0" path="res://Scenes/enemy_spawner.tscn" id="6_344ge"]
 [ext_resource type="Script" uid="uid://nmp20eyxrq4q" path="res://Scripts/grid_manager.gd" id="7_6bp64"]
 [ext_resource type="Script" uid="uid://cl3dtkoptk5vl" path="res://Scripts/item_handler.gd" id="8_344ge"]
-[ext_resource type="Script" uid="uid://bbtf3g5ukn7d5" path="res://Scripts/hud.gd" id="11_d1ilt"]
+[ext_resource type="PackedScene" uid="uid://d2nepysqmn7cw" path="res://Scenes/HUDCanvas.tscn" id="11_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://blpgrt11df53r" path="res://Scenes/death_screen.tscn" id="12_fdnlq"]
+[ext_resource type="PackedScene" uid="uid://6bqsorf03klw" path="res://Scenes/pause_screen.tscn" id="13_fdnlq"]
+[ext_resource type="PackedScene" uid="uid://cajdrfgqvh4fk" path="res://Scenes/cmd.tscn" id="14_jkdf5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
 size = Vector2(31, 31)
@@ -41,88 +43,77 @@ distance = -128.0
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_kry3j"]
 distance = -128.0
 
-[sub_resource type="LabelSettings" id="LabelSettings_hptm8"]
-font_size = 29
-
 [node name="main" type="Node2D"]
+process_mode = 3
 script = ExtResource("1_bo1nx")
 
-[node name="Handlers" type="Node2D" parent="."]
+[node name="Game" type="Node" parent="."]
+process_mode = 1
 
-[node name="GridManager" type="Node2D" parent="Handlers"]
+[node name="Handlers" type="Node2D" parent="Game"]
+
+[node name="GridManager" type="Node2D" parent="Game/Handlers"]
 script = ExtResource("7_6bp64")
 grid_dimensions = 15
 
-[node name="ItemHandler" type="Node2D" parent="Handlers"]
+[node name="ItemHandler" type="Node2D" parent="Game/Handlers"]
 script = ExtResource("8_344ge")
 
-[node name="EnemyHandler" type="Node2D" parent="Handlers"]
+[node name="EnemyHandler" type="Node2D" parent="Game/Handlers"]
 script = ExtResource("5_21xkr")
 spawner_scene = ExtResource("6_344ge")
 
-[node name="ScoreManager" type="Node2D" parent="Handlers"]
+[node name="SnakeHead" parent="Game/Handlers" instance=ExtResource("1_jjgbg")]
+segment_scene = SubResource("PackedScene_jjvhh")
+starting_segments = 3
+
+[node name="ScoreManager" type="Node2D" parent="Game/Handlers"]
 script = ExtResource("3_hptm8")
 
-[node name="DiffcultyManager" type="Node2D" parent="Handlers"]
+[node name="DiffcultyManager" type="Node2D" parent="Game/Handlers"]
 script = ExtResource("2_d1ilt")
 
-[node name="SnakeHead" parent="Handlers" instance=ExtResource("1_jjgbg")]
-segment_scene = SubResource("PackedScene_jjvhh")
-invulnerable = false
-boost_speed = 0.08
-
-[node name="EnemySpawner" parent="Handlers" instance=ExtResource("6_344ge")]
+[node name="EnemySpawner" parent="Game/Handlers" instance=ExtResource("6_344ge")]
 position = Vector2(-82, 42)
 
-[node name="WorldBoundaries" type="StaticBody2D" parent="." groups=["Boundaries"]]
+[node name="WorldBoundaries" type="StaticBody2D" parent="Game" groups=["Boundaries"]]
 collision_layer = 2
 collision_mask = 9
 
-[node name="Top" type="CollisionShape2D" parent="WorldBoundaries"]
+[node name="Top" type="CollisionShape2D" parent="Game/WorldBoundaries"]
 rotation = -3.14159
 shape = SubResource("WorldBoundaryShape2D_bo1nx")
 
-[node name="Down" type="CollisionShape2D" parent="WorldBoundaries"]
+[node name="Down" type="CollisionShape2D" parent="Game/WorldBoundaries"]
 shape = SubResource("WorldBoundaryShape2D_8gbba")
 
-[node name="Left" type="CollisionShape2D" parent="WorldBoundaries"]
+[node name="Left" type="CollisionShape2D" parent="Game/WorldBoundaries"]
 rotation = 1.5708
 shape = SubResource("WorldBoundaryShape2D_jjvhh")
 
-[node name="Right" type="CollisionShape2D" parent="WorldBoundaries"]
+[node name="Right" type="CollisionShape2D" parent="Game/WorldBoundaries"]
 rotation = -1.5708
 shape = SubResource("WorldBoundaryShape2D_kry3j")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="Game"]
 script = ExtResource("4_jjvhh")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="Bullets" type="Node" parent="Game"]
 
-[node name="HUD" type="Control" parent="CanvasLayer"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("11_d1ilt")
+[node name="Segments" type="Node" parent="Game"]
 
-[node name="ScoreLabel" type="Label" parent="CanvasLayer/HUD"]
-layout_mode = 0
-offset_left = 43.0
-offset_top = 28.0
-offset_right = 247.0
-offset_bottom = 68.0
-text = "Score: 0"
-label_settings = SubResource("LabelSettings_hptm8")
+[node name="CanvasLayer" parent="Game" instance=ExtResource("11_fdnlq")]
 
-[node name="SegmentsLabel" type="Label" parent="CanvasLayer/HUD"]
-layout_mode = 0
-offset_left = 51.0
-offset_top = 64.0
-offset_right = 145.0
-offset_bottom = 87.0
-text = "Segments: 3"
+[node name="death_screen" parent="Game" instance=ExtResource("12_fdnlq")]
+visible = false
 
-[node name="death_screen" parent="." instance=ExtResource("12_fdnlq")]
+[node name="pause_screen" parent="Game" instance=ExtResource("13_fdnlq")]
+process_mode = 3
+visible = false
 
-[connection signal="body_entered" from="Handlers/SnakeHead" to="Handlers/SnakeHead" method="_on_body_entered"]
-[connection signal="snake_died" from="Handlers/SnakeHead" to="." method="_on_snake_died"]
+[node name="cmd" parent="Game" instance=ExtResource("14_jkdf5")]
+process_mode = 3
+visible = false
+
+[connection signal="body_entered" from="Game/Handlers/SnakeHead" to="Game/Handlers/SnakeHead" method="_on_body_entered"]
+[connection signal="snake_died" from="Game/Handlers/SnakeHead" to="." method="_on_snake_died"]

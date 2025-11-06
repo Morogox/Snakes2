@@ -16,6 +16,8 @@ func _ready():
 	add_to_group("Segments")
 
 func take_hit(damage: int = 1):
+	if Handler.snake_head.invulnerable:
+		return
 	hp -= damage
 	_update_color()
 	flash_hit()

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cu0btgjhkybh4"]
 
-[ext_resource type="Script" uid="uid://btcc882hb66wu" path="res://Scenes/start_screen.gd" id="1_ainjc"]
+[ext_resource type="Script" uid="uid://btcc882hb66wu" path="res://Scripts/start_screen.gd" id="1_ainjc"]
 
 [node name="start_screen" type="CanvasLayer"]
 process_mode = 3
@@ -30,3 +30,9 @@ layout_mode = 2
 [node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "PLAY"
+
+[node name="Quit" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dwwusid0nghc6"]
+[gd_scene load_steps=36 format=3 uid="uid://dwwusid0nghc6"]
 
 [ext_resource type="Script" uid="uid://bwanppp4s8r1f" path="res://Scripts/enemy_1.gd" id="1_mxdow"]
 [ext_resource type="PackedScene" uid="uid://coeq66avfabyl" path="res://Scenes/bullet_enemy.tscn" id="2_apx2k"]
@@ -6,12 +6,35 @@
 [ext_resource type="Shader" uid="uid://cpxji8y54m54v" path="res://Shaders/enemy1.gdshader" id="3_ite14"]
 [ext_resource type="Texture2D" uid="uid://b70mm3mroygho" path="res://Sprites/sEnemy_spawning_shadow2.png" id="3_tq1cn"]
 [ext_resource type="Texture2D" uid="uid://ddyjnm7xm187q" path="res://Sprites/robo-bird.png" id="5_ite14"]
-[ext_resource type="Texture2D" uid="uid://bpmd8srvf5pab" path="res://Sprites/sEnemy_1_dead.png" id="6_tq1cn"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ite14"]
 resource_local_to_scene = true
 shader = ExtResource("3_ite14")
 shader_parameter/flash = false
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_45hif"]
+atlas = ExtResource("5_ite14")
+region = Rect2(0, 68, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uq5t6"]
+atlas = ExtResource("5_ite14")
+region = Rect2(34, 68, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_832f7"]
+atlas = ExtResource("5_ite14")
+region = Rect2(68, 68, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nto2q"]
+atlas = ExtResource("5_ite14")
+region = Rect2(102, 68, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_opq01"]
+atlas = ExtResource("5_ite14")
+region = Rect2(136, 68, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7iaf8"]
+atlas = ExtResource("5_ite14")
+region = Rect2(170, 68, 34, 34)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tq1cn"]
 atlas = ExtResource("5_ite14")
@@ -97,7 +120,22 @@ region = Rect2(476, 34, 34, 34)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_tq1cn")
+"texture": SubResource("AtlasTexture_45hif")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uq5t6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_832f7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nto2q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_opq01")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7iaf8")
 }],
 "loop": true,
 "name": &"dead",
@@ -193,9 +231,8 @@ texture = ExtResource("3_tq1cn")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_ite14")
 sprite_frames = SubResource("SpriteFrames_ite14")
-animation = &"shooting"
-frame = 14
-frame_progress = 1.0
+animation = &"dead"
+frame_progress = 0.939824
 speed_scale = 1.8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

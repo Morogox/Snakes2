@@ -1,0 +1,71 @@
+[gd_scene load_steps=7 format=3 uid="uid://d2nepysqmn7cw"]
+
+[ext_resource type="Script" uid="uid://bbtf3g5ukn7d5" path="res://Scripts/hud.gd" id="1_pvlhn"]
+[ext_resource type="Texture2D" uid="uid://bpdqgfhlnpyii" path="res://Sprites/stamina_ring_base.png" id="2_hf5mi"]
+[ext_resource type="Texture2D" uid="uid://dnwuvc7mmg46e" path="res://Sprites/stamina_ring_chaser.png" id="3_hf5mi"]
+[ext_resource type="Texture2D" uid="uid://bv2r3uwj5ixu1" path="res://Sprites/stamina_ring.png" id="3_wwdfb"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hptm8"]
+font_size = 50
+
+[sub_resource type="LabelSettings" id="LabelSettings_hf5mi"]
+font_size = 28
+
+[node name="CanvasLayer" type="CanvasLayer"]
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pvlhn")
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 115.0
+offset_top = 41.0
+offset_right = 319.0
+offset_bottom = 110.0
+text = "Score: 0"
+label_settings = SubResource("LabelSettings_hptm8")
+
+[node name="SegmentsLabel" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 105.0
+offset_right = 214.0
+offset_bottom = 128.0
+text = "Segments: 3"
+label_settings = SubResource("LabelSettings_hf5mi")
+
+[node name="staminaBar" type="Control" parent="HUD"]
+anchors_preset = 0
+offset_left = 206.138
+offset_top = 275.89
+offset_right = 206.138
+offset_bottom = 275.89
+
+[node name="TextureProgressBar2" type="TextureProgressBar" parent="HUD/staminaBar"]
+offset_left = -96.0
+offset_top = -96.0
+offset_right = -64.0
+offset_bottom = -64.0
+scale = Vector2(6, 6)
+step = 0.1
+value = 100.0
+fill_mode = 5
+texture_under = ExtResource("2_hf5mi")
+texture_progress = ExtResource("3_hf5mi")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="HUD/staminaBar"]
+offset_left = -96.0
+offset_top = -96.0
+offset_right = -64.0
+offset_bottom = -64.0
+scale = Vector2(6, 6)
+step = 0.1
+value = 100.0
+fill_mode = 5
+texture_progress = ExtResource("3_wwdfb")

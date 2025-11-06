@@ -9,7 +9,7 @@ const SEGMENT_TURN_TEXTURE = preload("res://Sprites/snakeSegmentTest.png")
 const DEATH_TEXTURE = preload("res://Sprites/sSnakeHead_dead.png")
 
 
-@export var move_delay_default = 0.15  # Squares per frame
+@export var move_delay_default = 0.12  # Squares per frame
 var move_delay = move_delay_default
 var move_timer = move_delay
 var move_progress = move_timer / move_delay
@@ -45,7 +45,7 @@ var segments = []
 var pending_growth = 0
 var move_history = []
 
-@export var starting_segments = 3
+@export var starting_segments = 2
 
 
 @export var bullet_scene: PackedScene 
@@ -57,10 +57,12 @@ var cooldown := 0.1
 var timer := 0.0
 
 @export var invulnerable = false
+@export var inf_ammo = false
+@export var inf_stamina = false
 
 @onready var flash = $sMuzzleFlash
 
-@export var boost_speed = 0.1
+@export var boost_multi = 2
 
 var flash_time := 0.05   # how long to show the flash (seconds)
 
@@ -68,7 +70,17 @@ var is_dead = false
 
 signal segments_update(count: int)
 signal snake_died(segment_count: int)
+signal stamina_changed(stamina, max_stamina)
 var alive_texture: Texture
+
+
+@export var stamina_regen_rate := 0.1
+@export var max_stamina := 100.0
+@export var stamina_cap := 300.0
+@export var stamina_consumption_rate := 20.0
+var stamina := max_stamina
+var is_boosting = false
+
 
 func _deferred_rdy():
 	is_dead = false
@@ -97,36 +109,38 @@ func _deferred_rdy():
 	move_history.push_front(target_pixel_pos)
 
 	_grow(starting_segments)
-	
+
 func _ready():
+	Handler.register(name.to_snake_case(), self)
 	alive_texture = $sSnakeHead.texture
 	call_deferred("_deferred_rdy")
-	Handler.register(name.to_snake_case(), self)
 
 func _process(delta):
 	if is_dead:
 		return
 	move_timer += delta
 	move_progress = move_timer/move_delay
-	_handle_input()
+	_handle_input(delta)
 	_update_head_rotation()
 	# Move snake logic every move_delay
 	if move_timer >= move_delay:
-		#print("movement tick passed ", delta)
 		move_timer = 0.0
 		_move_snake()
 	position = _lerp_position(prev_pixel_pos, target_pixel_pos)
 	_update_segments()
 	timer = max(timer - delta, 0.0)
 
-func _handle_input():
-
-	if Input.is_action_pressed("ui_boost"):
-		move_delay = boost_speed
+func _handle_input(delta):
+	if Input.is_action_pressed("ui_boost") and stamina > 0: #
+		move_delay = move_delay_default / boost_multi
 		move_timer = move_delay * move_progress
+		if not inf_stamina: stamina = max(0.0, stamina - stamina_consumption_rate * delta)
 	else:
 		move_delay = move_delay_default
 		move_timer = move_delay * move_progress
+		if !Input.is_action_pressed("ui_boost"):
+			stamina = min(max_stamina, stamina + (max_stamina * stamina_regen_rate) * delta)
+	emit_signal("stamina_changed", stamina, max_stamina)
 
 func _update_head_rotation():
 	rotation = DIR_ROTATIONS.get(direction, 0)
@@ -179,7 +193,6 @@ func _is_turning(index: int, p2: Vector2, p1: Vector2) -> bool:
 # - Limits the input queue to a maximum size (MAX_QUEUE_SIZE) to prevent excessive buffering.
 # new_dir: Vector2 representing the desired movement direction (e.g., Vector2.RIGHT, Vector2.UP).
 func _queue_direction(new_dir):
-	#print("Queue direction function called,", new_dir)
 	 # Only queue if it doesn’t reverse current direction or last queued
 	var last_dir = input_queue[-1] if input_queue.size() > 0 else direction
 	# Add input to queue if its not reversing direction, the same diection, or exeedig input queue size
@@ -196,7 +209,6 @@ func _queue_direction(new_dir):
 # Note: Ensures the segment_scene is assigned before instantiation.
 func _add_segment():
 	if segment_scene == null:
-		#print("No segment scene assigned!")
 		return
 	var seg = segment_scene.instantiate()
 	
@@ -204,7 +216,7 @@ func _add_segment():
 	var script = load("res://Scripts/snake_segment.gd")
 	seg.set_script(script)
 	
-	get_tree().get_root().get_node("main").add_child(seg)
+	get_tree().get_root().get_node("main/Game/Segments").add_child(seg)
 	seg.add_to_group("Segments")
 	
 	# Only connect if signal exists
@@ -219,11 +231,11 @@ func _add_segment():
 	segments[-1]._heal(1, 0.05 * (segments.size() - 1))
 	
 	emit_signal("segments_update", segments.size())
+
 func _remove_tail_segment():
 	var tail_segment = segments[-1]
 	
 	var tail_cell = Handler.grid_manager.pixel_to_cell(tail_segment.position)
-	#print("Removing segment index: end", "at cell:", tail_cell)
 	Handler.grid_manager.set_cell(tail_cell, 0)
 	
 	tail_segment.queue_free()
@@ -243,6 +255,7 @@ func _grow(amount:=1):
 	pending_growth += amount
 	for idx in range(segments.size()):
 		segments[idx]._heal(1, 0.05 * idx)
+	_update_stamina(amount)
 	
 
 # Moves the snake one step on the grid.
@@ -268,16 +281,13 @@ func _move_snake():
 				validPop = true 
 	# compute new head cell
 	var next_pos = snake_pos + direction
-
 	# self-collision check using grid map
 	if Handler.grid_manager.get_cell(next_pos) == 1:
 		_game_over()
 	
 	snake_pos += direction
 	target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
-
 	_update_grid_map()
-	
 	if pending_growth > 0:
 		_add_segment()
 		pending_growth -= 1
@@ -289,7 +299,6 @@ func _update_grid_map():
 	if pending_growth == 0 :
 		var tail_cell = Handler.grid_manager.pixel_to_cell(move_history[-1])
 		Handler.grid_manager.set_cell(tail_cell, 0)
-
 
 # Linear interpolation between two points based on current move progress
 # p1 = starting position, p2 = target position
@@ -314,18 +323,18 @@ func _on_area_entered(area: Area2D) -> void:
 		match area.item_type:
 			"apple":
 				_grow(area.value) # grow snake by apple value	
+				
 				area.destroy() # tells apple that it has been eaten
 	if area.is_in_group("EnemyBullet"):
 		_game_over()
 
 func _input(event):
 	#if event is not InputEventMouse and event.is_pressed():
-		#print("input heard, ", event)
 	if event is InputEventKey and not event.echo:
 		if Input.is_action_pressed("ui_fire"):
 			if segments.size() > 0:
 				_shoot()
-				_remove_segment(segments[-1])
+				if not inf_ammo: _remove_segment(segments[-1])
 				#_remove_segment(segments[0])
 
 		for action in inputs.keys():
@@ -349,9 +358,8 @@ func _shoot():
 	bullet.rotation = global_rotation
 	bullet.damage = damage  # pass damage to bullet
 	bullet.b_speed = bullet_speed  # pass damage to bullet
-	get_tree().get_root().get_node("main").add_child(bullet)
-	get_node("/root/main/Camera2D").shake(50.0, 10.0)
-	
+	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
+	get_node("/root/main/Game/Camera2D").shake(50.0, 10.0)
 
 func _game_over():
 	if not invulnerable and not is_dead:
@@ -359,16 +367,14 @@ func _game_over():
 		var final_segment_count = segments.size()
 		collision_layer = 0
 		$sSnakeHead.texture = DEATH_TEXTURE
-		get_node("/root/main/Camera2D").shake(100.0, 5.0)
+		get_node("/root/main/Game/Camera2D").shake(100.0, 5.0)
 		await get_tree().create_timer(1.0).timeout
 		if segments.size() > 0:
 			_remove_segment(segments[0])
 		await _death_animation()
 		await get_tree().create_timer(2.0).timeout
 		print("Snake is emitting signal with count: ", final_segment_count)
-		#TODO INSERT MAKING DEATH SCREEN APPEAR HERE
 		emit_signal("snake_died", final_segment_count)
-
 
 func _death_animation():
 	# Play tween animation
@@ -387,9 +393,19 @@ func _remove_segment(segment: Area2D):
 		var seg = to_remove[idx]
 		remove_segment_logical(seg)  # remove immediately
 		seg.destroy_this_segment(0.05 * idx)  # stagger tween start
-	
+		
+	_update_stamina()
 	emit_signal("segments_update", segments.size())
 	
-	## If all segments are destroyed, game over
-	#if segments.size() == 0:
-		#_game_over()
+
+func _update_stamina(num :=  0):
+	var ratio := 0.0
+	if max_stamina > 0:
+		ratio = stamina / max_stamina
+
+	var new_max := 10.0 + (segments.size() + num) * 10.0
+	max_stamina = new_max
+
+	stamina = ratio * max_stamina + max_stamina * num/5
+	stamina = min(stamina, max_stamina)
+	emit_signal("stamina_changed", stamina, max_stamina)

@@ -162,7 +162,7 @@ func _shoot():
 	bullet.rotation =  point_at_snake.angle()
 	bullet.damage = damage  # pass damage to bullet
 	bullet.b_speed = bullet_speed  # pass damage to bullet
-	get_tree().get_root().get_node("main").add_child(bullet)
+	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
 
 func _enter_spam_mode():
 	spam_mode = true

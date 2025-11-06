@@ -31,7 +31,6 @@ func _process(delta):
 		
 		global_position = hit_pos
 		if result.collider is Area2D:
-			print("area called")
 			_on_area_entered(result.collider)
 		elif result.collider is PhysicsBody2D:
 			_on_Bullet_body_entered(result.collider)

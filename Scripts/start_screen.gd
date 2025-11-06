@@ -4,14 +4,17 @@ extends CanvasLayer
 @onready var title_label = $CenterContainer/VBoxContainer/TitleLabel
 
 func _ready():
-	# Make sure the screen is visible
-	visible = true
 	# Connect button signal
 	play_button.pressed.connect(_on_play_button_pressed)
 
 func _on_play_button_pressed():
-	# Hide this screen and start the game
-	queue_free()
-	self.hide()
-	# Tell the main scene to start the game
-	get_tree().call_group("GameManager", "start_game")
+	get_tree().change_scene_to_file("res://Scenes/main.tscn")
+	## Hide this screen and start the game
+	#queue_free()
+	#self.hide()
+	## Tell the main scene to start the game
+	#get_tree().call_group("GameManager", "start_game")
+
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()
