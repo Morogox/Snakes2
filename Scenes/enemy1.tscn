@@ -1,7 +1,7 @@
 [gd_scene load_steps=36 format=3 uid="uid://dwwusid0nghc6"]
 
 [ext_resource type="Script" uid="uid://bwanppp4s8r1f" path="res://Scripts/enemy_1.gd" id="1_mxdow"]
-[ext_resource type="PackedScene" uid="uid://coeq66avfabyl" path="res://Scenes/bullet_enemy.tscn" id="2_apx2k"]
+[ext_resource type="PackedScene" uid="uid://dsigkkcrixheb" path="res://Scenes/bullet_enemy_1.tscn" id="2_ite14"]
 [ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="3_4qy08"]
 [ext_resource type="Shader" uid="uid://cpxji8y54m54v" path="res://Shaders/enemy1.gdshader" id="3_ite14"]
 [ext_resource type="Texture2D" uid="uid://b70mm3mroygho" path="res://Sprites/sEnemy_spawning_shadow2.png" id="3_tq1cn"]
@@ -220,7 +220,7 @@ z_index = 1
 scale = Vector2(2.5, 2.5)
 collision_layer = 16
 script = ExtResource("1_mxdow")
-bullet_scene = ExtResource("2_apx2k")
+bullet_scene = ExtResource("2_ite14")
 
 [node name="shadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.498039)

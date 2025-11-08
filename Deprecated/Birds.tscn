@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://d234hq0eegw1w"]
 
-[ext_resource type="Script" uid="uid://bsyn8y0l8ph3e" path="res://Scripts/birds.gd" id="1_m5g7g"]
-[ext_resource type="Texture2D" uid="uid://dlc74sdlpwvs7" path="res://Sprites/Bird0_Placeholder.png" id="2_ybfro"]
-[ext_resource type="Texture2D" uid="uid://c4o272tl6bysp" path="res://Sprites/Bird1_Placeholder.png" id="3_c1cmb"]
+[ext_resource type="Script" uid="uid://bsyn8y0l8ph3e" path="res://Deprecated/birds.gd" id="1_m5g7g"]
+[ext_resource type="Texture2D" uid="uid://dlc74sdlpwvs7" path="res://Deprecated/Bird0_Placeholder.png" id="2_ybfro"]
+[ext_resource type="Texture2D" uid="uid://c4o272tl6bysp" path="res://Deprecated/Bird1_Placeholder.png" id="3_c1cmb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0cfi1"]
 atlas = ExtResource("2_ybfro")

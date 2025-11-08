@@ -116,6 +116,7 @@ func _ready():
 	call_deferred("_deferred_rdy")
 
 func _process(delta):
+	
 	if is_dead:
 		return
 	move_timer += delta

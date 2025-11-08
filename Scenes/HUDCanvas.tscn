@@ -48,6 +48,7 @@ offset_right = 206.138
 offset_bottom = 275.89
 
 [node name="TextureProgressBar2" type="TextureProgressBar" parent="HUD/staminaBar"]
+layout_mode = 0
 offset_left = -96.0
 offset_top = -96.0
 offset_right = -64.0
@@ -60,6 +61,7 @@ texture_under = ExtResource("2_hf5mi")
 texture_progress = ExtResource("3_hf5mi")
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="HUD/staminaBar"]
+layout_mode = 0
 offset_left = -96.0
 offset_top = -96.0
 offset_right = -64.0

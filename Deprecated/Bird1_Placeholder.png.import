@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlc74sdlpwvs7"
-path="res://.godot/imported/Bird0_Placeholder.png-795babb33b1cdf8e355176f1bf081e32.ctex"
+uid="uid://c4o272tl6bysp"
+path="res://.godot/imported/Bird1_Placeholder.png-289744873287d129dd9e555b6948eb5a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Bird0_Placeholder.png"
-dest_files=["res://.godot/imported/Bird0_Placeholder.png-795babb33b1cdf8e355176f1bf081e32.ctex"]
+source_file="res://Deprecated/Bird1_Placeholder.png"
+dest_files=["res://.godot/imported/Bird1_Placeholder.png-289744873287d129dd9e555b6948eb5a.ctex"]
 
 [params]
 

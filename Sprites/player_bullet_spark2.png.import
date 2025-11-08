@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cj2cnxycej7vv"
-path="res://.godot/imported/sEnemy_spawning_shadow.png-231585830eaea1d0a5c450aec077606d.ctex"
+uid="uid://cbt5n67hikf0t"
+path="res://.godot/imported/player_bullet_spark2.png-86063492e0748df549872a31dc122504.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/sEnemy_spawning_shadow.png"
-dest_files=["res://.godot/imported/sEnemy_spawning_shadow.png-231585830eaea1d0a5c450aec077606d.ctex"]
+source_file="res://Sprites/player_bullet_spark2.png"
+dest_files=["res://.godot/imported/player_bullet_spark2.png-86063492e0748df549872a31dc122504.ctex"]
 
 [params]
 

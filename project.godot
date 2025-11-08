@@ -105,6 +105,7 @@ ui_cheat={
 2d_physics/layer_4="projectiles"
 2d_physics/layer_5="enemies"
 2d_physics/layer_6="snake_segment"
+2d_physics/layer_7="TEST"
 
 [rendering]
 

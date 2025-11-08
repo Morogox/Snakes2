@@ -48,7 +48,7 @@ func _process(delta):
 func hit_effect():
 	# spawn impact effect
 	rotation = original_rotation
-	var impact = preload("res://Scenes/bullet_player_impact.tscn").instantiate()
+	var impact = preload("res://Scenes/bullet_impact.tscn").instantiate()
 	impact.global_position = get_node("Marker2D").global_position
 	impact.global_rotation = global_rotation
 	get_tree().current_scene.add_child(impact)
