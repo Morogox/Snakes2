@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://blggffi14c82e" path="res://Sprites/enemy1_bullet_spark.png" id="2_oig6h"]
 
 [sub_resource type="Curve" id="Curve_lf52n"]
-_data = [Vector2(0.404412, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0.661765, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_x18o6"]
@@ -13,9 +13,9 @@ curve = SubResource("Curve_lf52n")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vvf3a"]
 particle_flag_disable_z = true
 direction = Vector3(-1, 0, 0)
-spread = 70.0
-initial_velocity_min = 300.0
-initial_velocity_max = 300.0
+spread = 80.0
+initial_velocity_min = 200.0
+initial_velocity_max = 200.0
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_x18o6")
 turbulence_enabled = true
@@ -30,7 +30,7 @@ script = ExtResource("1_injtv")
 emitting = false
 amount = 15
 texture = ExtResource("2_oig6h")
+lifetime = 2.0
 one_shot = true
 explosiveness = 1.0
-randomness = 1.0
 process_material = SubResource("ParticleProcessMaterial_vvf3a")

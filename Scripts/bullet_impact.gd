@@ -13,16 +13,14 @@ func _ready():
 	
 	
 	
-func setup(type: Dictionary):
+func setup(type: Dictionary, normal : Vector2):
 	lifetime = type["lifetime"]
 	particle_effect = type["particle"]
 	sprite.texture = type["sprite"]
 	scale = Vector2(type["scale"], type["scale"])
 	lock_rotation = type["lock_rotation"]
 	if lock_rotation:
-		#print("normal angle: " + str(normal.angle()))
-		#rotation = normal.angle() + PI
-		pass
+		rotation = normal.angle() + PI
 	
 	particle_origin.position.x += sprite.texture.get_width()/2
 	var explosion_instance = particle_effect.instantiate()

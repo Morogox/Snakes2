@@ -1,6 +1,7 @@
 extends "res://Scripts/bullet.gd"
 
 func _on_body_entered(body):
+	super(body)
 	if has_hit:
 		return
 	if body.is_in_group("Boundaries"):
@@ -9,7 +10,8 @@ func _on_body_entered(body):
 		queue_free()
 
 func _on_area_entered(area: Area2D) -> void: 
-	print("called, colliding area: ", area)
+	super(area)
+	print("my hit normal is: ", hit_normal)
 	if has_hit:
 		return
 	has_hit = true

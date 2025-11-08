@@ -22,6 +22,7 @@ var type: String
 
 @export_enum("player_1", "enemy_1") var bullet_type: String = "player_1"
 
+var hit_normal: Vector2 = Vector2.ZERO
 var impact_data = {
 	"player_1": {
 		"sprite": preload("res://Sprites/sBullet1_impact.png"),
@@ -57,12 +58,8 @@ func _process(delta):
 	var result = space_state.intersect_ray(query)
 	
 	if result:
-		print("Bullet layer: ", collision_layer)
-		print("Bullet mask: ", collision_mask)
-
 		var hit_pos = result.position
-		var hit_normal = result.normal 
-		print(hit_normal)
+		hit_normal = result.normal 
 		global_position = hit_pos
 		if result.collider is Area2D:
 			_on_area_entered(result.collider)
@@ -87,16 +84,31 @@ func hit_effect():
 	impact.rotation = rotation
 	
 	get_tree().current_scene.add_child(impact)
-	impact.setup(impact_data[bullet_type])
+	impact.setup(impact_data[bullet_type], hit_normal)
+
 func rotating(flag: bool):
 	if not flag:
 		return
 	rotation += rotate_val
 	
 func _on_area_entered(area: Area2D) -> void: 
-	# generic collision logic
-	pass
+	hit_normal = get_surface_normal()
 
 func _on_body_entered(body: Node2D) -> void:
-	# generic collision logic
-	pass
+	hit_normal = get_surface_normal()
+
+func get_surface_normal() -> Vector2:
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsRayQueryParameters2D.create(
+		global_position - velocity.normalized() * 50,
+		global_position + velocity.normalized() * 50
+	)
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	query.collision_mask = collision_mask
+	
+	var result = space_state.intersect_ray(query)
+	if result:
+		return result.normal
+	else:
+		return -velocity.normalized() 

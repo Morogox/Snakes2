@@ -1,6 +1,7 @@
 extends "res://Scripts/bullet.gd"
 
 func _on_body_entered(body):
+	super(body)
 	if has_hit:
 		return
 	has_hit = true
