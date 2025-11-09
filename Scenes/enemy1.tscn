@@ -231,8 +231,7 @@ texture = ExtResource("3_tq1cn")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_ite14")
 sprite_frames = SubResource("SpriteFrames_ite14")
-animation = &"dead"
-frame_progress = 0.939824
+animation = &"shooting"
 speed_scale = 1.8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

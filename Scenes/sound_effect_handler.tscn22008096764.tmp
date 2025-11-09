@@ -1,0 +1,92 @@
+[gd_scene load_steps=16 format=3 uid="uid://d1f5bs2a0cliy"]
+
+[ext_resource type="Script" uid="uid://kvxm02e0p1gu" path="res://Scenes/sound_effect_handler.gd" id="1_2yf51"]
+[ext_resource type="AudioStream" uid="uid://rgmrtf2i7bev" path="res://Sound Effects/Chomp_1.wav" id="2_oe6y3"]
+[ext_resource type="AudioStream" uid="uid://dqa24yywcm4cn" path="res://Sound Effects/Chomp_2.wav" id="3_7d7d3"]
+[ext_resource type="AudioStream" uid="uid://etbbshnd5cbp" path="res://Sound Effects/Chomp_3.wav" id="4_u4n5m"]
+[ext_resource type="AudioStream" uid="uid://c1e50m5yicvqi" path="res://Sound Effects/snake_shoot.wav" id="5_7d7d3"]
+[ext_resource type="AudioStream" uid="uid://jbtjlxtkt1gj" path="res://Sound Effects/snake_bullet_miss.wav" id="6_d63yo"]
+[ext_resource type="AudioStream" uid="uid://dq1kqqdhyj10b" path="res://Sound Effects/snake_yelp_longer_attack.wav" id="6_xvhxg"]
+[ext_resource type="AudioStream" uid="uid://bbmtkh8k6bcmd" path="res://Sound Effects/snake_bullet_hit.wav" id="7_msxmv"]
+[ext_resource type="AudioStream" uid="uid://xkq3yfwl4wja" path="res://Sound Effects/snake_death_a.wav" id="7_sb2c6"]
+[ext_resource type="AudioStream" uid="uid://cj32lbs4onykm" path="res://Sound Effects/enemy_shoot_sine.wav" id="8_sbfnv"]
+[ext_resource type="AudioStream" uid="uid://dbl4ex6cabyf5" path="res://Sound Effects/enemy_charge.wav" id="9_6gptv"]
+[ext_resource type="AudioStream" uid="uid://tmtq1th6c0q6" path="res://Sound Effects/enemy_bullet_miss.wav" id="10_3vboh"]
+[ext_resource type="AudioStream" uid="uid://blb75gm8pmk0u" path="res://Sound Effects/enemy_bullet_hit.wav" id="11_xvhxg"]
+[ext_resource type="AudioStream" uid="uid://fkgkk3dmhkwn" path="res://Sound Effects/snake_death_segments.wav" id="14_p0ccr"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_d63yo"]
+playback_mode = 1
+random_pitch = 1.1
+streams_count = 3
+stream_0/stream = ExtResource("2_oe6y3")
+stream_1/stream = ExtResource("3_7d7d3")
+stream_2/stream = ExtResource("4_u4n5m")
+stream_2/weight = 0.2
+
+[node name="SoundEffectHandler" type="Node2D"]
+script = ExtResource("1_2yf51")
+
+[node name="Chomp" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_d63yo")
+volume_db = -5.0
+max_polyphony = 4
+
+[node name="Shoot" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_7d7d3")
+pitch_scale = 0.15
+max_polyphony = 5
+
+[node name="Yelp" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_xvhxg")
+volume_db = 3.0
+
+[node name="Snake_Head_Death" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_sb2c6")
+volume_db = -80.0
+
+[node name="Snake_Bullet_Miss" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_d63yo")
+volume_db = 12.0
+max_polyphony = 4
+panning_strength = 3.0
+
+[node name="Snake_Bullet_Hit" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_msxmv")
+volume_db = 10.0
+max_polyphony = 4
+
+[node name="Enemy_Shoot" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_sbfnv")
+volume_db = 3.0
+max_polyphony = 30
+panning_strength = 3.0
+
+[node name="Enemy_Charge" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_6gptv")
+volume_db = 3.0
+max_polyphony = 30
+panning_strength = 3.0
+
+[node name="Enemy_Bullet_Miss" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_3vboh")
+volume_db = 12.0
+pitch_scale = 0.9
+max_polyphony = 20
+panning_strength = 3.0
+
+[node name="Enemy_Bullet_Hit" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_xvhxg")
+volume_db = 8.0
+pitch_scale = 0.8
+max_polyphony = 20
+panning_strength = 3.0
+
+[node name="Snake_Segment_Death" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("14_p0ccr")
+volume_db = 5.0
+
+[node name="Snake_Segment_Heal" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_3vboh")
+volume_db = 10.0
+pitch_scale = 2.0

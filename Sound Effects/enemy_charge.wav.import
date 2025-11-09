@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dbl4ex6cabyf5"
+path="res://.godot/imported/enemy_charge.wav-519d18f2cb559d9230e6c38b62485990.sample"
+
+[deps]
+
+source_file="res://Sound Effects/enemy_charge.wav"
+dest_files=["res://.godot/imported/enemy_charge.wav-519d18f2cb559d9230e6c38b62485990.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

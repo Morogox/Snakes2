@@ -7,6 +7,8 @@ var hp := max_hp
 @onready var sprite2: Sprite2D = $Sprite2D2
 
 signal segment_destroyed  # Removed type hint
+signal segment_death(pos: Vector2) # for sound
+signal segment_heal(pos: Vector2) # for sound
 
 var factor = hp / max_hp  # 1.0 = full health, 0.0 = dead
 var damaged_color_max := Color(0.1, 0.1, 0.1)  # dark red
@@ -70,6 +72,7 @@ func destroy_this_segment(delay: float = 0.0) -> void:
 		await get_tree().create_timer(delay).timeout
 		
 	# Play tween animation
+	emit_signal("segment_death", global_position)
 	var tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(self, "scale", Vector2(1.5, 1.5), 0.2)
@@ -88,4 +91,5 @@ func _heal(amt: int, delay: float = 0.0) -> void:
 	hp = clamp(hp + amt, 0, max_hp)
 	_update_color()
 	flash_hit_smooth(1,0.1)
+	emit_signal("segment_heal", global_position)
 	

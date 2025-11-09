@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d3vdupgoi3blq"
+path="res://.godot/imported/snake_boost.mp3.mp3-520f0c8b627b2d8cc1ca061a9ba8d2da.mp3str"
+
+[deps]
+
+source_file="res://Sound Effects/snake_boost.mp3.mp3"
+dest_files=["res://.godot/imported/snake_boost.mp3.mp3-520f0c8b627b2d8cc1ca061a9ba8d2da.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.05
+bpm=0.0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://fkgkk3dmhkwn"
+path="res://.godot/imported/snake_death_segments.wav-c5b91f509631eb8e4a667ec803d5927b.sample"
+
+[deps]
+
+source_file="res://Sound Effects/snake_death_segments.wav"
+dest_files=["res://.godot/imported/snake_death_segments.wav-c5b91f509631eb8e4a667ec803d5927b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

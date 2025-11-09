@@ -35,6 +35,8 @@ var friction := 2000 # pixels/sec^2
 
 signal death(points: int, loc: Vector2)
 signal drop_item_here(type: String, loc: Vector2)
+signal charge(position: Vector2) # for sound
+signal fire(position: Vector2) # for sound
 
 @export var base_score = 50
 
@@ -79,6 +81,7 @@ func _physics_process(delta):
 					if randi_range(1, 20) == 20:  # 5% chance to enter
 						_enter_spam_mode()
 			_change_sprite("shooting")
+			emit_signal("charge", global_position)
 			movement = false
 			#_shoot()
 			shoot_delay = randf_range(shoot_delay_base, shoot_delay_base + shoot_delay_variation)
@@ -163,6 +166,8 @@ func _shoot():
 	bullet.damage = damage  # pass damage to bullet
 	bullet.b_speed = bullet_speed  # pass damage to bullet
 	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
+	bullet.e_miss.connect(Handler.sound_effect_handler._e_miss)
+	bullet.e_hit.connect(Handler.sound_effect_handler._e_hit)
 
 func _enter_spam_mode():
 	spam_mode = true
@@ -218,4 +223,5 @@ func _on_animated_sprite_2d_animation_finished() -> void:
 
 func _on_frame_changed() -> void:
 	if sprite.frame == 10 and sprite.animation == "shooting":
+		emit_signal("fire", global_position)
 		_shoot()

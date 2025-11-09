@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=23 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
@@ -10,10 +10,12 @@
 [ext_resource type="PackedScene" uid="uid://csqdxlwc033d0" path="res://Scenes/enemy_spawner.tscn" id="6_344ge"]
 [ext_resource type="Script" uid="uid://nmp20eyxrq4q" path="res://Scripts/grid_manager.gd" id="7_6bp64"]
 [ext_resource type="Script" uid="uid://cl3dtkoptk5vl" path="res://Scripts/item_handler.gd" id="8_344ge"]
+[ext_resource type="PackedScene" uid="uid://d1f5bs2a0cliy" path="res://Scenes/sound_effect_handler.tscn" id="10_k12tt"]
 [ext_resource type="PackedScene" uid="uid://d2nepysqmn7cw" path="res://Scenes/HUDCanvas.tscn" id="11_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://blpgrt11df53r" path="res://Scenes/death_screen.tscn" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://6bqsorf03klw" path="res://Scenes/pause_screen.tscn" id="13_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://cajdrfgqvh4fk" path="res://Scenes/cmd.tscn" id="14_jkdf5"]
+[ext_resource type="AudioStream" uid="uid://cjncb2u3nqqh6" path="res://Music/Rattle 'em up.mp3" id="15_wsu2k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
 size = Vector2(31, 31)
@@ -76,6 +78,9 @@ script = ExtResource("2_d1ilt")
 [node name="EnemySpawner" parent="Game/Handlers" instance=ExtResource("6_344ge")]
 position = Vector2(-82, 42)
 
+[node name="SoundEffectHandler" parent="Game/Handlers" instance=ExtResource("10_k12tt")]
+position = Vector2(576, 0)
+
 [node name="WorldBoundaries" type="StaticBody2D" parent="Game" groups=["Boundaries"]]
 collision_layer = 2
 collision_mask = 9
@@ -114,6 +119,11 @@ visible = false
 [node name="cmd" parent="Game" instance=ExtResource("14_jkdf5")]
 process_mode = 3
 visible = false
+
+[node name="Game_Music" type="AudioStreamPlayer" parent="Game"]
+stream = ExtResource("15_wsu2k")
+volume_db = -10.0
+autoplay = true
 
 [connection signal="body_entered" from="Game/Handlers/SnakeHead" to="Game/Handlers/SnakeHead" method="_on_body_entered"]
 [connection signal="snake_died" from="Game/Handlers/SnakeHead" to="." method="_on_snake_died"]

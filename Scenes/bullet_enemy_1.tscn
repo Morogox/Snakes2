@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dsigkkcrixheb"]
 
 [ext_resource type="PackedScene" uid="uid://dx6d50gnoyji3" path="res://Scenes/bullet.tscn" id="1_kg0no"]
-[ext_resource type="Script" uid="uid://cvy3qfkwsn52g" path="res://Scripts/bullet_enemy_1.gd" id="2_xxwis"]
+[ext_resource type="Script" uid="uid://cvy3qfkwsn52g" path="res://bullet_enemy_1.gd" id="2_xxwis"]
 [ext_resource type="Texture2D" uid="uid://bpeh2xo4tgpla" path="res://Sprites/sBullet_enemy1.png" id="2_ymo6r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pvkqk"]

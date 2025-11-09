@@ -65,6 +65,8 @@ var timer := 0.0
 @export var boost_multi = 2
 
 var flash_time := 0.05   # how long to show the flash (seconds)
+signal shooted() # for sound
+@onready var ear = $AudioListener2D
 
 var is_dead = false
 
@@ -72,6 +74,8 @@ signal segments_update(count: int)
 signal snake_died(segment_count: int)
 signal stamina_changed(stamina, max_stamina)
 var alive_texture: Texture
+signal snake_has_a_critical_owie() # for sound
+signal snake_after_not_surviving() # for sound
 
 
 @export var stamina_regen_rate := 0.1
@@ -133,10 +137,12 @@ func _process(delta):
 
 func _handle_input(delta):
 	if Input.is_action_pressed("ui_boost") and stamina > 0: #
+		is_boosting = true
 		move_delay = move_delay_default / boost_multi
 		move_timer = move_delay * move_progress
 		if not inf_stamina: stamina = max(0.0, stamina - stamina_consumption_rate * delta)
 	else:
+		is_boosting = false
 		move_delay = move_delay_default
 		move_timer = move_delay * move_progress
 		if !Input.is_action_pressed("ui_boost"):
@@ -223,6 +229,9 @@ func _add_segment():
 	# Only connect if signal exists
 	if seg.has_signal("segment_destroyed"):
 		seg.segment_destroyed.connect(_remove_segment)
+	
+	seg.segment_death.connect(Handler.sound_effect_handler._segment_death)
+	seg.segment_heal.connect(Handler.sound_effect_handler._segment_heal)
 	
 	segments.append(seg)
 	var tail_pos = move_history.back()
@@ -360,7 +369,14 @@ func _shoot():
 	bullet.damage = damage  # pass damage to bullet
 	bullet.b_speed = bullet_speed  # pass damage to bullet
 	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
+	bullet.s_miss.connect(Handler.sound_effect_handler._s_miss)
+	bullet.snake_hit.connect(Handler.sound_effect_handler._snake_hit) # Whatever you do, do NOT abbreviate "snake" and have "hit" after
 	get_node("/root/main/Game/Camera2D").shake(50.0, 10.0)
+	
+	# Play Sound
+	emit_signal("shooted")
+	#print(ear.global_position)
+	#print(ear.position)
 
 func _game_over():
 	if not invulnerable and not is_dead:
@@ -369,7 +385,9 @@ func _game_over():
 		collision_layer = 0
 		$sSnakeHead.texture = DEATH_TEXTURE
 		get_node("/root/main/Game/Camera2D").shake(100.0, 5.0)
+		emit_signal("snake_has_a_critical_owie")
 		await get_tree().create_timer(1.0).timeout
+		emit_signal("snake_after_not_surviving")
 		if segments.size() > 0:
 			_remove_segment(segments[0])
 		await _death_animation()

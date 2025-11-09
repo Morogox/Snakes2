@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://tmtq1th6c0q6"
+path="res://.godot/imported/enemy_bullet_miss.wav-5cffc0b38a5d85a70c705e72fb9f5027.sample"
+
+[deps]
+
+source_file="res://Sound Effects/enemy_bullet_miss.wav"
+dest_files=["res://.godot/imported/enemy_bullet_miss.wav-5cffc0b38a5d85a70c705e72fb9f5027.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

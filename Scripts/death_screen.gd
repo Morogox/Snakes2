@@ -6,6 +6,7 @@ extends CanvasLayer
 @onready var score_label = $ColorRect/CenterContainer/VBoxContainer/ScoreLabel
 @onready var segments_label = $ColorRect/CenterContainer/VBoxContainer/SegmentsLabel
 @onready var rect = $ColorRect
+@onready var music = $"../Game_Music"
 
 func _ready():
 	# Connect button signal. This ONLY needs to happen once.
@@ -28,7 +29,9 @@ func show_screen():
 	
 	rect.modulate.a = 0
 	var tween = create_tween()
+	var tween_music = create_tween()
 	tween.tween_property(rect, "modulate:a", 1.0, 0.5)
+	tween_music.tween_property(music, "volume_db", music.volume_db - 15, 0.5)
 	await tween.finished  # await completion
 	
 	# Optional: Pause the game
