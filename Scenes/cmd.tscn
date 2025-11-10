@@ -37,12 +37,10 @@ offset_bottom = 1.48999
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/ColorRect"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = -1.608
-anchor_right = 1.0
+anchor_right = 0.998
 anchor_bottom = 0.863
 offset_left = 1.0
-offset_top = 400.392
-offset_right = -2.0
+offset_right = 0.303955
 offset_bottom = 0.112991
 scroll_following = true
 vertical_alignment = 2

@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://csqdxlwc033d0"]
+
+[ext_resource type="Script" uid="uid://dlek863fqlmlh" path="res://Enemies/Scripts/enemy_spawner.gd" id="1_cdqhx"]
+[ext_resource type="PackedScene" uid="uid://r4a6tfia5y5m" path="res://Enemies/Scenes/enemy.tscn" id="2_o2e86"]
+[ext_resource type="Texture2D" uid="uid://b70mm3mroygho" path="res://Sprites/sEnemy_spawning_shadow2.png" id="3_tdwud"]
+[ext_resource type="Texture2D" uid="uid://ddyjnm7xm187q" path="res://Enemies/Sprites/robo-bird.png" id="4_tdwud"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tdwud"]
+atlas = ExtResource("4_tdwud")
+region = Rect2(170, 34, 34, 34)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_66y63"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tdwud")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="EnemySpawner" type="Node2D"]
+scale = Vector2(2.5, 2.5)
+script = ExtResource("1_cdqhx")
+enemy_scene = ExtResource("2_o2e86")
+
+[node name="spawning_indicator" type="Sprite2D" parent="."]
+position = Vector2(0, 5)
+texture = ExtResource("3_tdwud")
+
+[node name="enemy_sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_66y63")

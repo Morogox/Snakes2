@@ -30,7 +30,7 @@ var command_help := {
 'self' will kill the snake",
 	"speed": "Syntax: speed (value: float) \nSet speed of snake in seconds per square" ,
 	"boost": "Syntax: boost (value: float) \nSet boost multiplier of snake",
-	"spawnenemy": "Syntax: spawnenemy (amount: int) \nSpawns amount enemies",
+	"spawnenemy": "Syntax: spawnenemy (type: string) (amount: int) \nSpawns amount of type enemies",
 	"editstam": "Syntax: editstam (property: String) (value: float) \nAdjust stamina property to value
 Valid properties are: \nregen\ncap\nmax\ncons"
 }
@@ -165,12 +165,21 @@ func cmd_set_boost_multi(args):
 	_log("Set boost multiplier to %f" % param)
 
 func cmd_spawn_enemy(args):
-	if not check_arg(args, 1): return
-	var param = parse_arg(args[0], "int", false)
-	if param == null:
+	if not check_arg(args, 2): return
+	var param1 = parse_arg(args[0], "string", false)
+	var param2 = parse_arg(args[1], "int", false)
+	if param1 == null or param2 == null:
 		return
-	Handler.enemy_handler._spawn_enemy(int(param))
-	_log("Spawned %d enemies" % param)
+	match param1:
+		"basic":
+			pass
+		"rager":
+			pass
+		_:
+			_log("Error: invalid enemy type " + param1)
+			return
+	Handler.enemy_handler._spawn_enemy(param1, int(param2))
+	_log("Spawned %d %s enemies" % [param2, param1])
 
 func cmd_destroy_segment(args):
 	if not check_arg(args, 1): return

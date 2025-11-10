@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu0btgjhkybh4"]
+
+[ext_resource type="Script" uid="uid://btcc882hb66wu" path="res://Menus/Scripts/start_screen.gd" id="1_ainjc"]
+[ext_resource type="AudioStream" uid="uid://dbjs4k7sida2g" path="res://Music/Coiled and ready to Rattle - Title Screen.mp3" id="2_ainjc"]
+
+[node name="start_screen" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_ainjc")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Snakes2"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "PLAY"
+
+[node name="Quit" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[node name="Title_Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_ainjc")
+volume_db = -5.0
+autoplay = true
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

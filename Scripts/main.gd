@@ -4,7 +4,7 @@ extends Node2D
 @onready var left_wall = $Game/WorldBoundaries/Left
 @onready var right_wall = $Game/WorldBoundaries/Right
 @onready var camera = $Game/Camera2D
-@onready var start_screen_scene = preload("res://scenes/start_screen.tscn")
+@onready var start_screen_scene = preload("res://Menus/Scenes/start_screen.tscn")
 @onready var game_started = false
 @onready var death_screen = $Game/death_screen
 @onready var pause_screen = $Game/pause_screen

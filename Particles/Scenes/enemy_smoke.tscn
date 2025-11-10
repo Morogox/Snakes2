@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://cmdvjtk22y1km"]
+
+[ext_resource type="Script" uid="uid://drd6wdmvl7me" path="res://Particles/Scripts/particle.gd" id="1_2wt0y"]
+[ext_resource type="Texture2D" uid="uid://xbn0pfx84exm" path="res://Particles/Sprites/enemy2_smoke.png" id="2_2wt0y"]
+
+[sub_resource type="Curve" id="Curve_s5bfc"]
+_data = [Vector2(0.389706, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_af2wn"]
+curve = SubResource("Curve_s5bfc")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hn0f6"]
+particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 360.0
+direction = Vector3(0, -1, 0)
+spread = 10.0
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 0, 0)
+damping_min = 100.0
+damping_max = 100.0
+color = Color(1, 1, 1, 0.552941)
+alpha_curve = SubResource("CurveTexture_af2wn")
+
+[node name="EnemySmoke" type="Node2D"]
+script = ExtResource("1_2wt0y")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 2
+texture = ExtResource("2_2wt0y")
+process_material = SubResource("ParticleProcessMaterial_hn0f6")
