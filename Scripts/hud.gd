@@ -4,6 +4,7 @@ extends Control
 @onready var stamina_bar = $staminaBar/TextureProgressBar
 @onready var chaser = $staminaBar/TextureProgressBar2
 
+@onready var tier_label = $TierLabel/Label
 var score: int = 0
 var segments: int = 0
 
@@ -15,9 +16,11 @@ func _ready():
 	Handler.score_manager.connect("score_changed", set_score)
 	Handler.snake_head.connect("segments_update", set_segments)
 	Handler.snake_head.connect("stamina_changed", _update_stamina_bar)
+	Handler.game_master.connect("tier_change", _tier_warning)
 	set_score(0)
 	stamina_bar.max_value = Handler.snake_head.max_stamina
 	chaser.max_value = Handler.snake_head.max_stamina
+	tier_label.modulate.a = 0.0
 	
 func _process(delta):
 	#print("player stam ", target_stamina)
@@ -52,6 +55,9 @@ func _update_stamina_bar(stamina, max_stamina):
 	stamina_bar.max_value = max_stamina 
 	stamina_bar.value = stamina
 
-	
-	
+func _tier_warning(tier: int):
+	tier_label.modulate.a = 0.15
+	tier_label.text = str(tier)
+	var tween = create_tween()
+	tween.tween_property(tier_label, "modulate:a", 0.0, 0.5)
 	

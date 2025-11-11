@@ -43,7 +43,8 @@ func spawn_item_random(item_key: String):
 	# Instantiate the item
 	var item = preload("res://Scenes/item.tscn").instantiate()
 	
-	add_child(item)
+	#add_child(item)
+	call_deferred("add_child", item)
 	
 	# Setup item using the item map
 	item.setup(item_key, item_data)
@@ -100,7 +101,7 @@ func spawn_item_on_grid(item_key: String, location: Vector2):
 	
 	# Instantiate the item
 	var item = preload("res://Scenes/item.tscn").instantiate()
-	add_child(item)
+	call_deferred("add_child", item)
 	item.setup(item_key, item_data)
 	item.connect("destroyed", _item_destroyed)
 

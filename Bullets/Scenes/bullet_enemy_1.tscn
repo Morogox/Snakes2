@@ -12,7 +12,7 @@ scale = Vector2(3, 3)
 collision_mask = 35
 script = ExtResource("2_xxwis")
 lifetime = 10.0
-rotate = true
+rotate_bullet = true
 bullet_type = "enemy_1"
 
 [node name="CollisionShape2D" parent="." index="0"]

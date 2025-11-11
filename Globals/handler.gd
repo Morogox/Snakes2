@@ -2,17 +2,17 @@ extends Node
 
 var _registry := {}
 
-func register(name: String, node: Node):
-	_registry[name] = node
+func register(reg_name: String, node: Node):
+	_registry[reg_name] = node
 
-func get_reg(name: String) -> Node:
-	return _registry.get(name)
+func get_reg(reg_name: String) -> Node:
+	return _registry.get(reg_name)
 
-func unregister(name: String):
-	_registry.erase(name)
+func unregister(reg_name: String):
+	_registry.erase(reg_name)
 
-func has(name: String) -> bool:
-	return _registry.has(name)
+func has(reg_name: String) -> bool:
+	return _registry.has(reg_name)
 
 func _get(property: StringName) -> Variant:
 	return _registry.get(property)

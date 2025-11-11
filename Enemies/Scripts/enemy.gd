@@ -41,7 +41,7 @@ signal fire(position: Vector2) # for sound
 var drop_item := true
 
 @export var drops := {
-	"apple_2": 0.7,   # 70% chance
+	"apple_2": 0.3,   # 30% chance
 }
 
 
@@ -49,6 +49,8 @@ var sprite_default_name := "default"
 var sprite_shooting_name := "shooting"
 
 @export var angle_variation_degrees := 0.0
+
+@onready var feathers = $EnemyFeather
 func _ready():
 	randomize()
 	_change_sprite(sprite_default_name)
@@ -72,7 +74,7 @@ func _physics_process(delta):
 		shoot_timer += delta
 		if shoot_timer >= shoot_delay:
 			_change_sprite(sprite_shooting_name)
-			emit_signal(sprite_shooting_name, global_position)
+			#emit_signal("fire", global_position)
 			movement = false
 			#_shoot()
 			shoot_delay = randf_range(shoot_delay_base, shoot_delay_base + shoot_delay_variation)
@@ -120,6 +122,7 @@ func _transition_to(new_state: state_enum):
 			collision_layer &= ~(1 << 4) # remove layer 5 (enemies)
 			z_index = 0
 			emit_signal("death", base_score, position)
+			feathers.toggle_emission(true)
 			_check_drops()
 			await get_tree().create_timer(2).timeout
 			await flash_disappear(4, 0.1) 
@@ -153,9 +156,9 @@ func _shoot():
 
 func flash_whiteout(count: int, interval: float) -> void:
 	for i in count:
-		shader_mat.set("shader_param/flash", true)
+		shader_mat.set_shader_parameter("flash", true)
 		await get_tree().create_timer(interval).timeout
-		shader_mat.set("shader_param/flash", false)
+		shader_mat.set_shader_parameter("flash", false)
 		await get_tree().create_timer(interval).timeout
 
 func flash_disappear(count: int, interval: float) -> void:

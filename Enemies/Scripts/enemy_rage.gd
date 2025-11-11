@@ -12,6 +12,9 @@ var rage_shot_counter = 0
 var tick_timer := 0.0
 var tick_time := 5.0   # every 5 seconds
 
+func _ready():
+	super()
+
 func _process(delta: float):
 	super(delta)
 	if not rage and state != state_enum.DEAD:

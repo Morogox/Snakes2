@@ -15,7 +15,7 @@ var type: String
 
 @export var impact_scene = preload("res://Particles/Scenes/bullet_impact.tscn")
 
-@export var rotate = false
+@export var rotate_bullet = false
 
 @export var force := 0.0
 
@@ -81,7 +81,7 @@ func _process(delta):
 	if life_timer >= lifetime:
 		queue_free()
 	
-	rotating(rotate)
+	rotating(rotate_bullet)
 
 func hit_effect():
 	# spawn impact effect

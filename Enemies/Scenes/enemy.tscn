@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://r4a6tfia5y5m"]
+[gd_scene load_steps=32 format=3 uid="uid://r4a6tfia5y5m"]
 
 [ext_resource type="Script" uid="uid://dsjt0nugycb3a" path="res://Enemies/Scripts/enemy.gd" id="1_nbojj"]
 [ext_resource type="PackedScene" uid="uid://dsigkkcrixheb" path="res://Bullets/Scenes/bullet_enemy_1.tscn" id="2_kyctr"]
@@ -6,6 +6,7 @@
 [ext_resource type="Shader" uid="uid://cpxji8y54m54v" path="res://Shaders/enemy1.gdshader" id="4_w18db"]
 [ext_resource type="Texture2D" uid="uid://ddyjnm7xm187q" path="res://Enemies/Sprites/robo-bird.png" id="5_xjuft"]
 [ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="6_dw7yn"]
+[ext_resource type="PackedScene" uid="uid://dycu2fuf2no4c" path="res://Particles/Scenes/enemy_feather.tscn" id="7_kyctr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bul3r"]
 resource_local_to_scene = true
@@ -214,6 +215,8 @@ visible = false
 position = Vector2(79, 3.55271e-15)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("6_dw7yn")
+
+[node name="EnemyFeather" parent="." instance=ExtResource("7_kyctr")]
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="frame_changed" from="AnimatedSprite2D" to="." method="_on_frame_changed"]

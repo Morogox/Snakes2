@@ -30,4 +30,5 @@ position = Vector2(0, 5)
 texture = ExtResource("3_tdwud")
 
 [node name="enemy_sprite" type="AnimatedSprite2D" parent="."]
+modulate = Color(0.585062, 0.585062, 0.585062, 1)
 sprite_frames = SubResource("SpriteFrames_66y63")

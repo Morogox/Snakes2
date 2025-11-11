@@ -360,10 +360,10 @@ rage_chance = 0.3
 rage_shot_count = 6
 rage_bullet_scene = ExtResource("3_7t0jq")
 rage_transform_time = 3.0
+base_score = 70
 
 [node name="smoke" parent="." index="0" instance=ExtResource("7_o8mr4")]
 position = Vector2(0.4, -4.4)
-scale = Vector2(1, 1)
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 material = SubResource("ShaderMaterial_76thm")

@@ -14,7 +14,8 @@ var commands := {
 	"speed": cmd_set_speed,
 	"boost": cmd_set_boost_multi,
 	"spawnenemy": cmd_spawn_enemy,
-	"editstam": cmd_edit_stamina_property
+	"editstam": cmd_edit_stamina_property,
+	"setdiff": cmd_set_diff
 }
 
 var command_help := {
@@ -32,7 +33,9 @@ var command_help := {
 	"boost": "Syntax: boost (value: float) \nSet boost multiplier of snake",
 	"spawnenemy": "Syntax: spawnenemy (type: string) (amount: int) \nSpawns amount of type enemies",
 	"editstam": "Syntax: editstam (property: String) (value: float) \nAdjust stamina property to value
-Valid properties are: \nregen\ncap\nmax\ncons"
+Valid properties are: \nregen\ncap\nmax\ncons",
+	"setdiff": "Syntax: setdiff (value: float) \n Sets diffculty multiplier to float"
+
 }
 
 func _ready():
@@ -51,14 +54,23 @@ func _log(text: String):
 
 func run_command(cmd: String):
 	var parts = cmd.split(" ")
-	var name = parts[0]
+	var cmd_name = parts[0]
 	var args = parts.slice(1)
 
-	if commands.has(name):
-		commands[name].call(args)
+	if commands.has(cmd_name):
+		commands[cmd_name].call(args)
 	else:
-		_log("Unknown command: " + name)
-		
+		_log("Unknown command: " + cmd_name)
+
+func check_arg(args: Array, amt: int):
+	if args.is_empty():
+		_log("Error: this command require %d parameter(s)" % amt)
+		return false
+	elif args.size() != amt:
+		_log("Error: this command require %d parameter(s)" % amt)
+		return false
+	return true
+
 func cmd_help(args):
 	if check_arg(args, 1):
 		if(args[0] not in command_help):
@@ -77,21 +89,21 @@ func cmd_echo(args):
 	_log(" ".join(args))
 
 
-func cmd_toggle_inv(args):
+func cmd_toggle_inv(_args):
 	if Handler.snake_head.invulnerable:
 		Handler.snake_head.invulnerable = false
 	else:
 		Handler.snake_head.invulnerable = true
 	_log(str("Invulnerable: ", Handler.snake_head.invulnerable))
 	
-func cmd_toggle_ammo(args):
+func cmd_toggle_ammo(_args):
 	if Handler.snake_head.inf_ammo:
 		Handler.snake_head.inf_ammo = false
 	else:
 		Handler.snake_head.inf_ammo = true
 	_log(str("infinite ammo: ", Handler.snake_head.inf_ammo))
 	
-func cmd_toggle_stam(args):
+func cmd_toggle_stam(_args):
 	if Handler.snake_head.inf_stamina:
 		Handler.snake_head.inf_stamina = false
 	else:
@@ -247,12 +259,12 @@ func parse_arg(args: String, expected_type: String, negative: bool):
 			_log("Error: unknown expected_type '%s'" % expected_type)
 			return null
 
-func check_arg(args: Array, amt: int):
-	if args.is_empty():
-		_log("Error: this command require %d parameter(s)" % amt)
-		return false
-	elif args.size() != amt:
-		_log("Error: this command require %d parameter(s)" % amt)
-		return false
-	return true
+func cmd_set_diff(args):
+	if not check_arg(args, 1): return
+	var param = parse_arg(args[0], "float", false)
+	if param == null:
+		return
+	Handler.game_master.difficulty = param
+	_log("Set difficulty to %f" % param)
+	
 	

@@ -2,15 +2,18 @@ extends Node2D
 @export var spawner_scene: PackedScene
 
 signal enemy_killed(points: int)
-
+var active_enemy_amt := 0
 var enemy_types = {
 	"basic": preload("res://Enemies/Scenes/enemy.tscn"),
 	"rager": preload("res://Enemies/Scenes/enemy_rager.tscn")
 }
 func _ready():
 	Handler.register(name.to_snake_case(), self)
-
+	
 func _spawn_enemy(type: String, amount: int = 1, delay_variation: float = 0.0, ):
+	active_enemy_amt += amount
+	var delay_time = randf_range(0.0, delay_variation)
+	await get_tree().create_timer(delay_time).timeout
 	for i in range(amount):
 		var spawner = spawner_scene.instantiate()
 		spawner.enemy_scene = enemy_types[type]
@@ -27,13 +30,13 @@ func _spawn_enemy(type: String, amount: int = 1, delay_variation: float = 0.0, )
 		spawner.position = Vector2(x, y)
 		add_child(spawner)
 		
-		var delay_time = randf_range(0.0, delay_variation)
-		await get_tree().create_timer(delay_time).timeout
+		
 
-func generate_wave(min_time, max_time):
-	var amt = randi_range(min_time, max_time)
-	_spawn_enemy("basic", amt, 1)
+func generate_wave(spawn_q : Array[String]):
+	for i in spawn_q:	
+		_spawn_enemy(i, 1, 1.0)
 
 func _enemy_killed(score: int, loc: Vector2):
+	active_enemy_amt -= 1
 	emit_signal("enemy_killed", score, loc)
 	
