@@ -85,6 +85,13 @@ signal snake_after_not_surviving() # for sound
 var stamina := max_stamina
 var is_boosting = false
 
+@export var hp = 1.0
+
+var current_velocity: Vector2:
+	get:
+		if move_delay > 0:
+			return (target_pixel_pos - prev_pixel_pos) / move_delay
+		return Vector2.ZERO
 
 func _deferred_rdy():
 	is_dead = false
@@ -335,8 +342,8 @@ func _on_area_entered(area: Area2D) -> void:
 				_grow(area.value) # grow snake by apple value	
 				
 				area.destroy() # tells apple that it has been eaten
-	if area.is_in_group("EnemyBullet"):
-		_game_over()
+	#if area.is_in_group("EnemyBullet"):
+		#_game_over()
 
 func _input(event):
 	#if event is not InputEventMouse and event.is_pressed():
@@ -428,3 +435,18 @@ func _update_stamina(num :=  0):
 	stamina = ratio * max_stamina + max_stamina * num/5
 	stamina = min(stamina, max_stamina)
 	emit_signal("stamina_changed", stamina, max_stamina)
+
+func get_predicted_velocity() -> Vector2:
+	# Velocity is zero if we're not about to move
+	if move_timer < move_delay - 0.1:  # adjust threshold as needed
+		return Vector2.ZERO
+	# Otherwise, assume we'll continue in current direction
+	return direction * (GRID_SIZE / move_delay)
+	
+func take_hit(damage = 1.0):
+	if invulnerable:
+		return
+	hp -= damage
+	if hp <= 0:
+		_game_over()
+	pass

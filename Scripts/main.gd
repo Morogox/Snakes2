@@ -4,7 +4,7 @@ extends Node2D
 @onready var left_wall = $Game/WorldBoundaries/Left
 @onready var right_wall = $Game/WorldBoundaries/Right
 @onready var camera = $Game/Camera2D
-@onready var start_screen_scene = preload("res://scenes/start_screen.tscn")
+@onready var start_screen_scene = preload("res://Menus/Scenes/start_screen.tscn")
 @onready var game_started = false
 @onready var death_screen = $Game/death_screen
 @onready var pause_screen = $Game/pause_screen
@@ -40,9 +40,6 @@ func reset_game():
 
 	## Reset the snake to its starting state
 	#Handler.snake_head.call_deferred("_deferred_rdy")
-
-	# Spawn a new apple
-	Handler.item_handler.spawn_item_random("apple_1")
 	
 	# Reset the score
 	if Handler.score_manager:
@@ -51,7 +48,7 @@ func reset_game():
 	# Unpause the game to start playing
 	get_tree().paused = false
 
-func _on_snake_died(segment_count):
+func _on_snake_died(_segment_count):
 	pause_screen.visible = false
 	get_tree().paused = false
 	death_screen.show_screen()

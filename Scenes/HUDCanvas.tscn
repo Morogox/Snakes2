@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://d2nepysqmn7cw"]
+[gd_scene load_steps=8 format=3 uid="uid://d2nepysqmn7cw"]
 
 [ext_resource type="Script" uid="uid://bbtf3g5ukn7d5" path="res://Scripts/hud.gd" id="1_pvlhn"]
 [ext_resource type="Texture2D" uid="uid://bpdqgfhlnpyii" path="res://Sprites/stamina_ring_base.png" id="2_hf5mi"]
@@ -11,7 +11,12 @@ font_size = 50
 [sub_resource type="LabelSettings" id="LabelSettings_hf5mi"]
 font_size = 28
 
+[sub_resource type="LabelSettings" id="LabelSettings_wwdfb"]
+font_size = 600
+shadow_size = 500
+
 [node name="CanvasLayer" type="CanvasLayer"]
+layer = -10
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3
@@ -41,6 +46,7 @@ text = "Segments: 3"
 label_settings = SubResource("LabelSettings_hf5mi")
 
 [node name="staminaBar" type="Control" parent="HUD"]
+layout_mode = 1
 anchors_preset = 0
 offset_left = 206.138
 offset_top = 275.89
@@ -71,3 +77,30 @@ step = 0.1
 value = 100.0
 fill_mode = 5
 texture_progress = ExtResource("3_wwdfb")
+
+[node name="TierLabel" type="Control" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="HUD/TierLabel"]
+modulate = Color(1, 1, 1, 0.0784314)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -342.0
+offset_top = -819.0
+offset_right = 343.0
+offset_bottom = 820.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "10"
+label_settings = SubResource("LabelSettings_wwdfb")
+horizontal_alignment = 1
+vertical_alignment = 1

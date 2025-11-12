@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://tx8rdfosp287"]
+
+[ext_resource type="Script" uid="uid://drd6wdmvl7me" path="res://Particles/Scripts/particle.gd" id="1_66evo"]
+[ext_resource type="Texture2D" uid="uid://b321cak2rchhh" path="res://Particles/Sprites/exclamation.png" id="1_nim1h"]
+
+[sub_resource type="Curve" id="Curve_157e7"]
+_data = [Vector2(0, 1), 0.0, -1.78277, 0, 0, Vector2(1, 0), -0.0250506, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_74j1f"]
+curve = SubResource("Curve_157e7")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6gsn0"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 0, 0)
+damping_min = 70.0
+damping_max = 70.0
+alpha_curve = SubResource("CurveTexture_74j1f")
+
+[node name="EnemyExclamation" type="Node2D"]
+script = ExtResource("1_66evo")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 1
+texture = ExtResource("1_nim1h")
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_6gsn0")
