@@ -5,7 +5,8 @@ signal enemy_killed(points: int)
 var active_enemy_amt := 0
 var enemy_types = {
 	"basic": preload("res://Enemies/Scenes/enemy.tscn"),
-	"rager": preload("res://Enemies/Scenes/enemy_rager.tscn")
+	"rager": preload("res://Enemies/Scenes/enemy_rager.tscn"),
+	"elite": preload("res://Enemies/Scenes/enemy_elite.tscn")
 }
 func _ready():
 	Handler.register(name.to_snake_case(), self)
@@ -21,8 +22,8 @@ func _spawn_enemy(type: String, amount: int = 1, delay_variation: float = 0.0, )
 		var x = 0.0
 		var y = 0.0
 		while not spawn_ok:
-			x = randf_range(Handler.grid_manager.left, Handler.grid_manager.right)
-			y = randf_range(Handler.grid_manager.top, Handler.grid_manager.bottom)
+			x = randf_range(Handler.grid_manager.left + 100, Handler.grid_manager.right - 100)
+			y = randf_range(Handler.grid_manager.top + 100, Handler.grid_manager.bottom - 100)
 			var spawn_pos = Vector2(x, y)
 			# check if spawn_pos overlaps snake head
 			if Handler.snake_head.position.distance_to(spawn_pos) > Handler.grid_manager.GRID_SIZE * 2:

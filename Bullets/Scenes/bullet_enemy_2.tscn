@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://ftcjq25q7amw" path="res://Bullets/Sprites/sBullet_enemy2.png" id="2_i4cqi"]
 
 [node name="Bullet" instance=ExtResource("1_flcxt")]
-rotate_bullet = true
 bullet_type = "enemy_2"
 
 [node name="Sprite2D" parent="." index="1"]

@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="4_agune"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbogs"]
-size = Vector2(31, 31)
+size = Vector2(24.5, 24.5)
 
 [node name="SnakeHead" type="Area2D" groups=["SnakeHead"]]
 collision_mask = 62

@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=29 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
@@ -40,6 +40,10 @@ point_count = 3
 [sub_resource type="Curve" id="Curve_h1bgf"]
 _data = [Vector2(0.3, 0), 0.0, 0.0, 0, 0, Vector2(0.3, 0.2), 0.0, 0.0, 0, 0, Vector2(0.6, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 4
+
+[sub_resource type="Curve" id="Curve_pdsj5"]
+_data = [Vector2(0.6, 0), 0.0, 0.0, 0, 0, Vector2(0.6, 0.6), 0.835934, 0.835934, 0, 0, Vector2(1, 1), -0.179775, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Curve" id="Curve_b3802"]
 _limits = [1.0, 4.0, 0.0, 1.0]
@@ -101,6 +105,7 @@ script = ExtResource("3_hptm8")
 script = ExtResource("2_d1ilt")
 basic_curve = SubResource("Curve_k12tt")
 rager_curve = SubResource("Curve_h1bgf")
+elite_curve = SubResource("Curve_pdsj5")
 wave_amt_curve = SubResource("Curve_b3802")
 wave_time_curve = SubResource("Curve_fevyy")
 difficulty_curve = SubResource("Curve_hibaj")

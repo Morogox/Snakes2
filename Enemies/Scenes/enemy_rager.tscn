@@ -368,7 +368,8 @@ position = Vector2(0.4, -4.4)
 [node name="AnimatedSprite2D" parent="." index="2"]
 material = SubResource("ShaderMaterial_76thm")
 sprite_frames = SubResource("SpriteFrames_61hrj")
-animation = &"shooting"
+animation = &"rage_transform"
+frame_progress = 0.313129
 
 [node name="RageTransformTimer" type="Timer" parent="." index="7"]
 wait_time = 3.0

@@ -15,7 +15,8 @@ var commands := {
 	"boost": cmd_set_boost_multi,
 	"spawnenemy": cmd_spawn_enemy,
 	"editstam": cmd_edit_stamina_property,
-	"setdiff": cmd_set_diff
+	"setdiff": cmd_set_diff,
+	"spawning": cmd_set_spawning
 }
 
 var command_help := {
@@ -34,7 +35,8 @@ var command_help := {
 	"spawnenemy": "Syntax: spawnenemy (type: string) (amount: int) \nSpawns amount of type enemies",
 	"editstam": "Syntax: editstam (property: String) (value: float) \nAdjust stamina property to value
 Valid properties are: \nregen\ncap\nmax\ncons",
-	"setdiff": "Syntax: setdiff (value: float) \n Sets diffculty multiplier to float"
+	"setdiff": "Syntax: setdiff (value: float) \n Sets diffculty multiplier to float",
+	"spawning": "Syntax: spawning (bool) \nSets enemy spawning"
 
 }
 
@@ -187,6 +189,8 @@ func cmd_spawn_enemy(args):
 			pass
 		"rager":
 			pass
+		"elite":
+			pass
 		_:
 			_log("Error: invalid enemy type " + param1)
 			return
@@ -254,7 +258,17 @@ func parse_arg(args: String, expected_type: String, negative: bool):
 		"string":
 			# strings are always valid
 			return str(param)
+		
+		"boolean":
+			var lower = param.to_lower()
 
+			if lower == "true" or lower == "1" or lower == "yes":
+				return true
+			elif lower == "false" or lower == "0" or lower == "no":
+				return false
+			else:
+				_log("Error: must be bool")
+				return null 
 		_:
 			_log("Error: unknown expected_type '%s'" % expected_type)
 			return null
@@ -264,7 +278,14 @@ func cmd_set_diff(args):
 	var param = parse_arg(args[0], "float", false)
 	if param == null:
 		return
+	Handler.game_master.score_diff_scale = false
 	Handler.game_master.difficulty = param
 	_log("Set difficulty to %f" % param)
-	
-	
+
+func cmd_set_spawning(args):
+	if not check_arg(args, 1): return
+	var param = parse_arg(args[0], "boolean", false)
+	if param == null:
+		return
+	Handler.game_master.spawning_enabled = param
+	_log(str("Enemy spawning: ", Handler.game_master.spawning_enabled))

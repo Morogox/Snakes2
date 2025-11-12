@@ -17,10 +17,13 @@ func _on_body_entered(body):
 func _on_area_entered(area: Area2D) -> void: 
 	super(area)
 	if has_hit:
+		
 		return
 	has_hit = true
 	if area.is_in_group("SnakeHead"):
+		print(">>>>>>>>>>>>>>HEAD HIT<<<<<<<<<<<<<<<<<<<")
 		hit_effect()
+		area.take_hit(1)
 		emit_signal("e_hit", global_position)
 		queue_free()
 

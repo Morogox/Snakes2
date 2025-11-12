@@ -80,7 +80,7 @@ func _play_rage_anim(time: float):
 	await rage_transform_timer.timeout
 	movement = true
 	
-func _shoot():
+func _shoot(dir = Handler.snake_head.global_position):
 	super()
 	if rage:
 		rage_shot_counter += 1

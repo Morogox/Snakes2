@@ -12,7 +12,8 @@ var next_wave_time := 0.0
 
 var base_enemy_weights = {
 	"basic": 10.0,
-	"rager": 10.0
+	"rager": 10.0,
+	"elite": 5.0
 }
 
 var enemy_scenes : Dictionary
@@ -20,6 +21,7 @@ var enemy_scenes : Dictionary
 
 @export var basic_curve: Curve
 @export var rager_curve: Curve
+@export var elite_curve: Curve
 @export var wave_amt_curve: Curve  # Multiplier for wave size
 @export var wave_time_curve: Curve  # Multiplier for wave time
 @export var difficulty_curve: Curve  # Shape how difficulty ramps
@@ -29,7 +31,7 @@ var enemy_scenes : Dictionary
 
 
 @export var spawning_enabled = true
-
+@export var score_diff_scale = true
 signal tier_change(tier: int)
 func _ready():
 	Handler.register(name.to_snake_case(), self)
@@ -62,6 +64,7 @@ func get_adjusted_weights() -> Dictionary:
 	# Sample each curve
 	weights["basic"] = base_enemy_weights["basic"] * basic_curve.sample(progress)
 	weights["rager"] = base_enemy_weights["rager"] * rager_curve.sample(progress)
+	weights["elite"] = base_enemy_weights["elite"] * elite_curve.sample(progress)
 	
 	return weights
 
@@ -130,7 +133,8 @@ func get_wave_time() -> Vector2:
 func _update_difficulty(player_score : int):
 	var old_level = int(difficulty)
 	var progress = clamp(float(player_score) / max_score, 0.0, 1.0)
-	difficulty = 1.0 + (max_difficulty - 1.0) * difficulty_curve.sample(progress)
+	if score_diff_scale:
+		difficulty = 1.0 + (max_difficulty - 1.0) * difficulty_curve.sample(progress)
 	var new_level = int(difficulty)  # Get new tier
 	print("diffculty rn at score " + str(player_score) + ": " + str(difficulty))
 	if new_level > old_level:

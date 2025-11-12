@@ -138,10 +138,9 @@ func _pick_new_target():
 			Handler.snake_head.target_pixel_pos.x if align_axis == "x" else randf_range(Handler.grid_manager.left + 50, Handler.grid_manager.right -50), 
 			Handler.snake_head.target_pixel_pos.y if align_axis == "y" else randf_range(Handler.grid_manager.top + 50, Handler.grid_manager.bottom - 70))
 
-func _shoot():
-	var dir = global_position.direction_to(Handler.snake_head.global_position) 
+func _shoot(dir = Handler.snake_head.global_position):
 	# Spawn bullet
-	
+	dir = global_position.direction_to(dir)
 	var spread = deg_to_rad(randf_range(-angle_variation_degrees, angle_variation_degrees))
 	var final_angle = dir.angle() + spread
 	
