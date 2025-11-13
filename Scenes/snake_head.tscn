@@ -6,17 +6,19 @@
 [ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="4_agune"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbogs"]
-size = Vector2(24.5, 24.5)
+size = Vector2(16.25, 16.125)
 
 [node name="SnakeHead" type="Area2D" groups=["SnakeHead"]]
 collision_mask = 62
 script = ExtResource("1_bbogs")
+move_delay_default = 3.0
 bullet_scene = ExtResource("2_agune")
 
 [node name="sSnakeHead" type="Sprite2D" parent="."]
 texture = ExtResource("1_0ta55")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.0625)
 shape = SubResource("RectangleShape2D_bbogs")
 
 [node name="Muzzle" type="Marker2D" parent="."]

@@ -190,11 +190,13 @@ bullet_scene = ExtResource("2_kyctr")
 
 [node name="shadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.498039)
-z_index = -1
+z_index = -2
+z_as_relative = false
 position = Vector2(0, 5)
 texture = ExtResource("3_aejud")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_as_relative = false
 material = SubResource("ShaderMaterial_bul3r")
 sprite_frames = SubResource("SpriteFrames_kyctr")
 animation = &"dead"

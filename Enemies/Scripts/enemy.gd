@@ -120,7 +120,7 @@ func _transition_to(new_state: state_enum):
 			collision_mask |= 1 << 1  # add layer 2 (boundaries) to mask
 			collision_mask &= ~(1 << 0)  # remove layer 1 (snake)
 			collision_layer &= ~(1 << 4) # remove layer 5 (enemies)
-			z_index = 0
+			sprite.z_index = -1
 			emit_signal("death", base_score, position)
 			feathers.toggle_emission(true)
 			_check_drops()

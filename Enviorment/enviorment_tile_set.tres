@@ -1,0 +1,49 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://d06558mm4iu7n"]
+
+[ext_resource type="Texture2D" uid="uid://b0rnff7ipk3ga" path="res://Enviorment/environement_art.png" id="1_c5quo"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lpvl2"]
+texture = ExtResource("1_c5quo")
+2:2/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+2:7/0 = 0
+3:7/0 = 0
+4:7/0 = 0
+5:7/0 = 0
+6:7/0 = 0
+6:8/0 = 0
+5:8/0 = 0
+4:8/0 = 0
+2:8/0 = 0
+3:8/0 = 0
+
+[resource]
+sources/0 = SubResource("TileSetAtlasSource_lpvl2")

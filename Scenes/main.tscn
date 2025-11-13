@@ -1,14 +1,15 @@
-[gd_scene load_steps=29 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=28 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
 [ext_resource type="Script" uid="uid://b1w2nwkwyow3f" path="res://HandlerScripts/game_master.gd" id="2_d1ilt"]
-[ext_resource type="Texture2D" uid="uid://bscpf346guwwr" path="res://Sprites/snakeSegment.png" id="3_8gbba"]
+[ext_resource type="TileSet" uid="uid://d06558mm4iu7n" path="res://Enviorment/enviorment_tile_set.tres" id="2_h1bgf"]
 [ext_resource type="Script" uid="uid://otw10bj2h0x1" path="res://HandlerScripts/score_manager.gd" id="3_hptm8"]
 [ext_resource type="Script" uid="uid://c5vblr8fe0mav" path="res://Scripts/camera_2d.gd" id="4_jjvhh"]
 [ext_resource type="Script" uid="uid://drpoux8u7dkui" path="res://HandlerScripts/enemy_handler.gd" id="5_21xkr"]
 [ext_resource type="PackedScene" uid="uid://csqdxlwc033d0" path="res://Enemies/Scenes/enemy_spawner.tscn" id="6_344ge"]
 [ext_resource type="Script" uid="uid://nmp20eyxrq4q" path="res://HandlerScripts/grid_manager.gd" id="7_6bp64"]
+[ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="7_k12tt"]
 [ext_resource type="Script" uid="uid://cl3dtkoptk5vl" path="res://HandlerScripts/item_handler.gd" id="8_344ge"]
 [ext_resource type="PackedScene" uid="uid://d1f5bs2a0cliy" path="res://HandlerScripts/sound_effect_handler.tscn" id="10_k12tt"]
 [ext_resource type="PackedScene" uid="uid://d2nepysqmn7cw" path="res://Scenes/HUDCanvas.tscn" id="11_fdnlq"]
@@ -16,22 +17,6 @@
 [ext_resource type="PackedScene" uid="uid://6bqsorf03klw" path="res://Menus/Scenes/pause_screen.tscn" id="13_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://cajdrfgqvh4fk" path="res://Scenes/cmd.tscn" id="14_jkdf5"]
 [ext_resource type="AudioStream" uid="uid://cjncb2u3nqqh6" path="res://Music/Rattle 'em up.mp3" id="15_wsu2k"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_cjwfd"]
-size = Vector2(31, 31)
-
-[sub_resource type="PackedScene" id="PackedScene_jjvhh"]
-_bundled = {
-"conn_count": 0,
-"conns": PackedInt32Array(),
-"editable_instances": [],
-"names": PackedStringArray("SnakeSegment", "Area2D", "body", "Sprite2D", "Sprite2D", "texture", "CollisionShape2D", "CollisionShape2D", "shape", "Sprite2D2", "Sprite2D", "position", "texture"),
-"node_count": 4,
-"node_paths": [NodePath("."), NodePath("."), NodePath(".")],
-"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 0, 1, 2, 1073741824, 0, 4, 3, -1, 1, 5, 0, 0, 1073741825, 0, 7, 6, -1, 1, 8, 1, 0, 1073741826, 0, 10, 9, -1, 2, 11, 2, 12, 3, 0),
-"variants": [ExtResource("3_8gbba"), SubResource("RectangleShape2D_cjwfd"), Vector2(32, 0), ExtResource("3_8gbba")],
-"version": 3
-}
 
 [sub_resource type="Curve" id="Curve_k12tt"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.696809, 0.516854), -1.39125, -1.39125, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -77,9 +62,14 @@ script = ExtResource("1_bo1nx")
 [node name="Game" type="Node" parent="."]
 process_mode = 1
 
-[node name="Bullets" type="Node" parent="Game"]
+[node name="TileMapLayer" type="TileMapLayer" parent="Game"]
+z_index = -4096
+z_as_relative = false
+tile_set = ExtResource("2_h1bgf")
 
 [node name="Segments" type="Node" parent="Game"]
+
+[node name="Bullets" type="Node" parent="Game"]
 
 [node name="Handlers" type="Node2D" parent="Game"]
 
@@ -95,7 +85,8 @@ script = ExtResource("5_21xkr")
 spawner_scene = ExtResource("6_344ge")
 
 [node name="SnakeHead" parent="Game/Handlers" instance=ExtResource("1_jjgbg")]
-segment_scene = SubResource("PackedScene_jjvhh")
+move_delay_default = 0.12
+segment_scene = ExtResource("7_k12tt")
 starting_segments = 3
 
 [node name="ScoreManager" type="Node2D" parent="Game/Handlers"]

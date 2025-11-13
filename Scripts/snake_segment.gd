@@ -5,6 +5,8 @@ var hp := max_hp
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var sprite2: Sprite2D = $Sprite2D2
+@onready var end_sprite  = preload("res://Sprites/snakeSegment_end.png")
+@onready var reg_sprite = sprite.texture
 
 signal segment_destroyed  # Removed type hint
 signal segment_death(pos: Vector2) # for sound
@@ -15,6 +17,10 @@ var damaged_color_max := Color(0.1, 0.1, 0.1)  # dark red
 
 func _ready():
 	sprite2.process_mode = Node.PROCESS_MODE_ALWAYS
+	#sprite2.z_index = Handler.snake_head.segments.size()
+	#print("SEgment created: my z index is " + str(sprite2.z_index))
+	#sprite.texture = preload("res://Sprites/snakeSegmentTest.png")
+	print("Sprite texture: " + str(sprite.texture.resource_path))
 	add_to_group("Segments")
 
 func take_hit(damage: int = 1):
@@ -92,4 +98,10 @@ func _heal(amt: int, delay: float = 0.0) -> void:
 	_update_color()
 	flash_hit_smooth(1,0.1)
 	emit_signal("segment_heal", global_position)
-	
+
+func is_end(flag := false):
+	if flag:
+		sprite.texture = end_sprite
+	else:
+		sprite.texture = reg_sprite
+		

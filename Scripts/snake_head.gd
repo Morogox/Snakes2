@@ -4,8 +4,8 @@ extends Area2D
 @onready var CELL_OFFSET = Vector2.ZERO
 var grid_origin = Vector2.ZERO
 
-const SEGMENT_TEXTURE = preload("res://Sprites/snakeSegment.png")
-const SEGMENT_TURN_TEXTURE = preload("res://Sprites/snakeSegmentTest.png")
+#const SEGMENT_TEXTURE = preload("res://Sprites/snakeSegment.png")
+#const SEGMENT_TURN_TEXTURE = preload("res://Sprites/snakeSegmentTest.png")
 const DEATH_TEXTURE = preload("res://Sprites/sSnakeHead_dead.png")
 
 
@@ -173,15 +173,34 @@ func _update_segments():
 			# Update sprite for turning
 			var sprite: Sprite2D = segment.get_node("Sprite2D")
 			var sprite2: Sprite2D = segment.get_node("Sprite2D2")
-
-			if _is_turning(i, p2, p1):
+			if i == segments.size() - 1:
+				segment.is_end(true)
+			else:
+				segment.is_end(false)
+			
+			var turn_direction = _is_turning(i, p2, p1)
+			if turn_direction != 0:
 				sprite2.visible = true
 				sprite2.position = Vector2(sprite.texture.get_size().x, 0).lerp(Vector2.ZERO, move_timer/move_delay)
+				
+				# Determine turn direction and flip accordingly
+				if turn_direction > 0:  # Clockwise
+					sprite2.flip_v = true 
+				else:  # Counterclockwise
+					sprite2.flip_v = false
 			else:
 				sprite2.visible = false
 				sprite2.position.x = sprite.position.x + sprite.texture.get_size().x
 			
 			#sprite.texture = _get_segment_texture(i, p2, p1)
+			
+func _get_turn_direction(index: int, current_pos: Vector2, next_pos: Vector2) -> int:
+	
+	var dir1 = (current_pos - segments[index].global_position).normalized()
+	var dir2 = (next_pos - current_pos).normalized()
+	var cross = dir1.x * dir2.y - dir1.y * dir2.x
+	print(sign(cross))
+	return sign(cross)  # Returns 1 for clockwise, -1 for counterclockwise
 
 # Checks if a snake segment is currently turning.
 # - Compares the segment's current direction (dir_current) to the direction of the segment ahead (dir_ahead).
@@ -191,15 +210,22 @@ func _update_segments():
 # index: The segment's index in the segments array (0 = first segment).
 # p2: The segment's target position on the move_history trail.
 # p1: The segment's previous position on the move_history trail.
-func _is_turning(index: int, p2: Vector2, p1: Vector2) -> bool:
+func _is_turning(index: int, p2: Vector2, p1: Vector2) -> int:
 	var dir_current = (p2 - p1).normalized()
 	var dir_ahead: Vector2
 	if index == 0:
 		dir_ahead = (target_pixel_pos - move_history[0]).normalized()
 	else:
 		dir_ahead = (move_history[index - 1] - p2).normalized()
+		
+	# Check if turning
 	var turning = dir_current != dir_ahead and dir_current != Vector2.ZERO and dir_ahead != Vector2.ZERO
-	return true if turning else false
+	if not turning:
+		return 0
+	
+	# Calculate turn direction using cross product
+	var cross = dir_current.x * dir_ahead.y - dir_current.y * dir_ahead.x
+	return sign(cross)  # 1 or -1
 
 # Queues a new movement direction for the snake.
 # - Only adds the new direction if it does not reverse the current direction or the last queued direction.
@@ -268,10 +294,11 @@ func remove_segment_logical(segment):
 	move_history.remove_at(i+1)
 	_update_grid_map()
 
-func _grow(amount:=1):
+func _grow(amount:=1, heal:= true):
 	pending_growth += amount
-	for idx in range(segments.size()):
-		segments[idx]._heal(1, 0.05 * idx)
+	if heal:
+		for idx in range(segments.size()):
+			segments[idx]._heal(1, 0.05 * idx)
 	_update_stamina(amount)
 	
 
@@ -324,9 +351,6 @@ func _lerp_position(p1: Vector2, p2: Vector2) -> Vector2:
 	var t = move_timer / move_delay
 	return p1.lerp(p2, t)
 
-# Determine which texture a segment should use
-# Uses the segment index, current position, and previous position
-# Returns SEGMENT_TURN_TEXTURE if turning, otherwise SEGMENT_TEXTURE
 func _get_rotation(p1: Vector2, p2: Vector2) -> float:
 	var dir = p2 - p1
 	return atan2(dir.y, dir.x)
@@ -362,6 +386,9 @@ func _input(event):
 func _shoot():
 	if timer > 0.0:
 		return
+	if input_queue.size() > 0:
+		await get_tree().create_timer(move_timer).timeout
+		
 	timer = cooldown
 	# show muzzle flash
 	flash.show()
@@ -378,6 +405,7 @@ func _shoot():
 	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
 	bullet.s_miss.connect(Handler.sound_effect_handler._s_miss)
 	bullet.snake_hit.connect(Handler.sound_effect_handler._snake_hit) # Whatever you do, do NOT abbreviate "snake" and have "hit" after
+	bullet.snake_hit.connect(_bullet_hit_enemy)
 	get_node("/root/main/Game/Camera2D").shake(50.0, 10.0)
 	
 	# Play Sound
@@ -443,10 +471,13 @@ func get_predicted_velocity() -> Vector2:
 	# Otherwise, assume we'll continue in current direction
 	return direction * (GRID_SIZE / move_delay)
 	
-func take_hit(damage = 1.0):
+func take_hit(dmg = 1.0):
 	if invulnerable:
 		return
-	hp -= damage
+	hp -= dmg
 	if hp <= 0:
 		_game_over()
 	pass
+
+func _bullet_hit_enemy(_v: Vector2):
+	_grow(1, false)
