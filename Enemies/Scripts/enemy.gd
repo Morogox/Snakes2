@@ -34,6 +34,7 @@ signal death(points: int, loc: Vector2)
 signal drop_item_here(type: String, loc: Vector2)
 signal charge(position: Vector2) # for sound
 signal fire(position: Vector2) # for sound
+signal raging(position: Vector2) # for sound
 
 @export var base_score = 50
 
@@ -74,7 +75,7 @@ func _physics_process(delta):
 		shoot_timer += delta
 		if shoot_timer >= shoot_delay:
 			_change_sprite(sprite_shooting_name)
-			#emit_signal("fire", global_position)
+			emit_signal("charge", global_position)
 			movement = false
 			#_shoot()
 			shoot_delay = randf_range(shoot_delay_base, shoot_delay_base + shoot_delay_variation)

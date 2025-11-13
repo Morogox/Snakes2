@@ -10,6 +10,7 @@ extends Node2D
 @onready var snake_hit = $Snake_Bullet_Hit # There's no reason that I wrote the full word "snake" instead of just "s"
 @onready var e_shoot = $Enemy_Shoot
 @onready var charge = $Enemy_Charge
+@onready var rage = $Enemy_Rage
 @onready var e_miss = $Enemy_Bullet_Miss
 @onready var e_hit = $Enemy_Bullet_Hit
 @onready var segment_death = $Snake_Segment_Death
@@ -79,6 +80,10 @@ func _e_shoot(go_to: Vector2):
 func _e_charge(go_to: Vector2):
 	charge.global_position = go_to
 	charge.play()
+
+func _e_rage(go_to: Vector2):
+	rage.global_position = go_to
+	rage.play()
 
 func _e_miss(go_to: Vector2):
 	e_miss.global_position = go_to

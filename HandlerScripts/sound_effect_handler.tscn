@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d1f5bs2a0cliy"]
+[gd_scene load_steps=18 format=3 uid="uid://d1f5bs2a0cliy"]
 
 [ext_resource type="Script" uid="uid://kvxm02e0p1gu" path="res://HandlerScripts/sound_effect_handler.gd" id="1_2yf51"]
 [ext_resource type="AudioStream" uid="uid://rgmrtf2i7bev" path="res://Sound Effects/Chomp_1.wav" id="2_oe6y3"]
@@ -15,6 +15,7 @@
 [ext_resource type="AudioStream" uid="uid://tmtq1th6c0q6" path="res://Sound Effects/enemy_bullet_miss.wav" id="10_3vboh"]
 [ext_resource type="AudioStream" uid="uid://blb75gm8pmk0u" path="res://Sound Effects/enemy_bullet_hit.wav" id="11_xvhxg"]
 [ext_resource type="AudioStream" uid="uid://fkgkk3dmhkwn" path="res://Sound Effects/snake_death_segments.wav" id="14_p0ccr"]
+[ext_resource type="AudioStream" uid="uid://cndhgr82m4xx8" path="res://Sound Effects/Train Horn.wav" id="16_0w1pk"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_d63yo"]
 playback_mode = 1
@@ -96,3 +97,7 @@ volume_db = 5.0
 stream = ExtResource("10_3vboh")
 volume_db = 10.0
 pitch_scale = 2.0
+
+[node name="Enemy_Rage" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("16_0w1pk")
+max_polyphony = 5

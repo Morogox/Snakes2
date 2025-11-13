@@ -32,6 +32,7 @@ func _enter_rage():
 	timer.stop()
 	shoot_timer = 0
 	shoot_delay = INF
+	emit_signal("raging", global_position)
 	await _play_rage_anim(rage_transform_time)
 	sprite_default_name = "rage_default"
 	sprite_shooting_name = "rage_shooting"

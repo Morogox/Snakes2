@@ -55,6 +55,7 @@ func _spawn_enemy():
 		enemy.drop_item_here.connect(Handler.item_handler.spawn_item_on_grid)
 		enemy.charge.connect(Handler.sound_effect_handler._e_charge)
 		enemy.fire.connect(Handler.sound_effect_handler._e_shoot)
+		enemy.raging.connect(Handler.sound_effect_handler._e_rage)
 	queue_free()
 
 func _transition_to(new_state: state_enum):
