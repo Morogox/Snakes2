@@ -2,7 +2,7 @@ extends Node2D
 @export var difficulty : float = 1.0
 @export var max_enemy_amount := 8
 var available_space = max_enemy_amount
-@export var base_wave_amt := Vector2(1, 2)
+@export var base_wave_amt := Vector2(1, 1.5)
 @export var base_wave_time := Vector2(15.0, 20.0)
 var wave_timer := 0.0
 var next_wave_time := 0.0
@@ -13,7 +13,7 @@ var next_wave_time := 0.0
 var base_enemy_weights = {
 	"basic": 10.0,
 	"rager": 10.0,
-	"elite": 5.0
+	"elite": 6.0
 }
 
 var enemy_scenes : Dictionary

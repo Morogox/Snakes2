@@ -7,7 +7,7 @@ const GRID_COLOR = Color(0.7, 0.7, 0.7, 0.5)  # light gray, semi-transparent
 @export var grid_dimensions = 5
 
 @onready var tilemap = get_node("/root/main/Game/TileMapLayer")
-var tile_layer = 0
+var tile_layer = 3
 const TILES = {
 	"top_wall_top": Vector2i(3, 1),
 	"top_wall_bot": Vector2i(3, 2),
@@ -143,30 +143,30 @@ func _populate_tilemap():
 	_place_floors(tilemap, tile_layer)
 
 func _place_floors(tilemap: TileMapLayer, layer: int):
-	tilemap.set_cell(Vector2i(0,0), 0, TILES["top_left_corner_floor"])
-	tilemap.set_cell(Vector2i(grid_width - 1,0), 0, TILES["top_right_corner_floor"])
-	tilemap.set_cell(Vector2i(grid_width - 1,grid_height -1), 0, TILES["bottom_right_corner_floor"])
-	tilemap.set_cell(Vector2i(0,grid_height -1), 0, TILES["bottom_left_corner_floor"])
+	tilemap.set_cell(Vector2i(0,0), layer, TILES["top_left_corner_floor"])
+	tilemap.set_cell(Vector2i(grid_width - 1,0), layer, TILES["top_right_corner_floor"])
+	tilemap.set_cell(Vector2i(grid_width - 1,grid_height -1), layer, TILES["bottom_right_corner_floor"])
+	tilemap.set_cell(Vector2i(0,grid_height -1), layer, TILES["bottom_left_corner_floor"])
 	
 	for y in range(1, grid_height -1):
-		tilemap.set_cell(Vector2i(0, y), 0, TILES["wall_left_edges"].get(randi()%3))
-		tilemap.set_cell(Vector2i(grid_width -1, y), 0, TILES["wall_right_edges"].get(randi()%2))
+		tilemap.set_cell(Vector2i(0, y), layer, TILES["wall_left_edges"].get(randi()%3))
+		tilemap.set_cell(Vector2i(grid_width -1, y), layer, TILES["wall_right_edges"].get(randi()%2))
 	
 	for x in range(1, grid_width -1):
-		tilemap.set_cell(Vector2i(x, 0), 0, TILES["wall_top_edges"].get(randi()%2))
+		tilemap.set_cell(Vector2i(x, 0), layer, TILES["wall_top_edges"].get(randi()%2))
 		
 	for i in range(1, grid_width-1):
 		for j in range(1, grid_height):
-			tilemap.set_cell(Vector2i(i,j), 0, TILES["floors"].get(randi()%6))
+			tilemap.set_cell(Vector2i(i,j), layer, TILES["floors"].get(randi()%6))
 
 func _place_walls(tilemap: TileMapLayer, layer: int):
 	for x in range(-1, grid_width +1):
-		tilemap.set_cell(Vector2i(x, -1), 0, TILES["top_wall_bot"])
-		tilemap.set_cell(Vector2i(x, -2), 0, TILES["top_wall_top"])
-		tilemap.set_cell(Vector2i(x, grid_height), 0, TILES["bottom_wall_top"])
-		tilemap.set_cell(Vector2i(x, grid_height + 1), 0, TILES["bottom_wall_bot"])
+		tilemap.set_cell(Vector2i(x, -1), layer, TILES["top_wall_bot"])
+		tilemap.set_cell(Vector2i(x, -2), layer, TILES["top_wall_top"])
+		tilemap.set_cell(Vector2i(x, grid_height), layer, TILES["bottom_wall_top"])
+		tilemap.set_cell(Vector2i(x, grid_height + 1), layer, TILES["bottom_wall_bot"])
 	for y in range (-1, grid_height):
-		tilemap.set_cell(Vector2i(-1, y), 0, TILES["side_wall"])
-		tilemap.set_cell(Vector2i(grid_width, y), 0, TILES["side_wall"])
+		tilemap.set_cell(Vector2i(-1, y), layer, TILES["side_wall"])
+		tilemap.set_cell(Vector2i(grid_width, y), layer, TILES["side_wall"])
 	
 	

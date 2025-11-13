@@ -41,7 +41,7 @@ signal fire(position: Vector2) # for sound
 var drop_item := true
 
 @export var drops := {
-	"apple_2": 0.3,   # 30% chance
+	"apple_2": 0.1,   # 10% chance
 }
 
 

@@ -34,6 +34,7 @@ func _process(delta):
 		chaser.value = stamina_bar.value
 	
 func set_score(value: int):
+	var new_score = value
 	score = value
 	score_label.text = "Score: " + str(score)
 

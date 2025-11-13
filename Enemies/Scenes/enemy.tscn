@@ -199,7 +199,6 @@ texture = ExtResource("3_aejud")
 z_as_relative = false
 material = SubResource("ShaderMaterial_bul3r")
 sprite_frames = SubResource("SpriteFrames_kyctr")
-animation = &"dead"
 speed_scale = 1.8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

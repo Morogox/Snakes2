@@ -23,25 +23,25 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.696809, 0.516854), -1.39125, -
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_h1bgf"]
-_data = [Vector2(0.3, 0), 0.0, 0.0, 0, 0, Vector2(0.3, 0.2), 0.0, 0.0, 0, 0, Vector2(0.6, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0.3, 0), 0.0, 0.0, 0, 0, Vector2(0.3, 0.2), 0.0, 0.0, 0, 0, Vector2(0.6, 0.5), 1.82893, 1.82893, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 4
 
 [sub_resource type="Curve" id="Curve_pdsj5"]
-_data = [Vector2(0.6, 0), 0.0, 0.0, 0, 0, Vector2(0.6, 0.6), 0.835934, 0.835934, 0, 0, Vector2(1, 1), -0.179775, 0.0, 0, 0]
+_data = [Vector2(0.6, 0), 0.0, 0.0, 0, 0, Vector2(0.6, 0.6), 0.114187, 0.114187, 0, 0, Vector2(1, 1), 1.51214, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_b3802"]
 _limits = [1.0, 4.0, 0.0, 1.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 4), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 1), 0.0, 7.39294, 0, 0, Vector2(0.6, 2.8), -0.0102769, -0.0102769, 0, 0, Vector2(1, 4), 7.45841, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Curve" id="Curve_fevyy"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.994681, 0.303371), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.495071), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_hibaj"]
-_data = [Vector2(0, 0), 0.0, 6.16105, 0, 0, Vector2(0.1, 0.5), 1.79415, 1.79415, 0, 0, Vector2(0.99999, 1), 0.228375, 0.228375, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 4
+_data = [Vector2(0, 0), 0.0, 6.16105, 0, 0, Vector2(0.01, 0.2), 6.38936, 6.38936, 0, 0, Vector2(0.1, 0.5), 1.84314, 1.84314, 0, 0, Vector2(0.99999, 1), 0.0960281, 0.0960281, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bo1nx"]
 distance = -128.0
@@ -127,6 +127,7 @@ shape = SubResource("WorldBoundaryShape2D_kry3j")
 script = ExtResource("4_jjvhh")
 
 [node name="CanvasLayer" parent="Game" instance=ExtResource("11_fdnlq")]
+layer = 1
 
 [node name="death_screen" parent="Game" instance=ExtResource("12_fdnlq")]
 visible = false
