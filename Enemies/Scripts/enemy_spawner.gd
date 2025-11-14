@@ -5,6 +5,7 @@ extends Node2D
 @export var deploy_time := 0.5     # how long till the enemy finish spawning
 @export var fall_height := 50.0     # how high the enemy starts from
 @export var fade_in_speed := 2.0
+var enemy_instance
 
 enum state_enum {SPAWNING, DEPLOYING}
 var state: state_enum = state_enum.SPAWNING
@@ -15,6 +16,7 @@ var state: state_enum = state_enum.SPAWNING
 var timer := 0.0
 var duration := 0.0
 
+var enemy_cliision_shape
 
 func _ready():
 	# Start transparent + offset
@@ -24,7 +26,17 @@ func _ready():
 	shadow.modulate.a = 0.0
 	_transition_to(state_enum.SPAWNING)
 	z_index = 99
+	enemy_instance = enemy_scene.instantiate()
+	scale = enemy_instance.scale
+	
+	var enemy_anim_sprite = enemy_instance.get_node("AnimatedSprite2D")
+	var spawn_texture = enemy_anim_sprite.sprite_frames.get_frame_texture("spawn", 0)
 
+	dummy.sprite_frames = dummy.sprite_frames.duplicate()
+	dummy.sprite_frames.clear("default")
+	dummy.sprite_frames.add_frame("default", spawn_texture)
+	dummy.play("default")
+	
 func _process(delta):
 	timer += delta
 	var t = clamp(timer / duration, 0.0, 1.0)
@@ -46,11 +58,11 @@ func _process(delta):
 				_spawn_enemy()
 
 func _spawn_enemy():
-	if enemy_scene:
-		var enemy = enemy_scene.instantiate()
+	if enemy_instance:
+		var enemy = enemy_instance
 		enemy.global_position = global_position
 		Handler.enemy_handler.add_child(enemy)
-		
+
 		enemy.death.connect(Handler.enemy_handler._enemy_killed)
 		enemy.drop_item_here.connect(Handler.item_handler.spawn_item_on_grid)
 		enemy.charge.connect(Handler.sound_effect_handler._e_charge)

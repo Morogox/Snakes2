@@ -17,10 +17,6 @@ var damaged_color_max := Color(0.1, 0.1, 0.1)  # dark red
 
 func _ready():
 	sprite2.process_mode = Node.PROCESS_MODE_ALWAYS
-	#sprite2.z_index = Handler.snake_head.segments.size()
-	#print("SEgment created: my z index is " + str(sprite2.z_index))
-	#sprite.texture = preload("res://Sprites/snakeSegmentTest.png")
-	print("Sprite texture: " + str(sprite.texture.resource_path))
 	add_to_group("Segments")
 
 func take_hit(damage: int = 1):

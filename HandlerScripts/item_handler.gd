@@ -6,14 +6,14 @@ var item_map = {
 	"apple_1": {
 		"type": "apple",
 		"value": 1,
-		"sprite": preload("res://Sprites/apple.png"),
+		"sprite": "red_apple",
 		"points": 10,
 		"respawnable": true
 	},
 	"apple_2": {
 		"type": "apple",
 		"value": 2,
-		"sprite": preload("res://Sprites/apple2.png"),
+		"sprite": "gold_apple",
 		"points": 20,
 		"respawnable": false
 	}

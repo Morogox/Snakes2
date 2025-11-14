@@ -8,7 +8,7 @@
 size = Vector2(64, 20)
 
 [node name="Bullet" instance=ExtResource("1_jvahr")]
-collision_mask = 18
+collision_mask = 82
 script = ExtResource("2_6fhsa")
 lifetime = 15.0
 force = 2000.0

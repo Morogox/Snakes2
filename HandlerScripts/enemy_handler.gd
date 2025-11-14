@@ -6,7 +6,9 @@ var active_enemy_amt := 0
 var enemy_types = {
 	"basic": preload("res://Enemies/Scenes/enemy.tscn"),
 	"rager": preload("res://Enemies/Scenes/enemy_rager.tscn"),
-	"elite": preload("res://Enemies/Scenes/enemy_elite.tscn")
+	"elite": preload("res://Enemies/Scenes/enemy_elite.tscn"),
+	"heavy": preload("res://Enemies/Scenes/enemy_heavy.tscn"),
+	"primal": preload("res://Enemies/Scenes/enemy_primal.tscn")
 }
 func _ready():
 	Handler.register(name.to_snake_case(), self)

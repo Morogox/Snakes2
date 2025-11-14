@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://dmekpth0sihe5"]
+[gd_scene load_steps=56 format=3 uid="uid://dmekpth0sihe5"]
 
 [ext_resource type="PackedScene" uid="uid://r4a6tfia5y5m" path="res://Enemies/Scenes/enemy.tscn" id="1_hrf57"]
 [ext_resource type="Shader" uid="uid://cpxji8y54m54v" path="res://Shaders/enemy1.gdshader" id="2_3jode"]
@@ -189,6 +189,14 @@ region = Rect2(442, 34, 34, 34)
 atlas = ExtResource("3_76thm")
 region = Rect2(476, 34, 34, 34)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_dr30l"]
+atlas = ExtResource("3_76thm")
+region = Rect2(170, 34, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m67po"]
+atlas = ExtResource("3_76thm")
+region = Rect2(68, 34, 34, 34)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_61hrj"]
 animations = [{
 "frames": [{
@@ -352,12 +360,28 @@ animations = [{
 "loop": false,
 "name": &"shooting",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dr30l")
+}],
+"loop": true,
+"name": &"spawn",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m67po")
+}],
+"loop": true,
+"name": &"stunned",
+"speed": 5.0
 }]
 
 [node name="Enemy" instance=ExtResource("1_hrf57")]
 script = ExtResource("2_5ymgv")
 rage_chance = 0.3
-rage_shot_count = 6
+rage_shot_count = 5
 rage_bullet_scene = ExtResource("3_7t0jq")
 rage_transform_time = 3.0
 base_score = 70
@@ -368,8 +392,6 @@ position = Vector2(0.4, -4.4)
 [node name="AnimatedSprite2D" parent="." index="2"]
 material = SubResource("ShaderMaterial_76thm")
 sprite_frames = SubResource("SpriteFrames_61hrj")
-animation = &"rage_transform"
-frame_progress = 0.313129
 
 [node name="RageTransformTimer" type="Timer" parent="." index="7"]
 wait_time = 3.0

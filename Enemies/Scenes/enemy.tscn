@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://r4a6tfia5y5m"]
+[gd_scene load_steps=34 format=3 uid="uid://r4a6tfia5y5m"]
 
 [ext_resource type="Script" uid="uid://dsjt0nugycb3a" path="res://Enemies/Scripts/enemy.gd" id="1_nbojj"]
 [ext_resource type="PackedScene" uid="uid://dsigkkcrixheb" path="res://Bullets/Scenes/bullet_enemy_1.tscn" id="2_kyctr"]
@@ -97,6 +97,14 @@ region = Rect2(442, 34, 34, 34)
 atlas = ExtResource("5_xjuft")
 region = Rect2(476, 34, 34, 34)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_aejud"]
+atlas = ExtResource("5_xjuft")
+region = Rect2(170, 34, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kyctr"]
+atlas = ExtResource("5_xjuft")
+region = Rect2(68, 34, 34, 34)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_kyctr"]
 animations = [{
 "frames": [{
@@ -176,6 +184,22 @@ animations = [{
 "loop": false,
 "name": &"shooting",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aejud")
+}],
+"loop": true,
+"name": &"spawn",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kyctr")
+}],
+"loop": true,
+"name": &"stunned",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aejud"]
@@ -199,6 +223,7 @@ texture = ExtResource("3_aejud")
 z_as_relative = false
 material = SubResource("ShaderMaterial_bul3r")
 sprite_frames = SubResource("SpriteFrames_kyctr")
+animation = &"spawn"
 speed_scale = 1.8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -206,6 +231,9 @@ position = Vector2(0, 0.625)
 shape = SubResource("RectangleShape2D_aejud")
 
 [node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Timer2" type="Timer" parent="."]
 one_shot = true
 
 [node name="Muzzle" type="Marker2D" parent="."]

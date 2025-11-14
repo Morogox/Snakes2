@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://4iciftp1jtm"]
+
+[ext_resource type="Texture2D" uid="uid://dxo4ig461nbub" path="res://Enemies/Sprites/enemy_shield.png" id="1_84jcy"]
+[ext_resource type="Script" uid="uid://cv4dtgsnjfx6j" path="res://Enemies/Scripts/enemy_shield.gd" id="1_jqp3y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jqp3y"]
+size = Vector2(12, 32)
+
+[node name="EnemyShield" type="StaticBody2D" groups=["Object"]]
+collision_layer = 64
+collision_mask = 0
+script = ExtResource("1_jqp3y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_jqp3y")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_84jcy")

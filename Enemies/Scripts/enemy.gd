@@ -5,11 +5,12 @@ extends CharacterBody2D
 @export var hp := 1
 
 var target_position: Vector2
-enum state_enum { IDLE, MOVING, DEAD}
+enum state_enum { IDLE, MOVING, DEAD, STUNNED}
 var state: state_enum = state_enum.IDLE
 var direction := Vector2.ZERO
 
 @onready var timer := $Timer
+@onready var stun_timer := $Timer2
 @onready var sprite = $AnimatedSprite2D
 
 @onready var muzzle_flash = $sMuzzleFlash
@@ -22,13 +23,13 @@ var muzzle_flash_time := 0.05   # how long to show the flash (seconds)
 @export var shoot_delay_base = 2.0
 @export var shoot_delay_variation = 2.0
 var shoot_delay = shoot_delay_base
-var shoot_timer = 0
+var shoot_timer := 0.0
 
 @onready var shader_mat: ShaderMaterial = sprite.material
 
 var invulnerable = false
 
-var friction := 2000 # pixels/sec^2
+@export var friction := 2000 # pixels/sec^2
 
 signal death(points: int, loc: Vector2)
 signal drop_item_here(type: String, loc: Vector2)
@@ -52,6 +53,9 @@ var sprite_shooting_name := "shooting"
 @export var angle_variation_degrees := 0.0
 
 @onready var feathers = $EnemyFeather
+
+@export var stun_time := 0.5
+
 func _ready():
 	randomize()
 	_change_sprite(sprite_default_name)
@@ -66,12 +70,14 @@ func _change_sprite(type):
 	sprite.play(type)
 
 func _physics_process(delta):
-	if state != state_enum.DEAD:
+	
+	if state != state_enum.DEAD and state != state_enum.STUNNED:
 		match state:
 			state_enum.MOVING:
 				_process_moving(delta)
 			state_enum.IDLE:
 				velocity = Vector2.ZERO  # stay still
+
 		shoot_timer += delta
 		if shoot_timer >= shoot_delay:
 			_change_sprite(sprite_shooting_name)
@@ -80,8 +86,9 @@ func _physics_process(delta):
 			#_shoot()
 			shoot_delay = randf_range(shoot_delay_base, shoot_delay_base + shoot_delay_variation)
 			shoot_timer = 0.0
-	# dead
-	else:
+	### dead or stunned
+	#else:
+	elif state == state_enum.DEAD or state == state_enum.STUNNED :
 		if velocity.length() <= (friction * delta):
 			velocity = Vector2.ZERO
 		else:
@@ -114,9 +121,19 @@ func _transition_to(new_state: state_enum):
 		state_enum.IDLE:
 			var wait_time = randf_range(min_wait_time, max_wait_time)
 			timer.start(wait_time)
+		state_enum.STUNNED:
+			print("OW IM STUNNED")
+			
+			movement = false
+			_change_sprite("stunned")
+			timer.stop()
+			shoot_timer = 0.0
 		state_enum.DEAD:
 			timer.stop()  # immediately stops the timer
+			stun_timer.stop()
 			sprite.play("dead")
+			movement = false
+			shoot_timer = 0
 			invulnerable = true
 			collision_mask |= 1 << 1  # add layer 2 (boundaries) to mask
 			collision_mask &= ~(1 << 0)  # remove layer 1 (snake)
@@ -139,20 +156,33 @@ func _pick_new_target():
 			Handler.snake_head.target_pixel_pos.x if align_axis == "x" else randf_range(Handler.grid_manager.left + 50, Handler.grid_manager.right -50), 
 			Handler.snake_head.target_pixel_pos.y if align_axis == "y" else randf_range(Handler.grid_manager.top + 50, Handler.grid_manager.bottom - 70))
 
-func _shoot(dir = Handler.snake_head.global_position):
+func _shoot(dir = Handler.snake_head.global_position, amount := 1, fan_angle := 0.0):
 	# Spawn bullet
 	dir = global_position.direction_to(dir)
 	var spread = deg_to_rad(randf_range(-angle_variation_degrees, angle_variation_degrees))
 	var final_angle = dir.angle() + spread
 	
-	var bullet = bullet_scene.instantiate()
-	bullet.global_position = muzzle.global_position
-	bullet.rotation =  final_angle
-	bullet.damage = damage  # pass damage to bullet
-	bullet.b_speed = bullet_speed  # pass damage to bullet
-	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
-	bullet.e_miss.connect(Handler.sound_effect_handler._e_miss)
-	bullet.e_hit.connect(Handler.sound_effect_handler._e_hit)
+	# Calculate angle step for fanning
+	var angle_step = 0.0
+	if amount > 1:
+		angle_step = deg_to_rad(fan_angle) / (amount - 1)
+	
+	# Start angle offset (center the fan around final_angle)
+	var start_offset = -deg_to_rad(fan_angle) / 2.0
+	
+	for i in range(amount):
+		var bullet = bullet_scene.instantiate()
+		bullet.global_position = muzzle.global_position
+		
+		# Apply fan angle offset
+		var bullet_angle = final_angle + start_offset + (angle_step * i)
+		bullet.rotation = bullet_angle
+		
+		bullet.damage = damage
+		bullet.b_speed = bullet_speed
+		get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
+		bullet.e_miss.connect(Handler.sound_effect_handler._e_miss)
+		bullet.e_hit.connect(Handler.sound_effect_handler._e_hit)
 
 func flash_whiteout(count: int, interval: float) -> void:
 	for i in count:
@@ -173,10 +203,12 @@ func take_hit(dmg: int, kb_dir: Vector2 = Vector2.ZERO, force: float = 0.0):
 		hp -= dmg
 	if hp <= 0:
 		_transition_to(state_enum.DEAD)
-		var angle_variation := deg_to_rad(15.0)  # max +- 15 degrees variation
-		var random_angle := randf_range(-angle_variation, angle_variation)
-		velocity = kb_dir.normalized() * force
-		velocity = velocity.rotated(random_angle)
+	else:
+		stun()
+	var angle_variation := deg_to_rad(15.0)  # max +- 15 degrees variation
+	var random_angle := randf_range(-angle_variation, angle_variation)
+	velocity = kb_dir.normalized() * force
+	velocity = velocity.rotated(random_angle)
 	await flash_whiteout(4, 0.05)
 
 func _check_drops():
@@ -200,3 +232,14 @@ func _on_frame_changed() -> void:
 	if sprite.frame == 10 and sprite.animation == sprite_shooting_name:
 		emit_signal("fire", global_position)
 		_shoot()
+
+func stun():
+	collision_mask |= 1 << 1  # add layer 2 (boundaries) to mask
+	_transition_to(state_enum.STUNNED)
+	stun_timer.start(stun_time)
+	await stun_timer.timeout
+	movement = true
+	collision_mask &= ~(1 << 1) # remove layer 2 (boundaries) to mask
+	_transition_to(state_enum.IDLE)
+	_change_sprite(sprite_default_name)
+	

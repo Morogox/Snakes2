@@ -1,7 +1,7 @@
 extends "res://Enemies/Scripts/enemy.gd"
 var rage := false
 @export var rage_chance = 0.3
-@export var rage_shot_count = 6
+@export var rage_shot_count = 5
 @export var rage_bullet_scene = PackedScene
 var regular_bullet_speed : float
 var regular_bullet_scene : PackedScene
@@ -81,7 +81,7 @@ func _play_rage_anim(time: float):
 	await rage_transform_timer.timeout
 	movement = true
 	
-func _shoot(dir = Handler.snake_head.global_position):
+func _shoot(dir = Handler.snake_head.global_position, amount := 1, fan_angle := 0.0):
 	super()
 	if rage:
 		rage_shot_counter += 1

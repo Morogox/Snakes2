@@ -112,11 +112,7 @@ func predict_intercept(shooter_pos: Vector2, target_pos: Vector2, target_vel: Ve
 	
 	return target_pos + target_vel * t
 
-func _shoot(dir = global_position.direction_to(Handler.snake_head.global_position)):
+func _shoot(dir = Handler.snake_head.global_position, amount := 1, fan_angle := 0.0):
 	var snake_vel = Handler.snake_head.get_predicted_velocity()
 	var adjusted_target = predict_intercept(muzzle.global_position, Handler.snake_head.global_position, snake_vel, bullet_speed)
-	print("The elite is firing")
-	print("Snake velocity: ", snake_vel)
-	print("Moment of record: ", dir)
-	print("Aiming at ", global_position.direction_to(adjusted_target))
 	super(adjusted_target)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://1v81jgcyvdrf"]
+[gd_scene load_steps=35 format=3 uid="uid://1v81jgcyvdrf"]
 
 [ext_resource type="PackedScene" uid="uid://r4a6tfia5y5m" path="res://Enemies/Scenes/enemy.tscn" id="1_v5vnq"]
 [ext_resource type="Script" uid="uid://hfodqrsoftqb" path="res://Enemies/Scripts/enemy_elite.gd" id="2_4mklk"]
@@ -111,6 +111,14 @@ region = Rect2(442, 34, 34, 34)
 atlas = ExtResource("4_4mklk")
 region = Rect2(476, 34, 34, 34)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_rvv54"]
+atlas = ExtResource("4_4mklk")
+region = Rect2(170, 34, 34, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gmmvs"]
+atlas = ExtResource("4_4mklk")
+region = Rect2(272, 68, 34, 34)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_oi77i"]
 animations = [{
 "frames": [{
@@ -207,6 +215,22 @@ animations = [{
 "loop": false,
 "name": &"shooting",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rvv54")
+}],
+"loop": true,
+"name": &"spawn",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gmmvs")
+}],
+"loop": true,
+"name": &"stunned",
+"speed": 5.0
 }]
 
 [node name="Enemy" instance=ExtResource("1_v5vnq")]
@@ -221,10 +245,7 @@ base_score = 60
 
 [node name="EnemyExclamation" parent="." index="1" instance=ExtResource("3_g7g3l")]
 position = Vector2(2, -3.6)
-scale = Vector2(1, 1)
 
 [node name="AnimatedSprite2D" parent="." index="2"]
 material = SubResource("ShaderMaterial_4mklk")
 sprite_frames = SubResource("SpriteFrames_oi77i")
-animation = &"default"
-frame_progress = 0.991134

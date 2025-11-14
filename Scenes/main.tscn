@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=30 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
@@ -19,16 +19,24 @@
 [ext_resource type="AudioStream" uid="uid://cjncb2u3nqqh6" path="res://Music/Rattle 'em up.mp3" id="15_wsu2k"]
 
 [sub_resource type="Curve" id="Curve_k12tt"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.696809, 0.516854), -1.39125, -1.39125, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.7, 0.3), -2.77791, -2.77791, 0, 0, Vector2(1, 0), -0.0745307, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_h1bgf"]
-_data = [Vector2(0.3, 0), 0.0, 0.0, 0, 0, Vector2(0.3, 0.2), 0.0, 0.0, 0, 0, Vector2(0.6, 0.5), 1.82893, 1.82893, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 4
+_data = [Vector2(0.3, 0), 0.0, 0.0, 0, 0, Vector2(0.3, 0.2), 0.0, 0.0, 0, 0, Vector2(1, 1), 2.25738, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Curve" id="Curve_pdsj5"]
 _data = [Vector2(0.6, 0), 0.0, 0.0, 0, 0, Vector2(0.6, 0.6), 0.114187, 0.114187, 0, 0, Vector2(1, 1), 1.51214, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="Curve" id="Curve_ee4r6"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.8, 0), 0.0, 0.0, 0, 0, Vector2(0.8, 0.7), 5.69122, 5.69122, 0, 0, Vector2(1, 1), 0.820849, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_gt3je"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.49, 0), 0.0, 0.0, 0, 0, Vector2(0.5, 0.5), 2.75591, 2.75591, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 4
 
 [sub_resource type="Curve" id="Curve_b3802"]
 _limits = [1.0, 4.0, 0.0, 1.0]
@@ -69,8 +77,6 @@ tile_set = ExtResource("2_h1bgf")
 
 [node name="Segments" type="Node" parent="Game"]
 
-[node name="Bullets" type="Node" parent="Game"]
-
 [node name="Handlers" type="Node2D" parent="Game"]
 
 [node name="GridManager" type="Node2D" parent="Game/Handlers"]
@@ -97,12 +103,16 @@ script = ExtResource("2_d1ilt")
 basic_curve = SubResource("Curve_k12tt")
 rager_curve = SubResource("Curve_h1bgf")
 elite_curve = SubResource("Curve_pdsj5")
+heavy_curve = SubResource("Curve_ee4r6")
+primal_curve = SubResource("Curve_gt3je")
 wave_amt_curve = SubResource("Curve_b3802")
 wave_time_curve = SubResource("Curve_fevyy")
 difficulty_curve = SubResource("Curve_hibaj")
 
 [node name="SoundEffectHandler" parent="Game/Handlers" instance=ExtResource("10_k12tt")]
 position = Vector2(576, 0)
+
+[node name="Bullets" type="Node" parent="Game"]
 
 [node name="WorldBoundaries" type="StaticBody2D" parent="Game" groups=["Boundaries"]]
 collision_layer = 2

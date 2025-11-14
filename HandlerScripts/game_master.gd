@@ -12,8 +12,10 @@ var next_wave_time := 0.0
 
 var base_enemy_weights = {
 	"basic": 10.0,
-	"rager": 10.0,
-	"elite": 6.0
+	"rager": 7.0,
+	"elite": 5.0,
+	"heavy": 3.0,
+	"primal": 4.0
 }
 
 var enemy_scenes : Dictionary
@@ -22,6 +24,8 @@ var enemy_scenes : Dictionary
 @export var basic_curve: Curve
 @export var rager_curve: Curve
 @export var elite_curve: Curve
+@export var heavy_curve: Curve
+@export var primal_curve: Curve
 @export var wave_amt_curve: Curve  # Multiplier for wave size
 @export var wave_time_curve: Curve  # Multiplier for wave time
 @export var difficulty_curve: Curve  # Shape how difficulty ramps
@@ -58,13 +62,15 @@ func get_adjusted_weights() -> Dictionary:
 	var weights = {}
 	
 	# Convert difficulty to 0.0-1.0 range for curve sampling
-	var progress = (difficulty - 1.0) / (max_difficulty - 1.0)
+	var progress = (difficulty) / (max_difficulty)
 	progress = clamp(progress, 0.0, 1.0)
 	
 	# Sample each curve
 	weights["basic"] = base_enemy_weights["basic"] * basic_curve.sample(progress)
 	weights["rager"] = base_enemy_weights["rager"] * rager_curve.sample(progress)
 	weights["elite"] = base_enemy_weights["elite"] * elite_curve.sample(progress)
+	weights["heavy"] = base_enemy_weights["heavy"] * heavy_curve.sample(progress)
+	weights["primal"] = base_enemy_weights["primal"] * primal_curve.sample(progress)
 	
 	return weights
 
@@ -109,11 +115,12 @@ func _reset_wave_timer() -> void:
 
 func _update_available_space(_s, _l):
 	available_space = max_enemy_amount - Handler.enemy_handler.active_enemy_amt
+	available_space = clamp(available_space, 0, max_enemy_amount)
 	if available_space >= max_enemy_amount:
 		wave_timer = max(wave_timer, next_wave_time * wave_speed_up)
 	
 func get_wave_amt() -> Vector2i:
-	var progress = (difficulty - 1.0) / (max_difficulty - 1.0)
+	var progress = (difficulty) / (max_difficulty)
 	var multiplier = wave_amt_curve.sample(progress)
 	
 	return Vector2i(
@@ -137,6 +144,14 @@ func _update_difficulty(player_score : int):
 		difficulty = 1.0 + (max_difficulty - 1.0) * difficulty_curve.sample(progress)
 	var new_level = int(difficulty)  # Get new tier
 	print("diffculty rn at score " + str(player_score) + ": " + str(difficulty))
+	var temp = get_adjusted_weights()
+	var temp_total = 0.0
+	print("enemy weights:", str(temp))
+	
+	for weight in temp.values():
+		temp_total += weight
+		
+	print("total weight: ", temp_total)
 	if new_level > old_level:
 		tier_break()
 

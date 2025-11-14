@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://7l6hoepr3ls"]
+
+[ext_resource type="Script" uid="uid://cfjejeaba23vc" path="res://Bullets/Scripts/explosion.gd" id="1_60lyp"]
+[ext_resource type="PackedScene" uid="uid://cjxd32w5d6bc3" path="res://Particles/Scenes/enemy_explosion_particle.tscn" id="2_hqodw"]
+[ext_resource type="Texture2D" uid="uid://1pi34bbwplib" path="res://Particles/Sprites/primal_explosion_main.png" id="2_jm70g"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jm70g"]
+radius = 181.011
+
+[node name="Explosion" type="Area2D"]
+collision_layer = 8
+collision_mask = 49
+script = ExtResource("1_60lyp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_jm70g")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0.27451)
+position = Vector2(0, -9.53674e-07)
+scale = Vector2(10.4766, 10.375)
+texture = ExtResource("2_jm70g")
+
+[node name="EnemyExplosion" parent="." instance=ExtResource("2_hqodw")]
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

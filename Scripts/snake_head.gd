@@ -50,7 +50,7 @@ var move_history = []
 
 @export var bullet_scene: PackedScene 
 @onready var muzzle = $Muzzle   # Marker2D
-@export var damage = 100
+@export var damage = 1
 @export var bullet_speed = 10000
 var target_angle = null
 var cooldown := 0.1
@@ -327,6 +327,7 @@ func _move_snake():
 	var next_pos = snake_pos + direction
 	# self-collision check using grid map
 	if Handler.grid_manager.get_cell(next_pos) == 1:
+		print("YOU HIT A SEGMENT YOU HIT A SEGMENT")
 		_game_over()
 	
 	snake_pos += direction

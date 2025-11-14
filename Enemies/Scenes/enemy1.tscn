@@ -242,6 +242,9 @@ shape = SubResource("RectangleShape2D_tq1cn")
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 
+[node name="Timer2" type="Timer" parent="."]
+one_shot = true
+
 [node name="Muzzle" type="Marker2D" parent="."]
 position = Vector2(1.2, 6.8)
 

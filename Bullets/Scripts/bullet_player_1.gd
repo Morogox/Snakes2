@@ -17,3 +17,7 @@ func _on_body_entered(body):
 		hit_effect()
 		emit_signal("s_miss", global_position)
 		queue_free()
+	if body.is_in_group("Object"):
+		hit_effect()
+		emit_signal("s_miss", global_position)
+		queue_free()

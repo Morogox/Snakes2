@@ -1,18 +1,97 @@
-[gd_scene load_steps=4 format=3 uid="uid://jq7bfy01fo34"]
+[gd_scene load_steps=15 format=3 uid="uid://jq7bfy01fo34"]
 
 [ext_resource type="Script" uid="uid://cmhtmp4hiygvy" path="res://Scripts/item.gd" id="1_u4byd"]
 [ext_resource type="Texture2D" uid="uid://02psaooqcucc" path="res://Sprites/apple.png" id="2_cvq6o"]
+[ext_resource type="Texture2D" uid="uid://df64uekxdbe" path="res://Sprites/golden_apple.png" id="3_btogu"]
+[ext_resource type="Texture2D" uid="uid://def60efkysb8m" path="res://Sprites/red_apple.png" id="4_tnst4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8gwai"]
 size = Vector2(32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_renmp"]
+atlas = ExtResource("3_btogu")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_66iod"]
+atlas = ExtResource("3_btogu")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jmixh"]
+atlas = ExtResource("3_btogu")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fif6b"]
+atlas = ExtResource("3_btogu")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5r5i4"]
+atlas = ExtResource("4_tnst4")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hnyqs"]
+atlas = ExtResource("4_tnst4")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jrdc7"]
+atlas = ExtResource("4_tnst4")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cr6d1"]
+atlas = ExtResource("4_tnst4")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_iu5vn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_renmp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_66iod")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jmixh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fif6b")
+}],
+"loop": true,
+"name": &"gold_apple",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5r5i4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hnyqs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jrdc7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cr6d1")
+}],
+"loop": true,
+"name": &"red_apple",
+"speed": 5.0
+}]
+
 [node name="Apple" type="Area2D" groups=["Items"]]
-scale = Vector2(0.5, 0.5)
 collision_layer = 4
 script = ExtResource("1_u4byd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("2_cvq6o")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_8gwai")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(1.19209e-07, 2.38419e-07)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_iu5vn")
+animation = &"gold_apple"
+frame_progress = 0.73249
+speed_scale = 1.5

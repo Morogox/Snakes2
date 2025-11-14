@@ -191,6 +191,10 @@ func cmd_spawn_enemy(args):
 			pass
 		"elite":
 			pass
+		"heavy":
+			pass
+		"primal":
+			pass
 		_:
 			_log("Error: invalid enemy type " + param1)
 			return

@@ -1,5 +1,6 @@
 extends Area2D
 @onready var tip = $Marker2D
+@onready var sprite = $Sprite2D
 @export var lifetime: float = 15.0   # seconds before auto-destroy
 
 var life_timer := 0.0
@@ -8,6 +9,7 @@ var life_timer := 0.0
 
 var last_pos: Vector2
 var velocity: Vector2
+@export var can_hit_multiple :=  false
 var has_hit := false
 var original_rotation
 
@@ -20,7 +22,7 @@ var type: String
 @export var force := 0.0
 
 
-@export_enum("player_1", "enemy_1", "enemy_2") var bullet_type: String = "player_1"
+@export_enum("player_1", "enemy_1", "enemy_2", "enemy_3", "enemy_4") var bullet_type: String = "player_1"
 
 var hit_normal: Vector2 = Vector2.ZERO
 var impact_data = {
@@ -29,7 +31,7 @@ var impact_data = {
 		"particle": preload("res://Particles/Scenes/player_bullet_spark.tscn"),
 		"lifetime": 0.2,
 		"scale": 1.0,
-		"lock_rotation": true
+		"lock_rotation": false
 	},
 	"enemy_1": {
 		"sprite": preload("res://Particles/Sprites/sBullet_enemy1_impact.png"),
@@ -41,6 +43,20 @@ var impact_data = {
 	"enemy_2": {
 		"sprite": preload("res://Particles/Sprites/sBullet_enemy2_impact.png"),
 		"particle": preload("res://Particles/Scenes/enemy_bullet2_spark.tscn"),
+		"lifetime": 0.3,
+		"scale": 2.0,
+		"lock_rotation": true
+	},
+	"enemy_3": {
+		"sprite": preload("res://Particles/Sprites/sBullet_enemy3_impact.png"),
+		"particle": preload("res://Particles/Scenes/enemy_bullet3_spark.tscn"),
+		"lifetime": 0.3,
+		"scale": 2.0,
+		"lock_rotation": true
+	},
+	"enemy_4": {
+		"sprite": preload("res://Particles/Sprites/sBullet_enemy4_impact.png"),
+		"particle": preload("res://Particles/Scenes/enemy_bullet4_spark.tscn"),
 		"lifetime": 0.3,
 		"scale": 2.0,
 		"lock_rotation": true
@@ -72,7 +88,7 @@ func _process(delta):
 			_on_area_entered(result.collider)
 		elif result.collider is PhysicsBody2D:
 			_on_body_entered(result.collider)
-		return
+		#return
 	# No hit → just move
 	global_position = to
 	
@@ -96,7 +112,7 @@ func hit_effect():
 func rotating(flag: bool):
 	if not flag:
 		return
-	rotation += rotate_val
+	sprite.rotation += rotate_val
 	
 func _on_area_entered(area: Area2D) -> void: 
 	hit_normal = get_surface_normal()
