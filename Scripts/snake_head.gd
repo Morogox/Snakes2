@@ -406,6 +406,7 @@ func _shoot():
 	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
 	bullet.s_miss.connect(Handler.sound_effect_handler._s_miss)
 	bullet.snake_hit.connect(Handler.sound_effect_handler._snake_hit) # Whatever you do, do NOT abbreviate "snake" and have "hit" after
+	bullet.s_deflect.connect(Handler.sound_effect_handler._s_deflect)
 	bullet.snake_hit.connect(_bullet_hit_enemy)
 	get_node("/root/main/Game/Camera2D").shake(50.0, 10.0)
 	

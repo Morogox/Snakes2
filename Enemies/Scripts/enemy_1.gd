@@ -38,6 +38,8 @@ signal drop_item_here(type: String, loc: Vector2)
 signal charge(position: Vector2) # for sound
 signal fire(position: Vector2) # for sound
 signal raging(position: Vector2) # for sound
+signal hiss(position: Vector2) # for sound
+signal explode(position: Vector2) # for sound
 
 @export var base_score = 50
 

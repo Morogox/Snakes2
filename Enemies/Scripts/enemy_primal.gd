@@ -34,6 +34,7 @@ func _transition_to(new_state: state_enum):
 			collision_layer &= ~(1 << 4) # remove layer 5 (enemies)
 			sprite.z_index = -1
 			explosion_indicator.visible = true
+			emit_signal("hiss", global_position)
 			_flash_indicator()
 			emit_signal("death", base_score, position)
 			feathers.toggle_emission(true)
@@ -45,7 +46,9 @@ func _on_animated_sprite_2d_animation_finished() -> void:
 		_change_sprite(sprite_default_name)
 	elif sprite.animation == "dead": 
 		var explosion = explosion_scene.instantiate()
+		emit_signal("explode", global_position)
 		
+		explosion.snake_hit.connect(Handler.sound_effect_handler._snake_hit)
 		explosion.global_position = explosion_origin.global_position
 		get_tree().get_root().get_node("main/Game/Bullets").add_child(explosion)
 		queue_free()

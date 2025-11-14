@@ -7,7 +7,7 @@ extends Area2D
 @export var dmg = 1.0
 @export var force = 1000
 
-
+signal snake_hit(position: Vector2) # for sound
 
 func _ready():
 	explosion_particle.toggle_emission(true)
@@ -30,6 +30,7 @@ func _on_area_entered(area: Area2D) -> void:
 func _on_body_entered(body):
 	if body.is_in_group("Enemies"):
 		var velocity = body.global_position - global_position
+		emit_signal("snake_hit", global_position)
 		body.take_hit(dmg, velocity, force)
 
 func _on_timer_timeout() -> void:
