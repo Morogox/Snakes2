@@ -53,7 +53,7 @@ var move_history = []
 @export var damage = 1
 @export var bullet_speed = 10000
 var target_angle = null
-var cooldown := 0.1
+var cooldown := 0.2
 var timer := 0.0
 
 @export var invulnerable = false
@@ -87,12 +87,14 @@ var is_boosting = false
 
 @export var hp = 1.0
 
+
 var current_velocity: Vector2:
 	get:
 		if move_delay > 0:
 			return (target_pixel_pos - prev_pixel_pos) / move_delay
 		return Vector2.ZERO
 
+var force_clear_tail = false
 func _deferred_rdy():
 	is_dead = false
 	collision_layer = 1
@@ -287,13 +289,16 @@ func _remove_tail_segment():
 	_update_grid_map()
 
 func remove_segment_logical(segment):
+	force_clear_tail = true
 	var i = segments.find(segment)
 	var cell = Handler.grid_manager.pixel_to_cell(segment.position)
+	#print("REMOVING segment at index ", i, " from cell ", cell, " | Grid before: ", Handler.grid_manager.get_cell(cell))
 	Handler.grid_manager.set_cell(cell, 0)
+	#print("Grid after clear: ", Handler.grid_manager.get_cell(cell))
 	segments.remove_at(i)
 	move_history.remove_at(i+1)
 	_update_grid_map()
-
+	force_clear_tail = false
 func _grow(amount:=1, heal:= true):
 	pending_growth += amount
 	if heal:
@@ -323,6 +328,7 @@ func _move_snake():
 			if temp != direction and temp != -direction:
 				direction = temp
 				validPop = true 
+
 	# compute new head cell
 	var next_pos = snake_pos + direction
 	# self-collision check using grid map
@@ -341,7 +347,7 @@ func _move_snake():
 # Marks the head cell as occupied, clears the tail cell if not growing
 func _update_grid_map():
 	Handler.grid_manager.set_cell(snake_pos, 1)  # mark head
-	if pending_growth == 0 :
+	if pending_growth == 0 or force_clear_tail:
 		var tail_cell = Handler.grid_manager.pixel_to_cell(move_history[-1])
 		Handler.grid_manager.set_cell(tail_cell, 0)
 
@@ -375,8 +381,8 @@ func _input(event):
 	if event is InputEventKey and not event.echo:
 		if Input.is_action_pressed("ui_fire"):
 			if segments.size() > 0:
+				
 				_shoot()
-				if not inf_ammo: _remove_segment(segments[-1])
 				#_remove_segment(segments[0])
 
 		for action in inputs.keys():
@@ -387,8 +393,10 @@ func _input(event):
 func _shoot():
 	if timer > 0.0:
 		return
+	if not inf_ammo: _remove_segment(segments[-1])
+	var dir =  global_rotation
 	if input_queue.size() > 0:
-		await get_tree().create_timer(move_timer).timeout
+		dir = input_queue[0].angle()
 		
 	timer = cooldown
 	# show muzzle flash
@@ -400,7 +408,7 @@ func _shoot():
 	# Spawn bullet
 	var bullet = bullet_scene.instantiate()
 	bullet.global_position = muzzle.global_position
-	bullet.rotation = global_rotation
+	bullet.rotation = dir
 	bullet.damage = damage  # pass damage to bullet
 	bullet.b_speed = bullet_speed  # pass damage to bullet
 	get_tree().get_root().get_node("main/Game/Bullets").add_child(bullet)
@@ -442,6 +450,7 @@ func _death_animation():
 	
 # Called when a segment is destroyed by enemy fire
 func _remove_segment(segment: Area2D):
+	
 	var i = segments.find(segment)
 	var to_remove = segments.slice(i, segments.size())  # forward order for domino
 
@@ -449,7 +458,7 @@ func _remove_segment(segment: Area2D):
 		var seg = to_remove[idx]
 		remove_segment_logical(seg)  # remove immediately
 		seg.destroy_this_segment(0.05 * idx)  # stagger tween start
-		
+
 	_update_stamina()
 	emit_signal("segments_update", segments.size())
 	
