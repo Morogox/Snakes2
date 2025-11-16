@@ -5,7 +5,7 @@ var hp := max_hp
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var sprite2: Sprite2D = $Sprite2D2
-@onready var end_sprite  = preload("res://Sprites/snakeSegment_end.png")
+@export var end_sprite  = preload("res://Sprites/snakeSegment_end.png")
 @onready var reg_sprite = sprite.texture
 
 signal segment_destroyed  # Removed type hint
@@ -39,8 +39,8 @@ func flash_hit(count: int = 3, interval: float = 0.05) -> void:
 	var original_color = sprite.modulate  # Save current color
 	var original_color2 = sprite2.modulate
 	for i in count:
-		sprite.modulate = Color(3, 3, 3, 1)  # Super bright!
-		sprite2.modulate = Color(3, 3, 3, 1)
+		sprite.modulate = Color(2, 2, 2, 1)  # Super bright!
+		sprite2.modulate = Color(2, 2, 2, 1)
 		await get_tree().create_timer(interval).timeout
 
 		sprite.modulate = original_color  # back to original color
@@ -50,7 +50,7 @@ func flash_hit(count: int = 3, interval: float = 0.05) -> void:
 func flash_hit_smooth(count: int = 3, interval: float = 0.05) -> void:
 	var original_color = sprite.modulate
 	var original_color2 = sprite2.modulate
-	var flash_color = Color(3, 3, 3, 1)
+	var flash_color = Color(2, 2, 2, 1)
 	
 	for i in count:
 		# Tween to bright color

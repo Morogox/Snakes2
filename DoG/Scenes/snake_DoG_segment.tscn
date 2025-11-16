@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqj5eikn2r28h"]
+
+[ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="1_o0k5g"]
+[ext_resource type="Texture2D" uid="uid://ghd2iovalvmp" path="res://DoG/Sprites/The_Devourer_of_Gods_Final_Phase_Tail.png" id="2_8wmxr"]
+[ext_resource type="Texture2D" uid="uid://b52o0rtn0syrg" path="res://DoG/Sprites/The_Devourer_of_Gods_Final_Phase_Body.png" id="2_n0yxg"]
+
+[node name="SnakeSegment" instance=ExtResource("1_o0k5g")]
+end_sprite = ExtResource("2_8wmxr")
+
+[node name="Sprite2D" parent="." index="0"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_n0yxg")
+
+[node name="Sprite2D2" parent="." index="1"]
+visible = false
