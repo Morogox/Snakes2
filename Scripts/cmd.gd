@@ -345,7 +345,7 @@ func cmd_dog(_args):
 	cmd_toggle_inv(_args)
 	cmd_toggle_stam(_args)
 	cmd_toggle_ammo(_args)
-	cmd_add_segments(["20"])
+	cmd_add_segments(["10"])
 	cmd_set_speed(["0.08"])
 	
 	var root = get_tree().current_scene

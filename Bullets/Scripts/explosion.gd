@@ -17,7 +17,6 @@ func _ready():
 	collision_box.disabled = true
 	
 func _on_area_entered(area: Area2D) -> void:
-	print("triggered")
 	if area.is_in_group("SnakeHead"):
 		area.take_hit(dmg)
 		#emit_signal("e_hit", global_position)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://d1f5bs2a0cliy"]
+[gd_scene load_steps=26 format=3 uid="uid://d1f5bs2a0cliy"]
 
 [ext_resource type="Script" uid="uid://kvxm02e0p1gu" path="res://HandlerScripts/sound_effect_handler.gd" id="1_2yf51"]
 [ext_resource type="AudioStream" uid="uid://rgmrtf2i7bev" path="res://Sound Effects/Chomp_1.wav" id="2_oe6y3"]
@@ -20,6 +20,9 @@
 [ext_resource type="AudioStream" uid="uid://c8k4ggogx45mh" path="res://Sound Effects/explosion.wav" id="18_mk7ha"]
 [ext_resource type="AudioStream" uid="uid://dmgakdnhumwdo" path="res://Sound Effects/deflect_b.wav" id="18_sqkey"]
 [ext_resource type="AudioStream" uid="uid://dyeq8rdaest2l" path="res://Sound Effects/hiss.wav" id="20_hvr52"]
+[ext_resource type="AudioStream" uid="uid://bncypl6co6gi1" path="res://DoG/Sound/DevourerSpawn.wav.mp3" id="21_2lkyy"]
+[ext_resource type="AudioStream" uid="uid://bqxrlgy1lqmx4" path="res://DoG/Sound/DevourerAttack.wav.mp3" id="22_v7s6o"]
+[ext_resource type="AudioStream" uid="uid://1dlvinv601pp" path="res://DoG/Sound/DevourerDeathImpact.wav.mp3" id="23_1rhuy"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_d63yo"]
 playback_mode = 1
@@ -135,3 +138,13 @@ stream = ExtResource("20_hvr52")
 volume_db = 16.0
 max_polyphony = 5
 panning_strength = 3.0
+
+[node name="Dog_summon" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("21_2lkyy")
+
+[node name="Dog_tp" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("22_v7s6o")
+
+[node name="Dog_devour" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("23_1rhuy")
+volume_db = -10.0

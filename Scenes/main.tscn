@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://bbl3meksyecp3"]
+[gd_scene load_steps=30 format=3 uid="uid://bbl3meksyecp3"]
 
 [ext_resource type="Script" uid="uid://cudp6vefwxmx5" path="res://Scripts/main.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://cf6rq26mmu03p" path="res://Scenes/snake_head.tscn" id="1_jjgbg"]
@@ -61,6 +61,11 @@ distance = -128.0
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_kry3j"]
 distance = -128.0
+
+[sub_resource type="Environment" id="Environment_k12tt"]
+background_mode = 3
+glow_enabled = true
+glow_blend_mode = 1
 
 [node name="main" type="Node2D"]
 process_mode = 3
@@ -151,6 +156,9 @@ visible = false
 stream = ExtResource("15_wsu2k")
 volume_db = -10.0
 autoplay = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Game"]
+environment = SubResource("Environment_k12tt")
 
 [connection signal="body_entered" from="Game/Handlers/SnakeHead" to="Game/Handlers/SnakeHead" method="_on_body_entered"]
 [connection signal="snake_died" from="Game/Handlers/SnakeHead" to="." method="_on_snake_died"]

@@ -21,6 +21,10 @@ extends Node2D
 @onready var hiss = $Hiss
 @onready var explosion = $Explosion
 
+@onready var summon = $Dog_summon
+@onready var tp = $Dog_tp
+@onready var devour = $Dog_devour
+
 var is_snake_dead = false
 
 var reset_timer_stuff = 0.0
