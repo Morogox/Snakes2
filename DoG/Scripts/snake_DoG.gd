@@ -1,5 +1,6 @@
 extends "res://Scripts/snake_head.gd"
 @onready var sprite = $sSnakeHead
+@export var devour_effect = preload("res://DoG/Scenes/space_matter.tscn")
 @export var worm_hole = preload("res://DoG/Scenes/DoG_hole.tscn")
 var is_teleporting = false
 func _ready():
@@ -25,7 +26,7 @@ func _deferred_rdy():
 	is_dead = false
 	visible = true
 	Handler.sound_effect_handler.summon.play()
-	
+	cooldown = 3.0
 func _process(delta):
 	
 	if is_dead:
@@ -75,25 +76,32 @@ func _on_body_entered(body: Node2D) -> void:
 		body.queue_free()
 		get_node("/root/main/Game/Camera2D").shake(40.0, 5.0)
 		Handler.sound_effect_handler.devour.play()
+		var de = devour_effect.instantiate()
+		de.scale = Vector2(0.5,0.5)
+		#de.global_position = global_position
+		de.toggle_emission(true)
+		self.call_deferred("add_child", de)
 		_grow(1)
-	if body.is_in_group("Boundaries") and  not is_teleporting:
+		await get_tree().create_timer(3).timeout
+		de.queue_free()
+	elif body.is_in_group("Boundaries") and  not is_teleporting:
+		set_collision_mask_value(2, false)
 		is_teleporting = true
 		Handler.sound_effect_handler.tp.play()
-		print("GOT HERE")
 		var opp_dist = Handler.grid_manager.grid_dimensions * Handler.grid_manager.GRID_SIZE *1.95
 		var new_pos = global_position + (-direction) * opp_dist
 		var wh = worm_hole.instantiate()
 		wh.global_position = global_position
 		wh.emerge = false
 		wh.pair_pos = new_pos
-		get_tree().current_scene.add_child(wh)
+		get_tree().current_scene.call_deferred("add_child", wh)
 		
 		var wh2 = worm_hole.instantiate()
 		wh2.emerge = true
 		wh2.global_position = new_pos
-		get_tree().current_scene.add_child(wh2)
+		get_tree().current_scene.call_deferred("add_child", wh2)
 		
-		set_collision_mask_value(2, false)
+		
 		# TELEPORT THE HEAD - Reset lerp positions!
 		snake_pos = Handler.grid_manager.pixel_to_cell(new_pos)
 		target_pixel_pos = grid_origin + snake_pos * GRID_SIZE + CELL_OFFSET
@@ -116,7 +124,7 @@ func _on_body_entered(body: Node2D) -> void:
 		
 		await get_tree().process_frame
 		await get_tree().process_frame
-		set_collision_mask_value(2, true)
+		#set_collision_mask_value(2, true)
 		is_teleporting = false
 
 func _add_segment():
@@ -146,3 +154,11 @@ func _add_segment():
 	segments[-1]._heal(1, 0.05 * (segments.size() - 1))
 	
 	emit_signal("segments_update", segments.size())
+
+func _shoot():
+	if timer > 0.0:
+		return
+	timer = cooldown
+	for i in range(segments.size() - 2):
+		if i % 2 == 0: 
+			segments[i].fire()

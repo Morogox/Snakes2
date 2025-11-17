@@ -1,13 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://dqj5eikn2r28h"]
+[gd_scene load_steps=7 format=3 uid="uid://dqj5eikn2r28h"]
 
 [ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="1_o0k5g"]
 [ext_resource type="Script" uid="uid://cedlys0plof1n" path="res://DoG/Scripts/snake_dog_segment.gd" id="2_8wmxr"]
 [ext_resource type="Texture2D" uid="uid://b52o0rtn0syrg" path="res://DoG/Sprites/The_Devourer_of_Gods_Final_Phase_Body.png" id="2_n0yxg"]
+[ext_resource type="PackedScene" uid="uid://csjdb1ulpi7pq" path="res://DoG/Scenes/DoG_bullet.tscn" id="3_xmvx7"]
 [ext_resource type="Texture2D" uid="uid://ghd2iovalvmp" path="res://DoG/Sprites/The_Devourer_of_Gods_Final_Phase_Tail.png" id="3_yv7br"]
+[ext_resource type="PackedScene" uid="uid://bmmfea7qado8i" path="res://DoG/Scenes/DoG_indicator.tscn" id="5_bfysx"]
 
 [node name="SnakeSegment" instance=ExtResource("1_o0k5g")]
 script = ExtResource("2_8wmxr")
 teleport = false
+bullet_scene = ExtResource("3_xmvx7")
+trajectory_line = ExtResource("5_bfysx")
 end_sprite = ExtResource("3_yv7br")
 
 [node name="Sprite2D" parent="." index="0"]

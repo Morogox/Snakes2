@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://csjdb1ulpi7pq"]
+
+[ext_resource type="PackedScene" uid="uid://dx6d50gnoyji3" path="res://Bullets/Scenes/bullet.tscn" id="1_luxt6"]
+[ext_resource type="Texture2D" uid="uid://ll1gnjbetxca" path="res://DoG/Sprites/DoG_laser.png" id="2_hx7oq"]
+[ext_resource type="Script" uid="uid://3nfyvd00g03o" path="res://DoG/Scripts/dog_bullet.gd" id="2_nos1e"]
+
+[node name="Bullet" instance=ExtResource("1_luxt6")]
+modulate = Color(3, 3, 3, 1)
+scale = Vector2(2, 1)
+collision_mask = 16
+script = ExtResource("2_nos1e")
+lifetime = 15.0
+
+[node name="Sprite2D" parent="." index="1"]
+texture = ExtResource("2_hx7oq")

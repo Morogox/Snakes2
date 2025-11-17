@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dn35cqmvgbu0d" path="res://DoG/Scenes/DoG_sparks.tscn" id="7_10kam"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_10kam"]
-radius = 30.5
+radius = 28.5
 
 [node name="DoGHole" type="Area2D"]
 modulate = Color(1.5, 1.5, 1.5, 1)
