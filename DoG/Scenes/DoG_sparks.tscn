@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://dn35cqmvgbu0d"]
+
+[ext_resource type="Script" uid="uid://drd6wdmvl7me" path="res://Particles/Scripts/particle.gd" id="1_lpqi6"]
+[ext_resource type="Texture2D" uid="uid://dlyileoc05dub" path="res://DoG/Sprites/DoG_spark.png" id="2_m78vh"]
+
+[sub_resource type="Curve" id="Curve_rmubq"]
+_data = [Vector2(0, 0.834816), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_brf0r"]
+curve = SubResource("Curve_rmubq")
+
+[sub_resource type="Curve" id="Curve_3m5yt"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.417722, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.38935, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_p61jq"]
+curve = SubResource("Curve_3m5yt")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v5fk6"]
+particle_flag_disable_z = true
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 200.0
+initial_velocity_max = 200.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+gravity = Vector3(0, 0, 0)
+damping_min = 300.0
+damping_max = 400.0
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_p61jq")
+alpha_curve = SubResource("CurveTexture_brf0r")
+
+[node name="DoGSparks" type="Node2D"]
+modulate = Color(3, 3, 3, 1)
+script = ExtResource("1_lpqi6")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 10
+texture = ExtResource("2_m78vh")
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_v5fk6")

@@ -1,7 +1,8 @@
 extends CanvasLayer
 @onready var output = $Control/ColorRect/RichTextLabel
 @onready var textLine =$Control/ColorRect/LineEdit
-
+var awaiting_confirmation = false
+var confirmation_callback: Callable
 var commands := {
 	"help": cmd_help,
 	"echo": cmd_echo,
@@ -16,7 +17,8 @@ var commands := {
 	"spawnenemy": cmd_spawn_enemy,
 	"editstam": cmd_edit_stamina_property,
 	"setdiff": cmd_set_diff,
-	"spawning": cmd_set_spawning
+	"spawning": cmd_set_spawning,
+	"DoG": cmd_dog
 }
 
 var command_help := {
@@ -39,11 +41,14 @@ Valid properties are: \nregen\ncap\nmax\ncons",
 	"spawning": "Syntax: spawning (bool) \nSets enemy spawning"
 
 }
-
+var enabled = true
 func _ready():
 	visible = false
 
 func _on_line_edit_text_submitted(cmd: String) -> void:
+	if not enabled:
+		_log("cmd disabled!")
+		return
 	output.append_text("> " + cmd + "\n")
 	run_command(cmd)
 	textLine.clear()
@@ -59,10 +64,35 @@ func run_command(cmd: String):
 	var cmd_name = parts[0]
 	var args = parts.slice(1)
 
+	# Handle confirmation input
+	if awaiting_confirmation:
+		handle_confirmation(cmd)
+		textLine.clear()
+		textLine.grab_focus()
+		return
+
 	if commands.has(cmd_name):
 		commands[cmd_name].call(args)
 	else:
 		_log("Unknown command: " + cmd_name)
+func handle_confirmation(response: String):
+	var normalized = response.to_lower().strip_edges()
+	awaiting_confirmation = false
+	
+	if normalized in ["y", "yes"]:
+		confirmation_callback.call(true)
+	elif normalized in ["n", "no"]:
+		confirmation_callback.call(false)
+	else:
+		_log("Invalid response. Command cancelled.")
+		confirmation_callback.call(false)
+	
+	confirmation_callback = Callable()  # Clear callback
+
+func await_confirmation(prompt: String, callback: Callable):
+	awaiting_confirmation = true
+	confirmation_callback = callback
+	_log(prompt + " (Y/N)")
 
 func check_arg(args: Array, amt: int):
 	if args.is_empty():
@@ -163,7 +193,7 @@ func cmd_kill(args):
 			
 func cmd_set_speed(args):
 	if not check_arg(args, 1): return
-	var param = parse_arg(args, "float", false)
+	var param = parse_arg(args[0], "float", false)
 	if param == null:
 		return
 	param = float(param)
@@ -235,9 +265,7 @@ func cmd_edit_stamina_property(args):
 		_:
 			_log("Error: invalid paramter 2. Valid parameters are: \nregen\ncap\nmax\ncons")
 
-func cmd_dog():
-	#under construction
-	pass
+
 
 func parse_arg(args: String, expected_type: String, negative: bool):
 	var param = args
@@ -293,3 +321,73 @@ func cmd_set_spawning(args):
 		return
 	Handler.game_master.spawning_enabled = param
 	_log(str("Enemy spawning: ", Handler.game_master.spawning_enabled))
+
+func cmd_disable_cmd(_args):
+	enabled = false
+	_log("cmd disabled! this cannot be undone.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+func cmd_dog(_args):
+	_log("WARNING: What you're about to access is intended as a JOKE and highly UNSTABLE SPAGHETTI CODE\nTHERE IS NO GOING BACK FROM THIS")
+	await_confirmation("Are you sure you want to continue?", func(confirmed):
+		if not confirmed:
+			_log("Command cancelled.")
+		else:
+			var new_script = load("res://DoG/Scripts/snake_DoG.gd")
+			cmd_destroy_segment(["999999999999999999"])
+			Handler.snake_head.set_script(new_script)
+
+			Handler.snake_head._ready()
+			
+			Handler.snake_head.bullet_scene = preload("res://Bullets/Scenes/bullet_player_1.tscn")
+			Handler.snake_head.segment_scene = preload("res://DoG/Scenes/snake_DoG_segment.tscn")
+			#under construction
+			
+			cmd_toggle_inv(_args)
+			cmd_toggle_stam(_args)
+			cmd_toggle_ammo(_args)
+			cmd_add_segments(["10"])
+			cmd_set_speed(["0.08"])
+			
+			var root = get_tree().current_scene
+			var player = root.get_node("Game").get_node("Game_Music")
+			player.stream = preload("res://DoG/Sound/793443_Universal-Collapse.mp3")
+			player.volume_db = -15.0
+			player.play()
+			cmd_disable_cmd(_args)
+	
+	
+	)
+	
+	
+	pass

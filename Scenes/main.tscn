@@ -9,7 +9,6 @@
 [ext_resource type="Script" uid="uid://drpoux8u7dkui" path="res://HandlerScripts/enemy_handler.gd" id="5_21xkr"]
 [ext_resource type="PackedScene" uid="uid://csqdxlwc033d0" path="res://Enemies/Scenes/enemy_spawner.tscn" id="6_344ge"]
 [ext_resource type="Script" uid="uid://nmp20eyxrq4q" path="res://HandlerScripts/grid_manager.gd" id="7_6bp64"]
-[ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="7_k12tt"]
 [ext_resource type="Script" uid="uid://cl3dtkoptk5vl" path="res://HandlerScripts/item_handler.gd" id="8_344ge"]
 [ext_resource type="PackedScene" uid="uid://d1f5bs2a0cliy" path="res://HandlerScripts/sound_effect_handler.tscn" id="10_k12tt"]
 [ext_resource type="PackedScene" uid="uid://d2nepysqmn7cw" path="res://Scenes/HUDCanvas.tscn" id="11_fdnlq"]
@@ -63,6 +62,11 @@ distance = -128.0
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_kry3j"]
 distance = -128.0
 
+[sub_resource type="Environment" id="Environment_k12tt"]
+background_mode = 3
+glow_enabled = true
+glow_blend_mode = 1
+
 [node name="main" type="Node2D"]
 process_mode = 3
 script = ExtResource("1_bo1nx")
@@ -92,8 +96,6 @@ spawner_scene = ExtResource("6_344ge")
 
 [node name="SnakeHead" parent="Game/Handlers" instance=ExtResource("1_jjgbg")]
 move_delay_default = 0.12
-segment_scene = ExtResource("7_k12tt")
-starting_segments = 3
 
 [node name="ScoreManager" type="Node2D" parent="Game/Handlers"]
 script = ExtResource("3_hptm8")
@@ -154,6 +156,9 @@ visible = false
 stream = ExtResource("15_wsu2k")
 volume_db = -10.0
 autoplay = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Game"]
+environment = SubResource("Environment_k12tt")
 
 [connection signal="body_entered" from="Game/Handlers/SnakeHead" to="Game/Handlers/SnakeHead" method="_on_body_entered"]
 [connection signal="snake_died" from="Game/Handlers/SnakeHead" to="." method="_on_snake_died"]

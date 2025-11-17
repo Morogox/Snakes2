@@ -1,0 +1,37 @@
+[gd_scene load_steps=8 format=3 uid="uid://cvqd12e865l1"]
+
+[ext_resource type="Texture2D" uid="uid://dbnc2ut3vtmt2" path="res://Particles/Sprites/shockwave.png" id="1_32eqr"]
+[ext_resource type="Script" uid="uid://drd6wdmvl7me" path="res://Particles/Scripts/particle.gd" id="1_swjxa"]
+
+[sub_resource type="Curve" id="Curve_swjxa"]
+_data = [Vector2(0, 0.186513), 0.0, -0.243487, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_oq85j"]
+curve = SubResource("Curve_swjxa")
+
+[sub_resource type="Curve" id="Curve_gar55"]
+_limits = [0.0, 20.0, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 55.2096, 0, 0, Vector2(0.99999, 20), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_du6qj"]
+curve = SubResource("Curve_gar55")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1b77o"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_du6qj")
+color = Color(1, 1, 1, 0.332)
+alpha_curve = SubResource("CurveTexture_oq85j")
+
+[node name="Shockwave" type="Node2D"]
+script = ExtResource("1_swjxa")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 1
+texture = ExtResource("1_32eqr")
+lifetime = 3.0
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_1b77o")

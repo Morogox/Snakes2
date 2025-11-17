@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmmfea7qado8i"]
+
+[ext_resource type="Script" uid="uid://d3837b2pinc2v" path="res://DoG/Scripts/dog_indicator.gd" id="1_akh6t"]
+
+[node name="DoGIndicator" type="Line2D"]
+width = 2.0
+default_color = Color(0.565645, 0.77307, 1, 1)
+script = ExtResource("1_akh6t")

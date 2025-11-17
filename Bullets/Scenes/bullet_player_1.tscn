@@ -17,6 +17,7 @@ force = 2000.0
 shape = SubResource("RectangleShape2D_4wg1o")
 
 [node name="Sprite2D" parent="." index="1"]
+modulate = Color(3, 0.9, 0, 1)
 texture = ExtResource("3_vy7p2")
 
 [node name="Marker2D" parent="." index="2" groups=["SnakeBullet"]]

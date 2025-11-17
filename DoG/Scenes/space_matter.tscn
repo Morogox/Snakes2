@@ -1,0 +1,118 @@
+[gd_scene load_steps=13 format=3 uid="uid://b6eysba8l7nxp"]
+
+[ext_resource type="Script" uid="uid://drd6wdmvl7me" path="res://Particles/Scripts/particle.gd" id="1_84euk"]
+[ext_resource type="Shader" uid="uid://bsr0tn14mput0" path="res://DoG/Sprites/space_matter.gdshader" id="2_qifvb"]
+[ext_resource type="Texture2D" uid="uid://dxukl260rvoqi" path="res://DoG/Sprites/iStock-697020460-scaled.jpg" id="3_nlkit"]
+[ext_resource type="Texture2D" uid="uid://dlyileoc05dub" path="res://DoG/Sprites/DoG_spark.png" id="4_5ton4"]
+[ext_resource type="Texture2D" uid="uid://06kwb0dylit4" path="res://Sprites/500px-Circle_-_black_simple.svg.png" id="4_84euk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qifvb"]
+shader = ExtResource("2_qifvb")
+shader_parameter/star_tex = ExtResource("3_nlkit")
+shader_parameter/scale = 1.0
+shader_parameter/tint_color = Color(0.539436, 0.120443, 0.630024, 1)
+shader_parameter/speed = 0.05
+
+[sub_resource type="Curve" id="Curve_nlkit"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1e-05, 0.494382), 0.0, 0.0, 0, 0, Vector2(0.772059, 0.955056), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_5ton4"]
+curve = SubResource("Curve_nlkit")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4y1eh"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 20.0
+initial_velocity_min = 500.0
+initial_velocity_max = 500.0
+gravity = Vector3(0, 0, 0)
+damping_min = 150.0
+damping_max = 300.0
+scale_min = 0.1
+scale_max = 0.2
+scale_curve = SubResource("CurveTexture_5ton4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qifvb"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 20.0
+initial_velocity_min = 500.0
+initial_velocity_max = 500.0
+gravity = Vector3(0, 0, 0)
+damping_min = 150.0
+damping_max = 300.0
+scale_curve = SubResource("CurveTexture_5ton4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lme41"]
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_min = 500.0
+initial_velocity_max = 500.0
+gravity = Vector3(0, 0, 0)
+damping_min = 150.0
+damping_max = 300.0
+scale_min = 0.1
+scale_max = 0.2
+scale_curve = SubResource("CurveTexture_5ton4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nlkit"]
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_min = 500.0
+initial_velocity_max = 500.0
+gravity = Vector3(0, 0, 0)
+damping_min = 150.0
+damping_max = 300.0
+scale_curve = SubResource("CurveTexture_5ton4")
+
+[node name="SpaceMatter" type="Node2D"]
+script = ExtResource("1_84euk")
+
+[node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
+material = SubResource("ShaderMaterial_qifvb")
+emitting = false
+texture = ExtResource("4_84euk")
+lifetime = 3.0
+one_shot = true
+speed_scale = 2.0
+explosiveness = 0.7
+trail_lifetime = 0.63
+process_material = SubResource("ParticleProcessMaterial_4y1eh")
+
+[node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
+modulate = Color(3, 3, 3, 1)
+emitting = false
+amount = 6
+texture = ExtResource("4_5ton4")
+lifetime = 3.0
+one_shot = true
+speed_scale = 2.0
+explosiveness = 0.7
+trail_lifetime = 0.63
+process_material = SubResource("ParticleProcessMaterial_qifvb")
+
+[node name="GPUParticles2D3" type="GPUParticles2D" parent="."]
+material = SubResource("ShaderMaterial_qifvb")
+emitting = false
+texture = ExtResource("4_84euk")
+lifetime = 3.0
+one_shot = true
+speed_scale = 2.0
+explosiveness = 0.7
+trail_lifetime = 0.63
+process_material = SubResource("ParticleProcessMaterial_lme41")
+
+[node name="GPUParticles2D5" type="GPUParticles2D" parent="."]
+modulate = Color(3, 3, 3, 1)
+emitting = false
+amount = 6
+texture = ExtResource("4_5ton4")
+lifetime = 3.0
+one_shot = true
+speed_scale = 2.0
+explosiveness = 0.7
+trail_lifetime = 0.63
+process_material = SubResource("ParticleProcessMaterial_nlkit")

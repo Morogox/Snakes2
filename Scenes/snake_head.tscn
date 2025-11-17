@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cf6rq26mmu03p"]
+[gd_scene load_steps=7 format=3 uid="uid://cf6rq26mmu03p"]
 
 [ext_resource type="Texture2D" uid="uid://bqxgkfkr6qevn" path="res://Sprites/sSnakeHead.png" id="1_0ta55"]
 [ext_resource type="Script" uid="uid://b7inuxlclywv4" path="res://Scripts/snake_head.gd" id="1_bbogs"]
 [ext_resource type="PackedScene" uid="uid://dmqnniem56ite" path="res://Bullets/Scenes/bullet_player_1.tscn" id="2_agune"]
+[ext_resource type="PackedScene" uid="uid://ct3pioheqxk0x" path="res://Scenes/SnakeSegment.tscn" id="2_qmt8w"]
 [ext_resource type="Texture2D" uid="uid://c2m24p6axldsf" path="res://Sprites/sMuzzleFlash1.png" id="4_agune"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbogs"]
@@ -12,6 +13,8 @@ size = Vector2(16.25, 16.125)
 collision_mask = 62
 script = ExtResource("1_bbogs")
 move_delay_default = 3.0
+segment_scene = ExtResource("2_qmt8w")
+starting_segments = 3
 bullet_scene = ExtResource("2_agune")
 
 [node name="sSnakeHead" type="Sprite2D" parent="."]
@@ -26,6 +29,7 @@ position = Vector2(16, 0)
 
 [node name="sMuzzleFlash" type="Sprite2D" parent="."]
 visible = false
+modulate = Color(3, 3, 3, 1)
 position = Vector2(63, 3.55271e-15)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("4_agune")
