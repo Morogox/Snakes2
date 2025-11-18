@@ -20,18 +20,20 @@ collision_layer = 64
 collision_mask = 33
 script = ExtResource("1_o5531")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprites" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprites"]
 modulate = Color(1, 1, 1, 0.529412)
 self_modulate = Color(1, 1, 1, 0.619608)
 texture = ExtResource("2_viueu")
 
-[node name="Sprite2D2" type="Sprite2D" parent="."]
+[node name="Sprite2D2" type="Sprite2D" parent="Sprites"]
 texture = ExtResource("3_a3k7p")
 
-[node name="Sprite2D3" type="Sprite2D" parent="."]
+[node name="Sprite2D3" type="Sprite2D" parent="Sprites"]
 texture = ExtResource("4_10kam")
 
-[node name="Sprite2D4" type="Sprite2D" parent="."]
+[node name="Sprite2D4" type="Sprite2D" parent="Sprites"]
 texture = ExtResource("5_jb31w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

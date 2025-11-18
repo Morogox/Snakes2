@@ -40,7 +40,6 @@ script = ExtResource("1_lpqi6")
 emitting = false
 amount = 10
 texture = ExtResource("2_m78vh")
-lifetime = 3.0
 one_shot = true
 explosiveness = 1.0
 randomness = 1.0
