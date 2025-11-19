@@ -18,6 +18,7 @@ func show_screen():
 	# Make the screen visible
 	visible = true
 	$ColorRect/CenterContainer.visible = true
+	try_again_button.grab_focus()
 	
 	var final_score = Handler.score_manager.curr_score if Handler.score_manager else 0
 	var final_segments = Handler.score_manager.longest_segment if Handler.score_manager else 0

@@ -29,7 +29,7 @@ theme_override_constants/separation = 20
 
 [node name="GameOverLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 150
 text = "GAME OVER"
 
 [node name="Spacer" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
@@ -42,11 +42,15 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="PlayAgain" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Play Again?"
 
 [node name="Quit" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Quit"
 
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/PlayAgain" to="." method="_on_try_again_button_pressed"]

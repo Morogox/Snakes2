@@ -58,6 +58,8 @@ func _input(event):
 	if event.is_action_pressed("ui_cancel") and not game_over:
 		game_paused = !game_paused
 		pause_screen.visible = game_paused
+		if game_paused:
+			pause_screen.show_screen()
 		
 		update_pause_state()
 
