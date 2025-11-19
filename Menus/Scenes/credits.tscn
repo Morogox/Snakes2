@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://doij3eelgkvpc"]
 
-[ext_resource type="Script" path="res://Menus/Scripts/credits.gd" id="1_evofg"]
+[ext_resource type="Script" uid="uid://bxpe7jrp04j88" path="res://Menus/Scripts/credits.gd" id="1_evofg"]
 
 [node name="Credits" type="CanvasLayer"]
 script = ExtResource("1_evofg")
@@ -28,15 +28,15 @@ layout_mode = 2
 custom_minimum_size = Vector2(1200, 500)
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
-text = "Snake 2 Credits
-Mrg.exe - Lead Programming, additional spritework
+text = "Snake 2 Credits:
+Mrg.exe - Lead Programmer, additional spritework
 EmiKoi - Programming
 Boxbing - Original Music and SFX,  Programming
 Trey - Enemy and UI spriteworks
 Elichellman - Enviorment and item spriteworks
 
-Special Thanks
-The_Wiggle - For advising us when needed o7"
+Special Thanks:
+GreenScaryButterfly - For advising us when needed o7"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
@@ -54,15 +54,21 @@ theme_override_font_sizes/font_size = 70
 text = "Click/Press again to exit credits"
 
 [node name="DoG_credits" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 120)
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.663275, 0.663275, 0.663275, 1)
 theme_override_font_sizes/font_size = 30
 text = "The Devourer of Gods and \"Universal Collapse\" - Terraria Calamity Mod"
 horizontal_alignment = 1
+vertical_alignment = 2
 
-[node name="Question" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
+[node name="Hint" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.480225, 0.480225, 0.480225, 1)
+theme_override_font_sizes/font_size = 20
+text = "Try pressing \" ~ \" and typing \"DoG\" ;3"
+horizontal_alignment = 1
 
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/Un_credits" to="." method="_on_un_credits_pressed"]

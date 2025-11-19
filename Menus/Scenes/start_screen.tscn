@@ -31,16 +31,21 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -500.0
-offset_right = 500.0
-offset_bottom = 500.0
+offset_left = -200.0
+offset_right = 200.0
+offset_bottom = 400.0
 grow_vertical = 2
 texture = ExtResource("2_qal85")
 stretch_mode = 4
 
 [node name="Spacer1" type="Label" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 500)
+custom_minimum_size = Vector2(1200, 500)
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "CONTROLS:
+WASD or Arrow Keys to move, ENTER/SPACE/Z/P to fire, SHIFT/X/O to speed up"
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 150)
