@@ -13,6 +13,7 @@ const DEATH_TEXTURE = preload("res://Sprites/sSnakeHead_dead.png")
 var move_delay = move_delay_default
 var move_timer = move_delay
 var move_progress = move_timer / move_delay
+var can_input = true
 
 var snake_pos = Vector2.ZERO   # grid coordinates
 var input_vector = Vector2.ZERO
@@ -145,6 +146,8 @@ func _process(delta):
 	timer = max(timer - delta, 0.0)
 
 func _handle_input(delta):
+	if not can_input:
+		return
 	if Input.is_action_pressed("ui_boost") and stamina > 0: #
 		is_boosting = true
 		move_delay = move_delay_default / boost_multi
@@ -377,6 +380,8 @@ func _on_area_entered(area: Area2D) -> void:
 		#_game_over()
 
 func _input(event):
+	if not can_input:
+		return
 	#if event is not InputEventMouse and event.is_pressed():
 	if event is InputEventKey and not event.echo:
 		if Input.is_action_pressed("ui_fire"):

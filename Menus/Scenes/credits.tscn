@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://pfapqlxpc8uv"]
+[gd_scene load_steps=2 format=3 uid="uid://doij3eelgkvpc"]
 
-[ext_resource type="Script" uid="uid://bxpe7jrp04j88" path="res://Menus/Scripts/credits.gd" id="1_evofg"]
+[ext_resource type="Script" path="res://Menus/Scripts/credits.gd" id="1_evofg"]
 
 [node name="Credits" type="CanvasLayer"]
 script = ExtResource("1_evofg")
@@ -29,11 +29,11 @@ custom_minimum_size = Vector2(1200, 500)
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "Snake 2 Credits
-Mrg.exe - Lead Programmer, some sprite edits
-EmiKoi - Programmer
-Boxbing - Programmer, Original Music and SFX
-Trey - \"Bird\" and Title Screen sprites
-Elichellman - Background Tileset and Apple sprites
+Mrg.exe - Lead Programming, additional spritework
+EmiKoi - Programming
+Boxbing - Original Music and SFX,  Programming
+Trey - Enemy and UI spriteworks
+Elichellman - Enviorment and item spriteworks
 
 Special Thanks
 The_Wiggle - For advising us when needed o7"
@@ -58,14 +58,11 @@ custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.663275, 0.663275, 0.663275, 1)
 theme_override_font_sizes/font_size = 30
-text = "The Devourer of Gods and \"Universal Collapse\" - Terraria Calamity Mod
-
-Try \"~\" and typing in \"DoG\" ;3"
+text = "The Devourer of Gods and \"Universal Collapse\" - Terraria Calamity Mod"
 horizontal_alignment = 1
 
 [node name="Question" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.480225, 0.480225, 0.480225, 1)
-text = "Should we even leave in the DoG? It's funny but like isn't that copyrighted or even just bad manners since it's not our mod??? Then again this project isn't formal nor will make money soooooooooo"
 
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/Un_credits" to="." method="_on_un_credits_pressed"]

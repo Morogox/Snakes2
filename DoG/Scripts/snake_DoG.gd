@@ -86,6 +86,7 @@ func _on_body_entered(body: Node2D) -> void:
 		de.queue_free()
 	elif body.is_in_group("Boundaries") and  not is_teleporting:
 		set_collision_mask_value(2, false)
+		can_input = false
 		is_teleporting = true
 		Handler.sound_effect_handler.tp.play()
 		var opp_dist = Handler.grid_manager.grid_dimensions * Handler.grid_manager.GRID_SIZE *1.95
@@ -125,6 +126,7 @@ func _on_body_entered(body: Node2D) -> void:
 		await get_tree().process_frame
 		await get_tree().process_frame
 		#set_collision_mask_value(2, true)
+		can_input = true
 		is_teleporting = false
 
 func _add_segment():
