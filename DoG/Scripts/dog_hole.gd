@@ -57,9 +57,9 @@ func set_rotational_value(value):
 
 func _on_area_entered(area: Area2D) -> void:
 	if area == Handler.snake_head:
-		if emerge:
-			print("hit")
+		if emerge:			
 			area.set_collision_mask_value(2, true)
+			area.can_input = true
 			sw.toggle_emission(true)
 			star.toggle_emission (true)
 			get_node("/root/main/Game/Camera2D").shake(100.0, 5.0)

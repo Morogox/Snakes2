@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://doij3eelgkvpc"]
+[gd_scene load_steps=3 format=3 uid="uid://doij3eelgkvpc"]
 
 [ext_resource type="Script" uid="uid://bxpe7jrp04j88" path="res://Menus/Scripts/credits.gd" id="1_evofg"]
+[ext_resource type="FontFile" uid="uid://csllpefqkgbod" path="res://Fonts/pixellari/Pixellari.ttf" id="2_y5kta"]
 
 [node name="Credits" type="CanvasLayer"]
 script = ExtResource("1_evofg")
@@ -11,13 +12,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.141176, 0.141176, 0.141176, 0.92549)
+color = Color(0.141176, 0.141176, 0.141176, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="ColorRect"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -651.5
+offset_top = -442.5
+offset_right = 651.5
+offset_bottom = 442.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -27,13 +34,14 @@ layout_mode = 2
 [node name="Credit_text" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1200, 500)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_y5kta")
 theme_override_font_sizes/font_size = 50
 text = "Snake 2 Credits:
-Mrg.exe - Lead Programmer, additional spritework
-EmiKoi - Programming
-Boxbing - Original Music and SFX,  Programming
-Trey - Enemy and UI spriteworks
-Elichellman - Enviorment and item spriteworks
+MARIGOLDX -               Lead Developer, additional spriteworks
+EmiKoi -                                                          Programming
+Boxbing -                     Original Music and SFX,  Programming
+Trey -                                           Enemy and UI spriteworks
+Elichellman -                         Enviorment and item spriteworks
 
 Special Thanks:
 GreenScaryButterfly - For advising us when needed o7"
@@ -42,24 +50,18 @@ horizontal_alignment = 1
 [node name="Spacer" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-
-[node name="Un_credits" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.811765, 0.0509804, 0.454902, 1)
-theme_override_colors/font_color = Color(0.992157, 0.568627, 0.827451, 1)
-theme_override_colors/font_focus_color = Color(0.992157, 0.568627, 0.827451, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.945098, 0, 1)
-theme_override_font_sizes/font_size = 70
-text = "Click/Press again to exit credits"
+theme_override_fonts/font = ExtResource("2_y5kta")
 
 [node name="DoG_credits" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.663275, 0.663275, 0.663275, 1)
+theme_override_fonts/font = ExtResource("2_y5kta")
 theme_override_font_sizes/font_size = 30
-text = "The Devourer of Gods and \"Universal Collapse\" - Terraria Calamity Mod"
+text = "Additional resources used:
+\"Universal Collapse\" by DM Dokuro
+Spritework and Soundfx from the Terraria Calamity Mod"
 horizontal_alignment = 1
 vertical_alignment = 2
 
@@ -67,8 +69,24 @@ vertical_alignment = 2
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.480225, 0.480225, 0.480225, 1)
+theme_override_fonts/font = ExtResource("2_y5kta")
 theme_override_font_sizes/font_size = 20
-text = "Try pressing \" ~ \" and typing \"DoG\" ;3"
+text = "Press '~' key to open the commands!"
 horizontal_alignment = 1
 
-[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/Un_credits" to="." method="_on_un_credits_pressed"]
+[node name="Un_credits" type="Button" parent="ColorRect"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+offset_left = 4.0
+offset_top = 966.0
+offset_right = 266.0
+offset_bottom = 1072.0
+theme_override_colors/font_hover_color = Color(0.811765, 0.0509804, 0.454902, 1)
+theme_override_colors/font_color = Color(0.992157, 0.568627, 0.827451, 1)
+theme_override_colors/font_focus_color = Color(0.992157, 0.568627, 0.827451, 1)
+theme_override_colors/font_pressed_color = Color(0.996078, 0.945098, 0, 1)
+theme_override_fonts/font = ExtResource("2_y5kta")
+theme_override_font_sizes/font_size = 70
+text = "Exit"
+
+[connection signal="pressed" from="ColorRect/Un_credits" to="." method="_on_un_credits_pressed"]

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bkhrs0ma3d7fe"]
+[gd_scene load_steps=3 format=3 uid="uid://bkhrs0ma3d7fe"]
 
 [ext_resource type="Script" uid="uid://dsuahm6dq5gdh" path="res://Scripts/score_popup.gd" id="1_6333m"]
+[ext_resource type="FontFile" uid="uid://csllpefqkgbod" path="res://Fonts/pixellari/Pixellari.ttf" id="2_wkbxh"]
 
 [node name="ScorePopup" type="Node2D"]
 script = ExtResource("1_6333m")
@@ -8,4 +9,5 @@ script = ExtResource("1_6333m")
 [node name="Label" type="Label" parent="."]
 offset_right = 121.0
 offset_bottom = 25.0
+theme_override_fonts/font = ExtResource("2_wkbxh")
 text = "PLACE HOLDER"

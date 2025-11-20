@@ -12,7 +12,7 @@ func _ready():
 	
 	
 func set_text(value: String):
-	if int(value) >= 1000:
+	if int(value) >= 2000:
 		label.modulate = Color.YELLOW
 	else:
 		label.modulate = Color.WHITE

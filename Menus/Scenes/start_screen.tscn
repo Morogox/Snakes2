@@ -1,67 +1,72 @@
-[gd_scene load_steps=5 format=3 uid="uid://cu0btgjhkybh4"]
+[gd_scene load_steps=7 format=3 uid="uid://cu0btgjhkybh4"]
 
 [ext_resource type="Script" uid="uid://btcc882hb66wu" path="res://Menus/Scripts/start_screen.gd" id="1_ainjc"]
 [ext_resource type="AudioStream" uid="uid://dbjs4k7sida2g" path="res://Music/Coiled and ready to Rattle - Title Screen.mp3" id="2_ainjc"]
 [ext_resource type="Texture2D" uid="uid://bk6gm45ayu28p" path="res://Sprites/Snake2_title.png" id="2_qal85"]
+[ext_resource type="FontFile" uid="uid://csllpefqkgbod" path="res://Fonts/pixellari/Pixellari.ttf" id="3_hbd73"]
 [ext_resource type="PackedScene" uid="uid://doij3eelgkvpc" path="res://Menus/Scenes/credits.tscn" id="4_voejr"]
+[ext_resource type="PackedScene" uid="uid://wvffv071nai8" path="res://Menus/Scenes/how_to.tscn" id="5_voejr"]
 
 [node name="start_screen" type="CanvasLayer"]
 process_mode = 3
 script = ExtResource("1_ainjc")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(100, 0)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -751.0
+offset_top = 85.0
+offset_right = 752.0
+offset_bottom = 693.0
 grow_horizontal = 2
-grow_vertical = 2
+size_flags_horizontal = 4
+texture = ExtResource("2_qal85")
+stretch_mode = 4
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -304.0
+offset_top = -507.0
+offset_right = 304.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="CenterContainer/VBoxContainer/TitleLabel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -200.0
-offset_right = 200.0
-offset_bottom = 400.0
-grow_vertical = 2
-texture = ExtResource("2_qal85")
-stretch_mode = 4
-
-[node name="Spacer1" type="Label" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(1200, 500)
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "CONTROLS:
-WASD or Arrow Keys to move, ENTER/SPACE/Z/P to fire, SHIFT/X/O to speed up"
-horizontal_alignment = 1
-vertical_alignment = 2
-
 [node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 150)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_hbd73")
 theme_override_font_sizes/font_size = 80
 text = "PLAY"
 
+[node name="HowTo" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_hbd73")
+theme_override_font_sizes/font_size = 40
+text = "How to Play
+"
+
 [node name="Credits" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_hbd73")
 theme_override_font_sizes/font_size = 40
 text = "Credits"
 
 [node name="Quit" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_fonts/font = ExtResource("3_hbd73")
+theme_override_font_sizes/font_size = 40
 text = "Quit"
 
 [node name="Title_Music" type="AudioStreamPlayer" parent="."]
@@ -72,5 +77,9 @@ autoplay = true
 [node name="Credits" parent="." instance=ExtResource("4_voejr")]
 visible = false
 
+[node name="HowTo" parent="." instance=ExtResource("5_voejr")]
+visible = false
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HowTo" to="." method="_on_how_to_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

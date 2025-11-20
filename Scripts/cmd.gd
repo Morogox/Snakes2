@@ -38,7 +38,8 @@ var command_help := {
 	"editstam": "Syntax: editstam (property: String) (value: float) \nAdjust stamina property to value
 Valid properties are: \nregen\ncap\nmax\ncons",
 	"setdiff": "Syntax: setdiff (value: float) \n Sets diffculty multiplier to float",
-	"spawning": "Syntax: spawning (bool) \nSets enemy spawning"
+	"spawning": "Syntax: spawning (bool) \nSets enemy spawning",
+	"DoG": "Start DoGing all over the place"
 
 }
 var enabled = true

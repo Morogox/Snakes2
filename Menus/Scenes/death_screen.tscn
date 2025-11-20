@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://blpgrt11df53r"]
+[gd_scene load_steps=3 format=3 uid="uid://blpgrt11df53r"]
 
 [ext_resource type="Script" uid="uid://vnapdlyejto" path="res://Menus/Scripts/death_screen.gd" id="1_8hps1"]
+[ext_resource type="FontFile" uid="uid://csllpefqkgbod" path="res://Fonts/pixellari/Pixellari.ttf" id="2_fxl7l"]
 
 [node name="death_screen" type="CanvasLayer"]
 script = ExtResource("1_8hps1")
@@ -11,7 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.141176, 0.141176, 0.141176, 0.368627)
+color = Color(0.14, 0.14, 0.14, 0.717647)
 
 [node name="CenterContainer" type="CenterContainer" parent="ColorRect"]
 layout_mode = 1
@@ -29,27 +30,33 @@ theme_override_constants/separation = 20
 
 [node name="GameOverLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fxl7l")
 theme_override_font_sizes/font_size = 150
 text = "GAME OVER"
 
-[node name="Spacer" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
-layout_mode = 2
-
 [node name="ScoreLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fxl7l")
+theme_override_font_sizes/font_size = 50
+text = "Placeholder"
 
 [node name="SegmentsLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fxl7l")
+theme_override_font_sizes/font_size = 50
+text = "Placeholder"
 
 [node name="PlayAgain" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fxl7l")
 theme_override_font_sizes/font_size = 40
 text = "Play Again?"
 
 [node name="Quit" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fxl7l")
 theme_override_font_sizes/font_size = 40
 text = "Quit"
 

@@ -368,7 +368,7 @@ bullet_scene = ExtResource("4_113lb")
 bullet_speed = 150
 shoot_delay_base = 4.0
 friction = 4000
-base_score = 80
+base_score = 100
 
 [node name="AnimatedSprite2D" parent="." index="1"]
 material = SubResource("ShaderMaterial_qv10x")

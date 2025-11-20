@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://d2nepysqmn7cw"]
+[gd_scene load_steps=9 format=3 uid="uid://d2nepysqmn7cw"]
 
 [ext_resource type="Script" uid="uid://bbtf3g5ukn7d5" path="res://Scripts/hud.gd" id="1_pvlhn"]
 [ext_resource type="Texture2D" uid="uid://bpdqgfhlnpyii" path="res://Sprites/stamina_ring_base.png" id="2_hf5mi"]
+[ext_resource type="FontFile" uid="uid://csllpefqkgbod" path="res://Fonts/pixellari/Pixellari.ttf" id="2_wwdfb"]
 [ext_resource type="Texture2D" uid="uid://dnwuvc7mmg46e" path="res://Sprites/stamina_ring_chaser.png" id="3_hf5mi"]
 [ext_resource type="Texture2D" uid="uid://bv2r3uwj5ixu1" path="res://Sprites/stamina_ring.png" id="3_wwdfb"]
 
@@ -33,6 +34,7 @@ offset_left = 115.0
 offset_top = 41.0
 offset_right = 319.0
 offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("2_wwdfb")
 text = "Score: 0"
 label_settings = SubResource("LabelSettings_hptm8")
 
@@ -42,6 +44,7 @@ offset_left = 120.0
 offset_top = 105.0
 offset_right = 214.0
 offset_bottom = 128.0
+theme_override_fonts/font = ExtResource("2_wwdfb")
 text = "Segments: 3"
 label_settings = SubResource("LabelSettings_hf5mi")
 
@@ -95,11 +98,12 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -342.0
-offset_top = -819.0
+offset_top = -759.0
 offset_right = 343.0
-offset_bottom = 820.0
+offset_bottom = 880.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_wwdfb")
 text = "10"
 label_settings = SubResource("LabelSettings_wwdfb")
 horizontal_alignment = 1

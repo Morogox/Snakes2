@@ -3,7 +3,7 @@ extends Node2D
 @export var max_enemy_amount := 8
 var available_space = max_enemy_amount
 @export var base_wave_amt := Vector2(1, 1.5)
-@export var base_wave_time := Vector2(15.0, 20.0)
+@export var base_wave_time := Vector2(10.0, 15.0)
 var wave_timer := 0.0
 var next_wave_time := 0.0
 @export var wave_speed_up = 0.8
@@ -11,8 +11,8 @@ var next_wave_time := 0.0
 @export var enemy_variation := Vector2(0.0, 0.0)
 
 var base_enemy_weights = {
-	"basic": 10.0,
-	"rager": 7.0,
+	"basic": 8.0,
+	"rager": 6.0,
 	"elite": 5.0,
 	"heavy": 3.0,
 	"primal": 4.0
@@ -30,7 +30,7 @@ var enemy_scenes : Dictionary
 @export var wave_time_curve: Curve  # Multiplier for wave time
 @export var difficulty_curve: Curve  # Shape how difficulty ramps
 
-@export var max_score: int = 100000  # Score at max difficulty
+@export var max_score: int = 300000  # Score at max difficulty
 @export var max_difficulty : float =  10.0
 
 

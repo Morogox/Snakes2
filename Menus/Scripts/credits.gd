@@ -1,14 +1,10 @@
 extends CanvasLayer
-@onready var un_credits = $ColorRect/CenterContainer/VBoxContainer/Un_credits
+@onready var un_credits = $ColorRect/Un_credits
 @onready var start_screen = $".."
 
 @onready var DoG_1 = $ColorRect/CenterContainer/VBoxContainer/DoG_credits
 @onready var DoG_2 = $ColorRect/CenterContainer/VBoxContainer/Hint
 @onready var stop_fading = false
-
-
-func _ready():
-	visible = false
 
 func show_screen():
 	# Make the screen visible

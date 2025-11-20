@@ -262,6 +262,7 @@ max_wait_time = 3.0
 bullet_scene = ExtResource("4_1rgg4")
 bullet_speed = 200
 shoot_delay_base = 3.0
+base_score = 70
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="0"]
 visible = false

@@ -126,7 +126,7 @@ func _on_body_entered(body: Node2D) -> void:
 		await get_tree().process_frame
 		await get_tree().process_frame
 		#set_collision_mask_value(2, true)
-		can_input = true
+		#can_input = true
 		is_teleporting = false
 
 func _add_segment():

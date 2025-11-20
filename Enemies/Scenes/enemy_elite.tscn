@@ -241,7 +241,7 @@ dodge_distance = Vector2(80, 150)
 dodge_speed = 600.0
 dodge_threshold = 70.0
 bullet_speed = 400
-base_score = 60
+base_score = 80
 
 [node name="EnemyExclamation" parent="." index="1" instance=ExtResource("3_g7g3l")]
 position = Vector2(2, -3.6)

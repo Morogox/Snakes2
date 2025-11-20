@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://6bqsorf03klw"]
+[gd_scene load_steps=4 format=3 uid="uid://6bqsorf03klw"]
 
 [ext_resource type="Script" uid="uid://2f0rkmkqicu2" path="res://Menus/Scripts/pause_screen.gd" id="1_xub4q"]
-[ext_resource type="Script" uid="uid://c04x4qm5d3g2g" path="res://Menus/Scripts/focus_pls.gd" id="2_1ecmr"]
+[ext_resource type="Script" path="res://Menus/Scripts/focus_pls.gd" id="2_1ecmr"]
+[ext_resource type="FontFile" uid="uid://csllpefqkgbod" path="res://Fonts/pixellari/Pixellari.ttf" id="2_gw8io"]
 
 [node name="PauseScreen" type="CanvasLayer"]
 script = ExtResource("1_xub4q")
@@ -31,19 +32,21 @@ theme_override_constants/separation = 20
 [node name="PauseLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gw8io")
 theme_override_font_sizes/font_size = 100
 text = "PAUSED"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
-layout_mode = 2
-
 [node name="ScoreLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gw8io")
+theme_override_font_sizes/font_size = 40
+text = "Placeholder"
 
 [node name="Continue" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gw8io")
 theme_override_font_sizes/font_size = 40
 text = "Continue"
 script = ExtResource("2_1ecmr")
@@ -51,12 +54,14 @@ script = ExtResource("2_1ecmr")
 [node name="Restart" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gw8io")
 theme_override_font_sizes/font_size = 40
 text = "Restart"
 
 [node name="Quit" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gw8io")
 theme_override_font_sizes/font_size = 40
 text = "Quit to menu"
 
